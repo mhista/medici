@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "85232495401",
+    "project_id": "medici-18876",
+    "storage_bucket": "medici-18876.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85232495401:android:ce14a201d7d3af2ed92538",
+        "android_client_info": {
+          "package_name": "com.example.medici"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClgUKNYcdqEhr0zCLwmRYG_WlKElpM0G8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
