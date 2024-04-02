@@ -7,6 +7,9 @@ class PTexts {
   static const String submit = "Submit";
   static const String appName = "Medici";
   static const String acontinue = "Continue";
+// others
+  static const String hintText = 'Search a doctor or health issue';
+  static const String chatSearchText = 'Search, eg. Dr';
 
 //   OnBoarding Texts
   static const String onBoardingTitle1 = "choose your product";
@@ -64,6 +67,4 @@ class PTexts {
   static const String accountCreatedTitle = "Account successfully created!";
   static const String accountCreatedSubtitle =
       "Welcome to your best shopping destination, your account is created. Unleashe the joy of seamless online shopping";
-// others
-  static const String hintText = 'Search a doctor or health issue';
 }

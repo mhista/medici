@@ -7,9 +7,9 @@ import '../screens/schedules/schedule.dart';
 
 class NavigationController extends StateNotifier<int> {
   final screens = [
-    const HomeScreen(),
-    const ScheduleScreen(),
     const MessageScreen(),
+    const ScheduleScreen(),
+    const HomeScreen(),
     const ProfileScreen(),
   ];
 

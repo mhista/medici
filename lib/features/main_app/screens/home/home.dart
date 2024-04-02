@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = PHelperFunctions.isDarkMode(context);
+    // final isDark = PHelperFunctions.isDarkMode(context);
     final responsive = ResponsiveBreakpoints.of(context);
 
     return SafeArea(

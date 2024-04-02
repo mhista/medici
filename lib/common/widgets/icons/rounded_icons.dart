@@ -34,13 +34,17 @@ class RoundedIcon extends StatelessWidget {
     this.size,
     this.color,
     this.hasIconColor = false,
+    this.bgColor,
+    this.hasBgColor = false,
+    required this.onPressed,
   });
   final double padding, radius, marginRight;
   final double? height, width;
-  final bool isPositioned, hasIconColor;
+  final bool isPositioned, hasIconColor, hasBgColor;
   final IconData iconData;
-  final Color? color;
+  final Color? color, bgColor;
   final double? size;
+  final Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +54,11 @@ class RoundedIcon extends StatelessWidget {
       width: width,
       margin: EdgeInsets.only(right: marginRight),
       decoration: BoxDecoration(
-        color: isDark ? PColors.dark : PColors.light,
+        color: hasBgColor
+            ? bgColor
+            : isDark
+                ? PColors.dark
+                : PColors.light,
         borderRadius: BorderRadius.circular(radius),
       ),
       child: Padding(
@@ -59,7 +67,7 @@ class RoundedIcon extends StatelessWidget {
             children: [
               Center(
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: onPressed,
                   icon: Icon(
                     iconData,
                     size: size,

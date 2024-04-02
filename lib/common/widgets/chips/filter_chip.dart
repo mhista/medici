@@ -54,6 +54,7 @@ class KFilterChip extends StatelessWidget {
                 iconData: iconData,
                 size: 16,
                 isPositioned: false,
+                onPressed: () {},
               ),
             ),
             Text(

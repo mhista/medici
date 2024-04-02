@@ -53,18 +53,23 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               if (responsive.screenWidth > 700)
-                const Flexible(
+                Flexible(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // SEARCH BAR
-                      Expanded(
-                        child: MSearchBar(),
+                      const Expanded(
+                        child: MSearchBar(
+                          hintText: PTexts.hintText,
+                        ),
                       ),
                       // NOTIFICATION BUTTON
 
                       RoundedIcon(
-                          isPositioned: true, iconData: Iconsax.notification)
+                        isPositioned: true,
+                        iconData: Iconsax.notification,
+                        onPressed: () {},
+                      )
                     ],
                   ),
                 ),
@@ -83,16 +88,19 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
             actions: [
               // SHOW ONLY A NOTIFICATION ICON ON SMALL SCREEN
               if (responsive.screenWidth < 700)
-                const RoundedIcon(
-                    isPositioned: true, iconData: Iconsax.notification)
+                RoundedIcon(
+                  height: 50,
+                  width: 50,
+                  radius: 50,
+                  isPositioned: true,
+                  iconData: Iconsax.notification,
+                  onPressed: () {},
+                )
             ],
           ),
         ),
         if (responsive.screenWidth < 700)
-          const SizedBox(
-            width: PSizes.spaceBtwItems / 2,
-          ),
-        if (responsive.screenWidth < 700) const MSearchBar(),
+          const MSearchBar(hintText: PTexts.hintText),
       ],
     );
   }
