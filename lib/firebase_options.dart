@@ -25,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -47,30 +44,37 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAFnNdBuepxbQBgzi3HwQHiBhk9khew8IE',
-    appId: '1:67159247551:web:e807115d55c61fc59f540a',
-    messagingSenderId: '67159247551',
-    projectId: 'pickafrika-24713',
-    authDomain: 'pickafrika-24713.firebaseapp.com',
-    storageBucket: 'pickafrika-24713.appspot.com',
+    apiKey: 'AIzaSyA_g2yuP7wd_WeM2pEn2pRhuJoM_H04dxI',
+    appId: '1:921010982650:web:272714b468882988e0c343',
+    messagingSenderId: '921010982650',
+    projectId: 'medici-2bdb5',
+    authDomain: 'medici-2bdb5.firebaseapp.com',
+    storageBucket: 'medici-2bdb5.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCWcXooggTpJRTMzb1b55kOmYf5aL7-s48',
-    appId: '1:67159247551:android:555bbd5bf1ff94a99f540a',
-    messagingSenderId: '67159247551',
-    projectId: 'pickafrika-24713',
-    storageBucket: 'pickafrika-24713.appspot.com',
+    apiKey: 'AIzaSyDDRXxbd4wYcXXz5nM9_bA-NvgCn0XwBwA',
+    appId: '1:921010982650:android:4229dea3e3f108b6e0c343',
+    messagingSenderId: '921010982650',
+    projectId: 'medici-2bdb5',
+    storageBucket: 'medici-2bdb5.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyClLtBaNC7bhXbTaLjqP3xmTAQYlQl9aAk',
-    appId: '1:67159247551:ios:ae9a0bd8dedc80ac9f540a',
-    messagingSenderId: '67159247551',
-    projectId: 'pickafrika-24713',
-    storageBucket: 'pickafrika-24713.appspot.com',
-    androidClientId: '67159247551-ktgha7dm34ur34kbv9d6f0ga4beinpc0.apps.googleusercontent.com',
-    iosClientId: '67159247551-qk8eol621iph7i416hm3fkvtimhvq0cm.apps.googleusercontent.com',
-    iosBundleId: 'com.example.pickafrika',
+    apiKey: 'AIzaSyCuPl-xQ8VuoCeN-8wgUnla48SRRZdKgO0',
+    appId: '1:921010982650:ios:cb9e9bdb7a7c48c4e0c343',
+    messagingSenderId: '921010982650',
+    projectId: 'medici-2bdb5',
+    storageBucket: 'medici-2bdb5.appspot.com',
+    iosBundleId: 'com.example.medici',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCuPl-xQ8VuoCeN-8wgUnla48SRRZdKgO0',
+    appId: '1:921010982650:ios:29a83aa5f2f58020e0c343',
+    messagingSenderId: '921010982650',
+    projectId: 'medici-2bdb5',
+    storageBucket: 'medici-2bdb5.appspot.com',
+    iosBundleId: 'com.example.medici.RunnerTests',
   );
 }
