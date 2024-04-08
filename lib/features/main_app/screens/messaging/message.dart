@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medici/common/widgets/appbar/searchBar.dart';
 import 'package:medici/common/widgets/cards/chat_card.dart';
 import 'package:medici/common/widgets/containers/container_tile.dart';
@@ -7,6 +9,7 @@ import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/image_strings.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:medici/utils/constants/text_strings.dart';
+import 'package:routemaster/routemaster.dart';
 
 import '../../../../utils/helpers/helper_functions.dart';
 
@@ -54,10 +57,7 @@ class MessageScreen extends StatelessWidget {
                         subTitle: 'Hello, how can i help you?',
                         image: PImages.dp2,
                         recent: false,
-                        onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const ChatRoom())));
+                        onPressed: () => context.go('/messages/chat'));
                   },
                   separatorBuilder: (_, __) =>
                       const SizedBox(height: PSizes.spaceBtwItems / 2),

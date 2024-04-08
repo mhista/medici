@@ -106,8 +106,7 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(PDeviceUtils.getAppBarHeight() * 1.9);
+  Size get preferredSize => Size.fromHeight(PDeviceUtils.getAppBarHeight() * 2);
 }
 
 // // SEARCHBAR IF SCREEN WIDTH IS LESS DOWN 700

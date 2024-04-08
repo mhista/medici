@@ -2,20 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:medici/common/widgets/appbar/kAppBar.dart';
-import 'package:medici/common/widgets/containers/update_container.dart';
-import 'package:medici/common/widgets/icons/rounded_icons.dart';
-import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
-import 'package:medici/utils/helpers/helper_functions.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../common/widgets/headings/section_heading.dart';
 import 'responsive/desktop/desktop_health_update.dart';
 import 'widgets/doc_card_list.dart';
 import 'widgets/doc_prof_list.dart';
-import 'widgets/health_update.dart';
 import 'widgets/schedule_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -26,10 +20,10 @@ class HomeScreen extends StatelessWidget {
     // final isDark = PHelperFunctions.isDarkMode(context);
     final responsive = ResponsiveBreakpoints.of(context);
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: const KAppBar(),
-        body: ListView(
+    return Scaffold(
+      appBar: const KAppBar(),
+      body: SafeArea(
+        child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             Padding(
@@ -64,6 +58,7 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(
                     height: PSizes.spaceBtwItems,
                   ),
+
                   // FINDING A DOCTOR
                   Column(
                     children: [

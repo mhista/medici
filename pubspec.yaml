@@ -76,6 +76,7 @@ dependencies:
   fab_circular_menu_plus: ^0.0.2
   flutter_polyline_points: ^2.0.0
   flip_card: ^0.7.0
+  go_router: ^13.2.2
 
 
 

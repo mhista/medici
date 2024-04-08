@@ -2,7 +2,9 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:medici/features/main_app/screens/home/homeview.dart';
+import 'package:medici/router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:routemaster/routemaster.dart';
 
 import 'utils/theme/theme.dart';
 
@@ -16,8 +18,8 @@ class App extends StatelessWidget {
         statusBarIconBrightness: Brightness.dark
         // systemStatusBarContrastEnforced: true,
         ));
-    return MaterialApp(
-      themeMode: ThemeMode.system,
+    return MaterialApp.router(
+      routerConfig: routes,
       builder: (context, child) =>
           ResponsiveBreakpoints.builder(child: child!, breakpoints: [
         const Breakpoint(start: 0, end: 600, name: MOBILE),
@@ -28,7 +30,7 @@ class App extends StatelessWidget {
       // initialBinding: GeneralBindiings(),
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
-      home: const HomeView(), //Scaffold(
+      //Scaffold(
       //
       debugShowCheckedModeBanner: false,
     );

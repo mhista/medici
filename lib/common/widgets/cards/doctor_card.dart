@@ -30,9 +30,11 @@ class DoctorCard extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            ProfileImage1(
-              image: image,
-              imageSize: 80,
+            Flexible(
+              child: ProfileImage1(
+                image: image,
+                imageSize: 80,
+              ),
             ),
             const SizedBox(
               width: PSizes.spaceBtwItems,
@@ -45,20 +47,21 @@ class DoctorCard extends StatelessWidget {
                   height: PSizes.spaceBtwItems,
                 ),
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    KRatingBarIndicator(
-                      rating: rating,
-                      itemSizes: 17,
+                    Flexible(
+                      child: KRatingBarIndicator(
+                        rating: rating,
+                        itemSizes: 17,
+                      ),
                     ),
                     const SizedBox(
                       width: PSizes.spaceBtwItems / 2,
                     ),
                     Text(
                       '${rating.toString()} | ${reviews.toString()} Reviews',
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelMedium!
-                          .apply(fontWeightDelta: 7),
+                      style: Theme.of(context).textTheme.labelMedium!.apply(
+                          fontWeightDelta: 7, overflow: TextOverflow.ellipsis),
                     )
                   ],
                 )

@@ -54,9 +54,9 @@ class PColors {
   static const Color grey = Color(0xffe0e0e0);
   static const Color softGrey = Color(0xfff4f4f4);
   static const Color lightGrey = Color(0xfff9f9f9);
-  // static const Color white = Color(0xffffffff);
-  static const Color white = Color(0xfff6f6f6);
-  // static const Color light = Color(0xfff6f6f6);
+  static const Color white = Color(0xffffffff);
+  // static const Color white = Color(0xfff6f6f6);
+  static const Color light = Color(0xfff6f6f6);
 
-  static const Color light = Color(0xffffffff);
+  // static const Color light = Color(0xffffffff);
 }

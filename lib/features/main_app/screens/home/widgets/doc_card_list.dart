@@ -13,7 +13,7 @@ class DoctorCardList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       shrinkWrap: true,
-      physics: const AlwaysScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: 4,
       scrollDirection: Axis.vertical,
       separatorBuilder: (_, __) =>

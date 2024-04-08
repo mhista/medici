@@ -28,8 +28,8 @@ class SmallScreenNavigation extends StatelessWidget {
         onDestinationSelected: (index) => controller.updateState(index),
         destinations: const [
           NavigationDestination(icon: Icon(Iconsax.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Iconsax.location), label: 'Find'),
           NavigationDestination(icon: Icon(Iconsax.message), label: 'Chat'),
+          NavigationDestination(icon: Icon(Iconsax.location), label: 'Find'),
           NavigationDestination(
               icon: Icon(Iconsax.calendar), label: 'Schedule'),
         ]);

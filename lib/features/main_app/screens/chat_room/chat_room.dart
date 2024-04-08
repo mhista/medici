@@ -22,6 +22,7 @@ class ChatRoom extends StatelessWidget {
     final screenWidth = PHelperFunctions.screenWidth(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         elevation: 2,
         backgroundColor: isDark
@@ -133,7 +134,7 @@ class ChatRoom extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: Padding(
+      bottomSheet: Padding(
         padding: const EdgeInsets.only(bottom: 10.0, right: 5),
         child: Row(
           children: [
