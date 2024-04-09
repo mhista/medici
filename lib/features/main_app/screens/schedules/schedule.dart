@@ -9,12 +9,12 @@ class ScheduleScreen extends StatelessWidget {
     return Scaffold(
       body: ListView(
         children: [
-          Text('Schedule'),
+          const Text('Schedule'),
           TableCalendar(
             firstDay: DateTime.utc(2010, 10, 16),
             lastDay: DateTime.utc(2030, 3, 14),
             focusedDay: DateTime.now(),
-            calendarStyle: CalendarStyle(),
+            calendarStyle: const CalendarStyle(),
           )
         ],
       ),

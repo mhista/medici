@@ -6,9 +6,6 @@ import '../../../../../common/widgets/cards/time_card.dart';
 import '../../../../../common/widgets/containers/container_tile.dart';
 import '../../../../../common/widgets/containers/update_container.dart';
 import '../../../../../common/widgets/icons/rounded_icons.dart';
-import '../../../../../common/widgets/images/rounded_rect_image.dart';
-import '../../../../../common/widgets/texts/title_subtitle.dart';
-import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/image_strings.dart';
 import '../../../../../utils/constants/sizes.dart';
 

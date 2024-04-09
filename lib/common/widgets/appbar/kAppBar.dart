@@ -1,13 +1,13 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:medici/utils/constants/text_strings.dart';
 import 'package:medici/utils/device/device_utility.dart';
-import 'package:medici/utils/helpers/helper_functions.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import '../containers/rounded_icon_container.dart';
 import '../icons/rounded_icons.dart';
 import 'searchBar.dart';
 
@@ -38,9 +38,15 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        PTexts.homeAppBarTitle,
-                        style: Theme.of(context).textTheme.headlineSmall,
+                      Consumer(
+                        builder: (_, WidgetRef ref, __) {
+                          final user = ref.watch(userProvider);
+
+                          return Text(
+                            'Hi, ${user.fullName}',
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          );
+                        },
                       ),
                       const SizedBox(
                         height: PSizes.spaceBtwItems / 2,

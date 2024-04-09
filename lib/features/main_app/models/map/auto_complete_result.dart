@@ -49,7 +49,7 @@ class AutoCompleteResult {
     }
     if (matchedSubStings != null) {
       result.addAll({
-        'matchedSubStings': matchedSubStings!.map((x) => x?.toMap()).toList()
+        'matchedSubStings': matchedSubStings!.map((x) => x.toMap()).toList()
       });
     }
     result.addAll({'placeId': placeId});
@@ -58,7 +58,7 @@ class AutoCompleteResult {
       result.addAll({'structuredFormatting': structuredFormatting!.toMap()});
     }
     if (terms != null) {
-      result.addAll({'terms': terms!.map((x) => x?.toMap()).toList()});
+      result.addAll({'terms': terms!.map((x) => x.toMap()).toList()});
     }
 
     return result;

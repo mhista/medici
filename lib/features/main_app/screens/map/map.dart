@@ -186,7 +186,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       : Container(),
                   getDirection
                       ? Padding(
-                          padding: EdgeInsets.fromLTRB(15, 40, 15, 5),
+                          padding: const EdgeInsets.fromLTRB(15, 40, 15, 5),
                           child: Column(
                             children: [
                               Container(
@@ -198,7 +198,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                     hintText: 'Origin',
                                     textController: originController,
                                   )),
-                              SizedBox(height: PSizes.spaceBtwItems),
+                              const SizedBox(height: PSizes.spaceBtwItems),
                               Container(
                                 height: 50.0,
                                 decoration: BoxDecoration(
@@ -220,10 +220,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                                 originController.text = '';
                                               });
                                             },
-                                            icon: Icon(Icons.search)),
+                                            icon: const Icon(Icons.search)),
                                         IconButton(
                                             onPressed: () {},
-                                            icon: Icon(Icons.cancel_outlined))
+                                            icon: const Icon(Icons.cancel_outlined))
                                       ],
                                     ),
                                   ),

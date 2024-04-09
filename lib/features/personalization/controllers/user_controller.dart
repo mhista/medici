@@ -1,199 +1,224 @@
-// import 'dart:async';
+import 'dart:async';
 
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:pickafrika/data/repositories/authentication_repository/authentication_repository.dart';
-// import 'package:pickafrika/data/repositories/user/user_repository.dart';
-// import 'package:pickafrika/features/authentication/models/user_model.dart';
-// import 'package:pickafrika/features/authentication/screens/login/login.dart';
-// import 'package:pickafrika/features/personalization/screens/profile/widgets/re_authenticate_user.dart';
-// import 'package:pickafrika/utils/constants/sizes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:medici/providers.dart';
 
-// import '../../../common/loaders/loaders.dart';
-// import '../../../utils/constants/image_strings.dart';
-// import '../../../utils/helpers/network_manager.dart';
-// import '../../../utils/popups/fullscreen_loader.dart';
+import '../../../common/loaders/loaders.dart';
+import '../../../utils/constants/sizes.dart';
+import '../../authentication/authentication_repository/authentication_repository.dart';
+import '../../authentication/models/user_model.dart';
+import '../repositories/user_repository.dart';
 
-// class UserController extends GetxController {
-//   static UserController get instance => Get.find();
-//   final userRepository = Get.put(UserRepository());
+class UserController {
+  UserController(
+      {required AuthenticationRepository authenticationRepository,
+      required UserRepository userRepository,
+      required Ref ref})
+      : _authenticationRepository = authenticationRepository,
+        _userRepository = userRepository,
+        _ref = ref {
+    fetchUserRecord();
+  }
 
-//   // OBSERVABLE USERMODEL
-//   Rx<UserModel> user = UserModel.empty().obs;
-//   // LOADER NOTIFIER
-//   final profileLoading = false.obs;
-//   final imageUploading = false.obs;
+  final AuthenticationRepository _authenticationRepository;
+  final UserRepository _userRepository;
+  final Ref _ref;
 
-//   final hidePassword = false.obs;
-//   final verifyEmail = TextEditingController();
-//   final verifyPassword = TextEditingController();
-//   GlobalKey<FormState> reAuthFormKey = GlobalKey<FormState>();
+  // LOADER NOTIFIER
+  // final profileLoading = false.obs;
+  // final imageUploading = false.obs;
 
-//   @override
-//   onInit() {
-//     super.onInit();
-//     fetchUserRecord();
-//   }
+  final hidePassword = false.obs;
+  final verifyEmail = TextEditingController();
+  final verifyPassword = TextEditingController();
+  GlobalKey<FormState> reAuthFormKey = GlobalKey<FormState>();
 
-// // FETCH USER RECORD
-//   Future<void> fetchUserRecord() async {
-//     try {
-//       profileLoading.value = true;
+  final allUsers = StateProvider((ref) => <UserModel>[]);
 
-//       final user = await userRepository.fetchUserData();
-//       this.user(user);
-//     } catch (e) {
-//       user(UserModel.empty());
-//     } finally {
-//       profileLoading.value = false;
-//     }
-//   }
+// FETCH USER RECORD
+  Future<void> fetchUserRecord() async {
+    try {
+      // profileLoading.value = true;
 
-// // SAVE USER RECORD
-//   Future<void> saveUserRecord(UserCredential? userCredential) async {
-//     try {
-//       await fetchUserRecord();
+      final user = await _userRepository.fetchUserData();
+      _ref.read(userProvider.notifier).update((state) => user);
+    } catch (e) {
+      _ref.read(userProvider.notifier).update((state) => UserModel.empty());
+    } finally {
+      // profileLoading.value = false;
+    }
+  }
 
-//       if (user.value.id.isEmpty) {
-//         // CONVERT THE DISPLAY NAME TO FIRST AND LAST NAME
-//         if (userCredential != null) {
-//           final nameParts =
-//               UserModel.splitFullName(userCredential.user!.displayName ?? '');
-//           final username = UserModel.generateUsername(
-//               userCredential.user!.displayName ?? '');
+// SAVE USER RECORD
+  Future<void> saveUserRecord(UserCredential? userCredential) async {
+    try {
+      await fetchUserRecord();
+      final user = _ref.read(userProvider);
+      if (user.id.isEmpty) {
+        // CONVERT THE DISPLAY NAME TO FIRST AND LAST NAME
+        if (userCredential != null) {
+          final nameParts =
+              UserModel.splitFullName(userCredential.user!.displayName ?? '');
+          final username = UserModel.generateUsername(
+              userCredential.user!.displayName ?? '');
 
-//           // MAP DATA
-//           final user = UserModel(
-//               id: userCredential.user!.uid,
-//               firstName: nameParts[0],
-//               lastName:
-//                   nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
-//               username: username,
-//               email: userCredential.user!.email ?? '',
-//               phoneNumber: userCredential.user!.phoneNumber ?? '',
-//               profilePicture: userCredential.user!.photoURL ?? '');
+          // MAP DATA
+          final user = UserModel(
+              id: userCredential.user!.uid,
+              firstName: nameParts[0],
+              lastName:
+                  nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
+              username: username,
+              email: userCredential.user!.email ?? '',
+              phoneNumber: userCredential.user!.phoneNumber ?? '',
+              profilePicture: userCredential.user!.photoURL ?? '',
+              isOnline: false);
+          _ref.read(userProvider.notifier).update((state) => user);
 
-//           await userRepository.saveUser(user);
-//         }
-//       }
-//     } catch (e) {
-//       PFullScreenLoader.stopLoading();
-//       PLoaders.errorSnackBar(title: "Ooops!", message: e.toString());
-//     }
-//   }
+          await _userRepository.saveUser(user);
+        }
+      }
+    } catch (e) {
+      // PFullScreenLoader.stopLoading();
+      PLoaders.errorSnackBar(title: "Ooops!", message: e.toString());
+    }
+  }
 
-// // DELETE ACCOUNT POPUP
-//   void deleteAccountWarningPopup() {
-//     Get.defaultDialog(
-//         contentPadding: const EdgeInsets.all(PSizes.md),
-//         title: 'Delete Account',
-//         middleText:
-//             'Are you sure you want to dekete your account permanently? This action is not reversible and all of your data will be removed permanently.',
-//         confirm: ElevatedButton(
-//           onPressed: () async => deleteUserAccount(),
-//           style: ElevatedButton.styleFrom(
-//               backgroundColor: Colors.red,
-//               side: const BorderSide(color: Colors.red)),
-//           child: const Padding(
-//             padding: EdgeInsets.symmetric(horizontal: PSizes.lg),
-//             child: Text('Delete'),
-//           ),
-//         ),
-//         cancel: OutlinedButton(
-//             onPressed: () => Navigator.of(Get.overlayContext!).pop(),
-//             child: const Text('Cancel')));
-//   }
+// DELETE ACCOUNT POPUP
+  void deleteAccountWarningPopup() {
+    Get.defaultDialog(
+        contentPadding: const EdgeInsets.all(PSizes.md),
+        title: 'Delete Account',
+        middleText:
+            'Are you sure you want to dekete your account permanently? This action is not reversible and all of your data will be removed permanently.',
+        confirm: ElevatedButton(
+          onPressed: () async => deleteUserAccount(),
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              side: const BorderSide(color: Colors.red)),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: PSizes.lg),
+            child: Text('Delete'),
+          ),
+        ),
+        cancel: OutlinedButton(
+            onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+            child: const Text('Cancel')));
+  }
 
-// // REAUTHENTICATE USER BEFOR DELETING
-//   Future<void> reAuthenticateEmailAndPassword() async {
-//     // / START LOADING
-//     try {
-//       PFullScreenLoader.openLoadingDialog('Processing.... ', PImages.lottie1);
-//       // CHECK INTERNET CONNECTIVITY
-//       final isConnected = await NetworkManager.instance.isConnected();
-//       if (!isConnected) {
-//         PFullScreenLoader.stopLoading();
-//         return;
-//       }
-//       // FORM VALIDATION
-//       if (!reAuthFormKey.currentState!.validate()) {
-//         PFullScreenLoader.stopLoading();
-//         return;
-//       }
+// REAUTHENTICATE USER BEFOR DELETING
+  Future<void> reAuthenticateEmailAndPassword() async {
+    // / START LOADING
+    try {
+      // PFullScreenLoader.openLoadingDialog('Processing.... ', PImages.astrology);
+      // CHECK INTERNET CONNECTIVITY
+      final isConnected =
+          await _ref.watch(networkService.notifier).isConnected();
+      if (!isConnected) {
+        // PFullScreenLoader.stopLoading();
+        return;
+      }
+      // FORM VALIDATION
+      if (!reAuthFormKey.currentState!.validate()) {
+        // PFullScreenLoader.stopLoading();
+        return;
+      }
 
-//       await AuthenticationRepository.instance
-//           .reAuthenticateWithEmailAndPassword(
-//               verifyEmail.text.trim(), verifyPassword.text.trim());
-//       debugPrint('reauthenticated');
-//       await AuthenticationRepository.instance.deleteAccount();
-//       PFullScreenLoader.stopLoading();
-//       Get.offAll(() => const LoginScreen());
-//     } catch (e) {
-//       PFullScreenLoader.stopLoading();
+      await _authenticationRepository.reAuthenticateWithEmailAndPassword(
+          verifyEmail.text.trim(), verifyPassword.text.trim());
+      debugPrint('reauthenticated');
+      await _authenticationRepository.deleteAccount();
+      // PFullScreenLoader.stopLoading();
+      // Get.offAll(() => const LoginScreen());
+    } catch (e) {
+      // PFullScreenLoader.stopLoading();
 
-//       // SHOW GENERIC ERROR TO THE USER
-//       PLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
-//     }
-//   }
+      // SHOW GENERIC ERROR TO THE USER
+      PLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+    }
+  }
 
-//   // DELETE USER ACCOUNT
-//   void deleteUserAccount() async {
-//     try {
-//       // FIRST REAUTHENTICATE USER
-//       final auth = AuthenticationRepository.instance;
-//       final provider =
-//           auth.authUser!.providerData.map((e) => e.providerId).first;
-//       if (provider.isNotEmpty) {
-//         if (provider == 'google.com') {
-//           // REVERIFY AUTH EMAIL
-//           await auth.signInWithGoogle();
-//           await auth.deleteAccount();
-//           PFullScreenLoader.stopLoading();
-//           Get.offAll(() => const LoginScreen());
-//         } else if (provider == 'password') {
-//           PFullScreenLoader.stopLoading();
-//           Get.offAll(() => const ReAuthUserScreen());
-//         }
-//       }
-//     } catch (e) {
-//       PFullScreenLoader.stopLoading();
+  // DELETE USER ACCOUNT
+  void deleteUserAccount() async {
+    try {
+      // FIRST REAUTHENTICATE USER
+      final provider = _authenticationRepository.authUser!.providerData
+          .map((e) => e.providerId)
+          .first;
+      if (provider.isNotEmpty) {
+        if (provider == 'google.com') {
+          // REVERIFY AUTH EMAIL
+          await _authenticationRepository.signInWithGoogle();
+          await _authenticationRepository.deleteAccount();
+          // PFullScreenLoader.stopLoading();
+          // Get.offAll(() => const LoginScreen());
+        } else if (provider == 'password') {
+          // PFullScreenLoader.stopLoading();
+          // Get.offAll(() => const ReAuthUserScreen());
+        }
+      }
+    } catch (e) {
+      // PFullScreenLoader.stopLoading();
 
-//       // SHOW GENERIC ERROR TO THE USER
-//       PLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
-//     }
-//   }
+      // SHOW GENERIC ERROR TO THE USER
+      PLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+    }
+  }
 
-//   // UPLOAD USER PROFILE PICTURE
-//   void uploadUserProfilePics() async {
-//     try {
-//       final image = await ImagePicker().pickImage(
-//           source: ImageSource.gallery,
-//           imageQuality: 70,
-//           maxWidth: 512,
-//           maxHeight: 512);
-//       if (image != null) {
-//         imageUploading.value = true;
-//         final imageUrl =
-//             await userRepository.uploadImage('Users/Images/Profile', image);
+  // UPLOAD USER PROFILE PICTURE
+  void uploadUserProfilePics() async {
+    try {
+      final image = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+          imageQuality: 70,
+          maxWidth: 512,
+          maxHeight: 512);
+      if (image != null) {
+        // imageUploading.value = true;
+        final imageUrl =
+            await _userRepository.uploadImage('Users/Images/Profile', image);
 
-//         // UPDATE USER IMAGE IN FIRESTORE
-//         Map<String, dynamic> map = {'profilePicture': imageUrl};
-//         await userRepository.updateSingleField(map);
+        // UPDATE USER IMAGE IN FIRESTORE
+        Map<String, dynamic> map = {'profilePicture': imageUrl};
+        await _userRepository.updateSingleField(map);
+        _ref.read(userProvider.notifier).update((state) {
+          state.profilePicture = imageUrl;
+          return state;
+        });
+        PLoaders.successSnackBar(
+            title: 'Update successfull',
+            message: 'Your profile image has been updated');
+      }
+    } catch (e) {
+      // PFullScreenLoader.stopLoading();
 
-//         user.value.profilePicture = imageUrl;
-//         PLoaders.successSnackBar(
-//             title: 'Update successfull',
-//             message: 'Your profile image has been updated');
-//       }
-//     } catch (e) {
-//       PFullScreenLoader.stopLoading();
+      // SHOW GENERIC ERROR TO THE USER
+      PLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+    } finally {
+      // imageUploading.value = false;
+    }
+  }
 
-//       // SHOW GENERIC ERROR TO THE USER
-//       PLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
-//     } finally {
-//       imageUploading.value = false;
-//     }
-//   }
-// }
+// FETCH ALL USERS
+  Future<List<UserModel>> fetchUsers() async {
+    try {
+      final users = await _userRepository.fetchAllUsers();
+      return _ref.read(allUsers.notifier).update((state) {
+        state.assignAll(users);
+        return state;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
+  }
+}
+
+final fetchAllUsersProvider = FutureProvider.autoDispose((ref) {
+  final userControllerr = ref.watch(userController);
+  return userControllerr.fetchUsers();
+});

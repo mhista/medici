@@ -1,10 +1,7 @@
-import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:medici/features/main_app/screens/home/homeview.dart';
 import 'package:medici/router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:routemaster/routemaster.dart';
 
 import 'utils/theme/theme.dart';
 

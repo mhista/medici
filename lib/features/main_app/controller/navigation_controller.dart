@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:medici/features/main_app/screens/map/map.dart';
+import 'package:medici/features/authentication/screens/signup.dart';
 
 import '../screens/home/home.dart';
 import '../screens/messaging/message.dart';
@@ -9,7 +9,7 @@ class NavigationController extends StateNotifier<int> {
   final screens = [
     const HomeScreen(),
     const MessageScreen(),
-    const MapScreen(),
+    const SignupScreen(),
     const ScheduleScreen(),
   ];
 

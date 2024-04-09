@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:medici/features/main_app/screens/home/widgets/schedule_card.dart';
 
 class ProfileImage1 extends StatelessWidget {
   const ProfileImage1(

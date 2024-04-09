@@ -3,20 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:medici/features/authentication/authentication_repository/authentication_repository.dart';
 import 'package:medici/features/personalization/repositories/user_repository.dart';
+import 'package:medici/providers.dart';
 
-import '../../../../utils/helpers/network_manager.dart';
 import '../../../common/loaders/loaders.dart';
-import '../../../utils/constants/image_strings.dart';
-import '../../../utils/popups/fullscreen_loader.dart';
 import '../models/user_model.dart';
 
 class SignupController {
   final AuthenticationRepository authenticationRepository;
   final UserRepository userRepository;
-  SignupController({
-    required this.authenticationRepository,
-    required this.userRepository,
-  });
+  final Ref ref;
+  SignupController(
+      {required this.authenticationRepository,
+      required this.userRepository,
+      required this.ref});
 
 // VARIABLES
   final hidePassword = StateProvider<bool>((ref) => true);
@@ -33,18 +32,19 @@ class SignupController {
   Future<void> signup() async {
     try {
       // START LOADING
-      PFullScreenLoader.openLoadingDialog(
-          'Information being processed', PImages.google);
+      // PFullScreenLoader.openLoadingDialog(
+      //     'Information being processed', PImages.google);
       // CHECK INTERNET CONNECTIVITY
-      final isConnected = await NetworkManager.instance.isConnected();
+      final isConnected =
+          await ref.watch(networkService.notifier).isConnected();
       if (!isConnected) {
-        PFullScreenLoader.stopLoading();
+        // PFullScreenLoader.stopLoading();
         return;
       }
 
       // FORM VALIDATION
       if (!signupFormKey.currentState!.validate()) {
-        PFullScreenLoader.stopLoading();
+        // PFullScreenLoader.stopLoading();
         return;
       }
 
@@ -65,7 +65,7 @@ class SignupController {
           isOnline: false);
       await userRepository.saveUser(newUser);
       // remove loader
-      PFullScreenLoader.stopLoading();
+      // PFullScreenLoader.stopLoading();
 
       // SHOW SUCCES MESSAGE
       PLoaders.successSnackBar(
@@ -76,7 +76,7 @@ class SignupController {
       //       email: email.text.trim(),
       //     ));
     } catch (e) {
-      PFullScreenLoader.stopLoading();
+      // PFullScreenLoader.stopLoading();
 
       // SHOW GENERIC ERROR TO THE USER
       PLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());

@@ -36,7 +36,7 @@ class StructuredFormatting {
     if (mainTextMatchedSubstrings != null) {
       result.addAll({
         'mainTextMatchedSubstrings':
-            mainTextMatchedSubstrings!.map((x) => x?.toMap()).toList()
+            mainTextMatchedSubstrings!.map((x) => x.toMap()).toList()
       });
     }
     if (secondaryText != null) {

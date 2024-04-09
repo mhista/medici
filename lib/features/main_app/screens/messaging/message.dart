@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medici/common/widgets/appbar/searchBar.dart';
 import 'package:medici/common/widgets/cards/chat_card.dart';
-import 'package:medici/common/widgets/containers/container_tile.dart';
-import 'package:medici/features/main_app/screens/chat_room/chat_room.dart';
+import 'package:medici/common/widgets/shimmer/chat_card_shimmer.dart';
+import 'package:medici/features/personalization/controllers/user_controller.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/image_strings.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:medici/utils/constants/text_strings.dart';
-import 'package:routemaster/routemaster.dart';
 
 import '../../../../utils/helpers/helper_functions.dart';
 
@@ -42,28 +41,44 @@ class MessageScreen extends StatelessWidget {
           const SizedBox(
             height: PSizes.spaceBtwItems,
           ),
-          Padding(
-            padding: const EdgeInsets.all(PSizes.spaceBtwItems),
-            child: Column(
-              children: [
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 4,
-                  itemBuilder: (context, index) {
-                    return ChatCard(
-                        color: isDark ? PColors.dark : PColors.light,
-                        title: 'Dr John Rodriguez',
-                        subTitle: 'Hello, how can i help you?',
-                        image: PImages.dp2,
-                        recent: false,
-                        onPressed: () => context.go('/messages/chat'));
-                  },
-                  separatorBuilder: (_, __) =>
-                      const SizedBox(height: PSizes.spaceBtwItems / 2),
-                ),
-              ],
-            ),
+          Consumer(
+            builder: (_, WidgetRef ref, __) {
+              return ref.watch(fetchAllUsersProvider).when(
+                  data: (data) => Padding(
+                        padding: const EdgeInsets.all(PSizes.spaceBtwItems),
+                        child: Column(
+                          children: [
+                            ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: data.length,
+                              itemBuilder: (context, index) {
+                                final user = data[index];
+                                return ChatCard(
+                                    color:
+                                        isDark ? PColors.dark : PColors.light,
+                                    title: 'Dr ${user.fullName}',
+                                    subTitle: 'Hello, how can i help you?',
+                                    image: PImages.dp2,
+                                    recent: false,
+                                    onPressed: () => context.go('/chat'));
+                              },
+                              separatorBuilder: (_, __) => const SizedBox(
+                                  height: PSizes.spaceBtwItems / 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                  error: (error, __) => Center(
+                          child: Text(
+                        'No Data!',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .apply(color: Colors.white),
+                      )),
+                  loading: () => const ChatCardShimmer());
+            },
           )
         ],
       ),

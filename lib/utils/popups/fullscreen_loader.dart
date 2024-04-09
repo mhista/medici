@@ -14,10 +14,11 @@ class PFullScreenLoader {
   animation: the lottie animation to be shown
   
    */
-  static void openLoadingDialog(String text, String animation) {
+  static void openLoadingDialog(
+      String text, String animation, BuildContext context) {
     showDialog(
       barrierDismissible: false,
-      context: Get.overlayContext!,
+      context: context,
       builder: (_) => PopScope(
         canPop: false,
         child: Container(
@@ -44,8 +45,7 @@ class PFullScreenLoader {
 
   // Stop the currently open loading dialog
   // no return value
-  static stopLoading() {
-    Navigator.of(Get.overlayContext!)
-        .pop(); //close the dialog using the navigator
+  static stopLoading(BuildContext context) {
+    Navigator.of(context).pop(); //close the dialog using the navigator
   }
 }

@@ -1,18 +1,18 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:medici/providers.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../../utils/constants/sizes.dart';
 
-class PSocialButton extends StatelessWidget {
+class PSocialButton extends ConsumerWidget {
   const PSocialButton({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    // final controller = Get.put(LoginController());
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -22,7 +22,7 @@ class PSocialButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
           ),
           child: IconButton(
-            onPressed: () {},
+            onPressed: ref.read(authenticationProvider).logout,
             icon: const Image(
               image: AssetImage(PImages.facebook),
               height: PSizes.iconMd,
@@ -38,7 +38,7 @@ class PSocialButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
           ),
           child: IconButton(
-            onPressed: () {},
+            onPressed: ref.read(loginController).signInWithGoogle,
             icon: const Image(
               image: AssetImage(PImages.google),
               height: PSizes.iconMd,

@@ -5,8 +5,8 @@ class PImages {
   static const String dp3 = 'assets/images/dp/dp3.png';
 
 //   SOCIAL LOGOS
-  static const String google = 'assets/images/logo_images/google-icon.png';
-  static const String facebook = 'assets/images/logo_images/facebook-icon.png';
+  static const String google = 'assets/images/social/google-icon.png';
+  static const String facebook = 'assets/images/social/facebook-icon.png';
 
 // MAP IMAGES
   static const String accountancy = 'assets/images/mapicons/accountancy.png';
@@ -37,4 +37,12 @@ class PImages {
   static const String electronics = 'assets/images/mapicons/electronics.png';
   static const String employment = 'assets/images/mapicons/employment.png';
   static const String engineering = 'assets/images/mapicons/engineering.png';
+
+  // ANIMATIONS
+  static const String lottie1 = 'assets/images/lottie/lottie1.json';
+  static const String lottie2 = 'assets/images/lottie/lottie2.json';
+  static const String lottie3 = 'assets/images/lottie/success.json';
+  static const String loading = 'assets/images/lottie/loading.json';
+  static const String cloud = 'assets/images/lottie/cloud.json';
+  static const String whops = 'assets/images/lottie/whops.json';
 }

@@ -33,11 +33,9 @@ import 'package:medici/features/main_app/screens/messaging/message.dart';
 final routes = GoRouter(routes: [
   GoRoute(path: '/', builder: (context, state) => const HomeView(), routes: [
     GoRoute(
-        path: 'messages',
-        builder: ((context, state) => const MessageScreen()),
-        routes: [
-          GoRoute(path: 'chat', builder: (context, state) => const ChatRoom())
-        ]),
+      path: 'chat',
+      builder: ((context, state) => const ChatRoom()),
+    ),
     GoRoute(
       path: 'map',
       builder: ((context, state) => const MessageScreen()),

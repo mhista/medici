@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 // import 'package:get/get.dart';
@@ -119,7 +120,7 @@ class AuthenticationRepository {
   logout() async {
     try {
       await GoogleSignIn().signOut();
-      await FirebaseAuth.instance.signOut();
+      await _auth.signOut();
       // deviceStorage.write('remember_me', false);
       // Get.offAll(() => const LoginScreen());
     } on FirebaseAuthException catch (e) {
@@ -179,6 +180,8 @@ class AuthenticationRepository {
   Future<UserCredential> signInWithGoogle() async {
     try {
       // TRIGGER THE AUTHENTICATION FLOW
+      debugPrint('signing');
+
       final GoogleSignInAccount? userAccount = await GoogleSignIn().signIn();
       // OBTAIN THE AUTH DETAILS FROM THE REQUEST
       final GoogleSignInAuthentication? googleAuth =
