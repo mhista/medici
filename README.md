@@ -1,6 +1,6 @@
 # medici
+A Flutter mobile app project for medical 
 
-A new Flutter project.
 
 ## Getting Started
 
