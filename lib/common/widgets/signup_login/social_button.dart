@@ -22,7 +22,7 @@ class PSocialButton extends ConsumerWidget {
             borderRadius: BorderRadius.circular(100),
           ),
           child: IconButton(
-            onPressed: ref.read(authenticationProvider).logout,
+            onPressed: ref.read(userController).signOut,
             icon: const Image(
               image: AssetImage(PImages.facebook),
               height: PSizes.iconMd,

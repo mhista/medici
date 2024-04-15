@@ -4,12 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/features/authentication/authentication_repository/authentication_repository.dart';
 import 'package:medici/features/authentication/controllers/login_controller.dart';
+import 'package:medici/features/chat/repositories/chat_repository.dart';
 import 'package:medici/features/personalization/controllers/user_controller.dart';
 import 'package:medici/features/personalization/repositories/user_repository.dart';
 import 'package:medici/utils/helpers/network_manager.dart';
 
 import 'features/authentication/controllers/signup_controller.dart';
 import 'features/authentication/models/user_model.dart';
+import 'features/chat/controllers/chat_controller.dart';
 
 // OBSERVABLE USERMODEL
 StateProvider<UserModel> userProvider =
@@ -57,5 +59,15 @@ final networkService =
     StateNotifierProvider<NetworkManager, ConnectivityResult>(
         (ref) => NetworkManager());
 // CONTACT REPOSITORY
-// final contactRepository = FutureProvider(  
+// final contactRepository = FutureProvider(
 //     (ref) => SelectContactRepository(firestore: ref.watch(firestoreProvider)));
+
+// CHAT REPOSITORY
+final chatRepo = Provider((ref) {
+  final db = ref.watch(firestoreProvider);
+  final auth = ref.watch(firebaseAuthProvider);
+  return ChatRepository(db: db, auth: auth);
+});
+// CHAT CONTROLLER
+final chatController =
+    Provider((ref) => ChatContoller(ref.watch(chatRepo), ref: ref));

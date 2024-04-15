@@ -12,16 +12,17 @@ class ChatText extends StatelessWidget {
     this.color,
     this.isUser = true,
     required this.time,
+    required this.width,
   });
 
   final String text, time;
   final Color? textColor, color;
   final bool isUser;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     final isDark = PHelperFunctions.isDarkMode(context);
-    final screenWidth = PHelperFunctions.screenWidth(context);
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: PSizes.spaceBtwItems, vertical: PSizes.spaceBtwItems / 2),
@@ -33,12 +34,12 @@ class ChatText extends StatelessWidget {
             children: [
               // TEXT CONTAINER
               Container(
-                width: screenWidth / 1.5,
+                width: width,
                 decoration: BoxDecoration(
                     color: isUser
                         ? PColors.primary
                         : isDark
-                            ? PColors.dark
+                            ? PColors.darkerGrey
                             : PColors.grey,
                     border: Border.all(width: 0.02, color: Colors.grey),
                     borderRadius: BorderRadius.only(

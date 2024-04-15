@@ -96,6 +96,10 @@ class PHelperFunctions {
     return DateFormat(format).format(date);
   }
 
+  static String getFormattedTime(DateTime time, {String format = 'jm'}) {
+    return DateFormat(format).format(time);
+  }
+
   static List<T> removeDuplicates<T>(List<T> list) {
     return list.toSet().toList();
   }

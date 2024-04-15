@@ -11,13 +11,16 @@ class ChatCard extends StatelessWidget {
       required this.title,
       required this.subTitle,
       required this.image,
+      this.time = '',
       this.color,
       this.recent = true,
+      this.isNetworkImage = false,
       required this.onPressed,
-      this.isOnline = true});
-  final String title, subTitle, image;
+      this.isOnline = true,
+      this.unreadMessageCount = ''});
+  final String title, subTitle, image, time, unreadMessageCount;
   final Color? color;
-  final bool recent, isOnline;
+  final bool recent, isOnline, isNetworkImage;
   final Function() onPressed;
 
   @override
@@ -35,6 +38,7 @@ class ChatCard extends StatelessWidget {
               Stack(
                 children: [
                   ProfileImage1(
+                    isNetworkImage: isNetworkImage,
                     imageSize: 60,
                     radius: 60,
                     image: image,
@@ -52,28 +56,34 @@ class ChatCard extends StatelessWidget {
                 width: PSizes.spaceBtwItems,
               ),
               // TITLE
-              TitleAndSubTitle(
-                recent: recent,
-                title: title,
-                subTitle: subTitle,
+              Expanded(
+                child: TitleAndSubTitle(
+                  recent: recent,
+                  title: title,
+                  subTitle: subTitle,
+                ),
               ),
-              const Spacer(),
+              // const Spacer(),
               // TRAILING
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '11:22 am',
+                    time,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(
                     height: PSizes.spaceBtwItems / 3,
                   ),
-                  const Badge(
+                  Badge(
                     textColor: PColors.light,
-                    backgroundColor: PColors.primary,
-                    label: Text('2'),
-                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    backgroundColor: unreadMessageCount != ''
+                        ? PColors.primary
+                        : Colors.transparent,
+                    label: unreadMessageCount != ''
+                        ? Text(unreadMessageCount)
+                        : null,
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
                   )
                 ],
               )

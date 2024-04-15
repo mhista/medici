@@ -65,7 +65,10 @@ class UserRepository {
   // FETCH ALL USERS
   Future<List<UserModel>> fetchAllUsers() async {
     try {
-      final snapshot = await _db.collection('Users').get();
+      final snapshot = await _db
+          .collection('Users')
+          .where(FieldPath.documentId, isNotEqualTo: _authRepo.authUser?.uid)
+          .get();
 
       final list = snapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList();
       return list;

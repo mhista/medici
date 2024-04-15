@@ -57,7 +57,7 @@ class UserController {
   Future<void> saveUserRecord(UserCredential? userCredential) async {
     try {
       await fetchUserRecord();
-      final user = _ref.read(userProvider);
+      final user = _ref.watch(userProvider);
       if (user.id.isEmpty) {
         // CONVERT THE DISPLAY NAME TO FIRST AND LAST NAME
         if (userCredential != null) {
@@ -94,7 +94,7 @@ class UserController {
         contentPadding: const EdgeInsets.all(PSizes.md),
         title: 'Delete Account',
         middleText:
-            'Are you sure you want to dekete your account permanently? This action is not reversible and all of your data will be removed permanently.',
+            'Are you sure you want to delete your account permanently? This action is not reversible and all of your data will be removed permanently.',
         confirm: ElevatedButton(
           onPressed: () async => deleteUserAccount(),
           style: ElevatedButton.styleFrom(
@@ -215,6 +215,12 @@ class UserController {
       debugPrint(e.toString());
       return [];
     }
+  }
+
+  // SIGNOUT USER
+  void signOut() async {
+    await _authenticationRepository.logout();
+    _ref.read(userProvider.notifier).update((state) => UserModel.empty());
   }
 }
 

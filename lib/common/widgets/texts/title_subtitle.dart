@@ -23,8 +23,14 @@ class TitleAndSubTitle extends ConsumerWidget {
         Text(
           title,
           style: textSize == TextSizes.small
-              ? Theme.of(context).textTheme.labelLarge
-              : Theme.of(context).textTheme.bodyMedium,
+              ? Theme.of(context)
+                  .textTheme
+                  .labelLarge!
+                  .apply(overflow: TextOverflow.ellipsis)
+              : Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .apply(overflow: TextOverflow.ellipsis),
         ),
         const SizedBox(
           height: PSizes.spaceBtwItems / 3,
@@ -33,9 +39,18 @@ class TitleAndSubTitle extends ConsumerWidget {
           subTitle,
           style: textSize == TextSizes.small
               ? recent
-                  ? Theme.of(context).textTheme.labelLarge
-                  : Theme.of(context).textTheme.labelMedium!
-              : Theme.of(context).textTheme.labelLarge,
+                  ? Theme.of(context)
+                      .textTheme
+                      .labelLarge!
+                      .apply(overflow: TextOverflow.ellipsis)
+                  : Theme.of(context)
+                      .textTheme
+                      .labelMedium!
+                      .apply(overflow: TextOverflow.ellipsis)
+              : Theme.of(context)
+                  .textTheme
+                  .labelLarge!
+                  .apply(overflow: TextOverflow.ellipsis),
         ),
       ],
     );

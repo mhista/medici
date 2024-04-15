@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/features/authentication/screens/signup.dart';
 
 import '../screens/home/home.dart';
-import '../screens/messaging/message.dart';
+import '../../chat/screens/messaging/message.dart';
 import '../screens/schedules/schedule.dart';
 
 class NavigationController extends StateNotifier<int> {

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -121,6 +122,7 @@ class AuthenticationRepository {
     try {
       await GoogleSignIn().signOut();
       await _auth.signOut();
+
       // deviceStorage.write('remember_me', false);
       // Get.offAll(() => const LoginScreen());
     } on FirebaseAuthException catch (e) {
@@ -181,6 +183,12 @@ class AuthenticationRepository {
     try {
       // TRIGGER THE AUTHENTICATION FLOW
       debugPrint('signing');
+      if (kIsWeb) {
+        GoogleAuthProvider authProvider = GoogleAuthProvider();
+        final UserCredential userCredential =
+            await _auth.signInWithPopup(authProvider);
+        return userCredential;
+      }
 
       final GoogleSignInAccount? userAccount = await GoogleSignIn().signIn();
       // OBTAIN THE AUTH DETAILS FROM THE REQUEST

@@ -1,3 +1,6 @@
+import 'package:flutter/scheduler.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/common/widgets/appbar/searchBar.dart';
@@ -6,20 +9,28 @@ import 'package:medici/common/widgets/cards/time_card.dart';
 import 'package:medici/common/widgets/icons/rounded_icons.dart';
 import 'package:medici/common/widgets/images/rounded_rect_image.dart';
 import 'package:medici/common/widgets/texts/title_subtitle.dart';
+import 'package:medici/features/chat/controllers/chat_controller.dart';
+import 'package:medici/providers.dart';
+import 'package:medici/utils/constants/enums.dart';
 import 'package:medici/utils/constants/image_strings.dart';
 import 'package:medici/utils/constants/sizes.dart';
 
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/helpers/helper_functions.dart';
+import '../../../authentication/models/user_model.dart';
+import 'widget/chat_list.dart';
 import 'widget/chat_text.dart';
 
-class ChatRoom extends StatelessWidget {
-  const ChatRoom({super.key});
-
+class ChatRoom extends ConsumerWidget {
+  const ChatRoom({
+    super.key,
+    required this.user,
+  });
+  final UserModel user;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(chatController);
     final isDark = PHelperFunctions.isDarkMode(context);
-    final screenWidth = PHelperFunctions.screenWidth(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -34,20 +45,21 @@ class ChatRoom extends StatelessWidget {
           color: isDark ? PColors.light : PColors.dark,
         ),
         leadingWidth: 25,
-        title: const Row(
+        title: Row(
           children: [
-            ProfileImage1(
+            const ProfileImage1(
               image: PImages.dp3,
               imageSize: 40,
               radius: 40,
             ),
-            SizedBox(
+            const SizedBox(
               width: PSizes.iconXs,
             ),
             Stack(
               children: [
-                TitleAndSubTitle(title: 'Dr Ann Baker', subTitle: 'Online'),
-                Positioned(
+                TitleAndSubTitle(
+                    title: 'Dr ${user.fullName}', subTitle: 'Online'),
+                const Positioned(
                     left: 40,
                     bottom: 4,
                     child: OnlineIndicator(
@@ -97,58 +109,34 @@ class ChatRoom extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        children: const [
+      body: Column(
+        children: [
           // DAILY TIME
-          Center(
-            child: Padding(
-              padding: EdgeInsets.all(PSizes.iconXs),
-              child: TimeCard(
-                elevation: 0,
-              ),
+          Expanded(child: ChatList(user: user)),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0, right: 5),
+            child: Row(
+              children: [
+                Flexible(
+                  child: Form(
+                    key: controller.chatFormKey,
+                    child: MSearchBar(
+                      textController: controller.text,
+                      useSuffix: true,
+                      hintText: 'Type Somthing...',
+                      textFieldWidget: IconButton(
+                          onPressed: () {}, icon: const Icon(Icons.mic)),
+                    ),
+                  ),
+                ),
+                IconButton(
+                    onPressed: () => controller.sendMessage(
+                        receiver: user, type: MessageType.text),
+                    icon: const Icon(Iconsax.send_1)),
+              ],
             ),
-          ),
-          ChatText(
-              text: 'weuicuincuinuincuic incuinficnf nciuen', time: '08:34 AM'),
-          ChatText(
-            text:
-                'xmiococ uhcbuibcuiwc iwcuiciucbic icuiciubcic icbuicbic bcuibcui',
-            time: '08:40 AM',
-            isUser: false,
-          ),
-          ChatText(
-              text: 'iojwocircioec ioecjioe incuinficnf nciuen',
-              time: '08:40 AM'),
-          ChatText(
-            text: 'weuicuincuinuincuic incuinficnf nciuen',
-            time: '08:45 AM',
-            isUser: false,
-          ),
-          ChatText(
-              text: 'jrncui3nfuir f3rfiubrifr riufniurf iif iufb',
-              time: '08:54 AM'),
-          ChatText(
-            text: 'uiru3rbfurf rfuir fjhf uy f3j f4jhh f',
-            time: '08:59 AM',
-            isUser: false,
           ),
         ],
-      ),
-      bottomSheet: Padding(
-        padding: const EdgeInsets.only(bottom: 10.0, right: 5),
-        child: Row(
-          children: [
-            Flexible(
-              child: MSearchBar(
-                useSuffix: true,
-                hintText: 'Type Somthing...',
-                textFieldWidget:
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.mic)),
-              ),
-            ),
-            IconButton(onPressed: () {}, icon: const Icon(Iconsax.send_1)),
-          ],
-        ),
       ),
     );
   }
