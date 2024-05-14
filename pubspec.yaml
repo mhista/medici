@@ -79,6 +79,9 @@ dependencies:
   go_router: ^13.2.2
   envied: ^0.5.4+1
   envied_generator: ^0.5.4+1
+  # cached_video_player: ^2.0.4
+  cached_video_player_plus: ^1.0.1
+  emoji_picker_flutter: ^2.1.1
 
 
 

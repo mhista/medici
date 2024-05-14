@@ -1,15 +1,12 @@
-import 'package:flutter/scheduler.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/common/widgets/appbar/searchBar.dart';
 import 'package:medici/common/widgets/cards/chat_card.dart';
-import 'package:medici/common/widgets/cards/time_card.dart';
 import 'package:medici/common/widgets/icons/rounded_icons.dart';
 import 'package:medici/common/widgets/images/rounded_rect_image.dart';
 import 'package:medici/common/widgets/texts/title_subtitle.dart';
-import 'package:medici/features/chat/controllers/chat_controller.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/enums.dart';
 import 'package:medici/utils/constants/image_strings.dart';
@@ -18,8 +15,8 @@ import 'package:medici/utils/constants/sizes.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/helpers/helper_functions.dart';
 import '../../../authentication/models/user_model.dart';
+import '../../../personalization/controllers/user_controller.dart';
 import 'widget/chat_list.dart';
-import 'widget/chat_text.dart';
 
 class ChatRoom extends ConsumerWidget {
   const ChatRoom({
@@ -31,6 +28,7 @@ class ChatRoom extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(chatController);
     final isDark = PHelperFunctions.isDarkMode(context);
+    final isOnline = ref.watch(checkOnlineStatus(user.id)).value;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -58,13 +56,14 @@ class ChatRoom extends ConsumerWidget {
             Stack(
               children: [
                 TitleAndSubTitle(
-                    title: 'Dr ${user.fullName}', subTitle: 'Online'),
-                const Positioned(
-                    left: 40,
+                    title: 'Dr ${user.fullName}',
+                    subTitle: isOnline ?? false ? 'Online' : 'Offline'),
+                Positioned(
+                    left: 43,
                     bottom: 4,
                     child: OnlineIndicator(
                       size: 8,
-                      isOnline: true,
+                      isOnline: isOnline ?? false,
                     ))
               ],
             ),
@@ -123,9 +122,23 @@ class ChatRoom extends ConsumerWidget {
                     child: MSearchBar(
                       textController: controller.text,
                       useSuffix: true,
-                      hintText: 'Type Somthing...',
-                      textFieldWidget: IconButton(
-                          onPressed: () {}, icon: const Icon(Icons.mic)),
+                      hintText: 'Type Something...',
+                      textFieldWidget: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                              onPressed: () => controller.sendMessageFile(
+                                  receiver: user, type: MessageType.image),
+                              icon: const Icon(Icons.camera_alt)),
+                          // const SizedBox(
+                          //   width: PSizes.spaceBtwItems / ,
+                          // ),
+                          IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.attach_file)),
+                        ],
+                      ),
                     ),
                   ),
                 ),

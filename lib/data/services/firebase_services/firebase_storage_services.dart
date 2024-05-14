@@ -1,7 +1,6 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
@@ -9,11 +8,11 @@ import 'package:image_picker/image_picker.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/platform_exceptions.dart';
 
-class PFirebaseStorageServices extends GetxController {
-  static PFirebaseStorageServices get instance => Get.find();
+class PFirebaseStorageServices {
+  PFirebaseStorageServices({required this.firebaseStorage});
 
   // VARIABLES
-  final _firebaseStorage = FirebaseStorage.instance;
+  final FirebaseStorage firebaseStorage;
 
   // UPLOAD LOCAL ASSETS FROM IDE
   // RETURNS A UNIT8LIST CONTAINING IMAGE DATA
@@ -39,7 +38,7 @@ class PFirebaseStorageServices extends GetxController {
   Future<String> uploadImageData(
       String path, Uint8List image, String name) async {
     try {
-      final ref = _firebaseStorage.ref(path).child(name);
+      final ref = firebaseStorage.ref(path).child(name);
       await ref.putData(image);
       final url = await ref.getDownloadURL();
       return url;
@@ -60,7 +59,9 @@ class PFirebaseStorageServices extends GetxController {
   // RETURNS THE DOWNLOAD URL OF THE UPLOADED IMAGE
   Future<String> uploadImageFile(String path, XFile image) async {
     try {
-      final ref = _firebaseStorage.ref(path).child(image.name);
+      final ref = firebaseStorage.ref(path).child(image.name);
+      debugPrint(image.path);
+
       await ref.putFile(File(image.path));
       final url = await ref.getDownloadURL();
       return url;

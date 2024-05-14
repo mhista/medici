@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/utils/constants/colors.dart';
+import 'package:medici/utils/constants/enums.dart';
 
 import '../../../../../common/widgets/cards/time_card.dart';
 import '../../../../../utils/constants/sizes.dart';
@@ -54,14 +55,17 @@ class _ChatListState extends ConsumerState<ChatList> {
               itemBuilder: (context, index) {
                 final message = data[index];
                 return ChatText(
+                  messageType: message.type,
                   text: message.text,
                   time: PHelperFunctions.getFormattedTime(message.timeSent),
                   isUser: message.receiverId == widget.user.id ? true : false,
-                  width: message.text.length < 10
-                      ? screenWidth / 3
-                      : message.text.length < 30
-                          ? screenWidth / 1.7
-                          : screenWidth / 1.5,
+                  width: message.type == MessageType.text.name
+                      ? message.text.length < 10
+                          ? screenWidth / 3
+                          : message.text.length < 30
+                              ? screenWidth / 1.7
+                              : screenWidth / 1.5
+                      : 0,
                 );
               },
             );

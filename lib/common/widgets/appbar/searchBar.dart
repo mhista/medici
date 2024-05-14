@@ -17,14 +17,15 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
       this.textFieldWidget,
       this.textController,
       this.usePrefixSuffix = false,
-      this.onChanged});
+      this.onChanged,
+      this.prefixWidget});
 
   // to add the background color to tabs, wrap with material widget.
   final Color? color;
   final String hintText;
   final bool useSuffix, useBorder, hasColor, usePrefixSuffix;
   final double? radius;
-  final Widget? textFieldWidget;
+  final Widget? textFieldWidget, prefixWidget;
   final TextEditingController? textController;
   final Function(String)? onChanged;
   @override
@@ -53,7 +54,7 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
             suffixIcon: useSuffix || usePrefixSuffix
                 ? textFieldWidget ?? SearchIcon(isDark: isDark)
                 : null,
-            prefixIcon: !useSuffix ? SearchIcon(isDark: isDark) : null,
+            prefixIcon: !useSuffix ? SearchIcon(isDark: isDark) : prefixWidget,
             border: inputBorder(isDark, useBorder, radius),
             focusedBorder: inputBorder(isDark, useBorder, radius),
             enabledBorder: inputBorder(isDark, useBorder, radius)),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
@@ -57,6 +58,7 @@ class UserController {
   Future<void> saveUserRecord(UserCredential? userCredential) async {
     try {
       await fetchUserRecord();
+      await _userRepository.setUserState(true);
       final user = _ref.watch(userProvider);
       if (user.id.isEmpty) {
         // CONVERT THE DISPLAY NAME TO FIRST AND LAST NAME
@@ -219,12 +221,37 @@ class UserController {
 
   // SIGNOUT USER
   void signOut() async {
+    await _userRepository.setUserState(false);
     await _authenticationRepository.logout();
     _ref.read(userProvider.notifier).update((state) => UserModel.empty());
   }
-}
 
+  // CHECK ONLINE/OFFLINE STATUS
+  void setUserState(bool userState) async {
+    final isConnected = await _ref.watch(networkService.notifier).isConnected();
+    if (!isConnected) {
+      _userRepository.setUserState(false);
+      return;
+    } else if (kIsWeb || isConnected) {
+      _userRepository.setUserState(true);
+      return;
+    }
+    _userRepository.setUserState(userState);
+  }
+
+  Stream<bool> getOnlineStatus(String id) {
+    return _userRepository.getOnlineStatus(id);
+  }
+}
+// USERCONTROLLER LASS ENDS HERE
+
+// FETCH ALL USERS
 final fetchAllUsersProvider = FutureProvider.autoDispose((ref) {
   final userControllerr = ref.watch(userController);
   return userControllerr.fetchUsers();
+});
+
+final checkOnlineStatus = StreamProvider.autoDispose.family((ref, String id) {
+  final userControllerr = ref.watch(userController);
+  return userControllerr.getOnlineStatus(id);
 });

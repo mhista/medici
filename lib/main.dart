@@ -1,5 +1,4 @@
 // import 'package:device_preview/device_preview.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,12 +25,8 @@ Future<void> main() async {
 
 // Load all the material design / Themes / Localization / Bindings
   runApp(
-    ProviderScope(
-      child: DevicePreview(
-        builder: (context) {
-          return const App();
-        },
-      ),
+    const ProviderScope(
+      child: App(),
     ),
   );
 }

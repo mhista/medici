@@ -6,30 +6,30 @@ import 'package:medici/utils/helpers/helper_functions.dart';
 import '../../../../controller/navigation_controller.dart';
 import '../common/tablet_mobile_navigation.dart';
 
-class MobileScaffold extends ConsumerWidget {
+// class MobileScaffold extends ConsumerWidget {
+//   const MobileScaffold({super.key});
+
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     // CONTROLLER FOR NAVIGATING MAJOR SCREENS
+//     final controller = ref.watch(navigationController.notifier);
+
+//     final isDark = PHelperFunctions.isDarkMode(context);
+//     return Scaffold(
+//         bottomNavigationBar:
+//             SmallScreenNavigation(isDark: isDark, controller: controller),
+//         body: controller.screens[ref.watch(navigationController)]);
+//   }
+// }
+
+class MobileScaffold extends ConsumerStatefulWidget {
   const MobileScaffold({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // CONTROLLER FOR NAVIGATING MAJOR SCREENS
-    final controller = ref.watch(navigationController.notifier);
-
-    final isDark = PHelperFunctions.isDarkMode(context);
-    return Scaffold(
-        bottomNavigationBar:
-            SmallScreenNavigation(isDark: isDark, controller: controller),
-        body: controller.screens[ref.watch(navigationController)]);
-  }
+  ConsumerState<ConsumerStatefulWidget> createState() => _MobileScaffoldState();
 }
 
-class AppCIRCLE extends ConsumerStatefulWidget {
-  const AppCIRCLE({super.key});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AppCIRCLEState();
-}
-
-class _AppCIRCLEState extends ConsumerState<AppCIRCLE>
+class _MobileScaffoldState extends ConsumerState<MobileScaffold>
     with WidgetsBindingObserver {
   @override
   void initState() {
@@ -42,29 +42,28 @@ class _AppCIRCLEState extends ConsumerState<AppCIRCLE>
     super.didChangeAppLifecycleState(state);
     switch (state) {
       case AppLifecycleState.resumed:
+        ref.read(userController).setUserState(true);
         // set user to online
         break;
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.inactive:
       case AppLifecycleState.hidden:
-
-        // offline
+        ref.read(userController).setUserState(false);
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
-  }
+    // CONTROLLER FOR NAVIGATING MAJOR SCREENS
+    final controller = ref.watch(navigationController.notifier);
 
-  void setUserState(bool state) async {
-    await ref
-        .watch(firestoreProvider)
-        .collection('Users')
-        .doc(ref.read(firebaseAuthProvider).currentUser?.uid)
-        .update({'isOnline': state});
+    final isDark = PHelperFunctions.isDarkMode(context);
+    return Scaffold(
+        bottomNavigationBar:
+            SmallScreenNavigation(isDark: isDark, controller: controller),
+        body: controller.screens[ref.watch(navigationController)]);
   }
 
   @override

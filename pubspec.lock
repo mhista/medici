@@ -169,6 +169,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  cached_video_player_plus:
+    dependency: "direct main"
+    description:
+      name: cached_video_player_plus
+      sha256: ac1aefd1b4da2d8c362850df4326be8d6a9c9d32f30233e8cf9e026562261e5b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   characters:
     dependency: transitive
     description:
@@ -361,6 +369,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.0"
+  emoji_picker_flutter:
+    dependency: "direct main"
+    description:
+      name: emoji_picker_flutter
+      sha256: "7c6681783e06710608df27be0e38aa4ba73ca1ccac370bb0e7a1320723ae4bca"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   envied:
     dependency: "direct main"
     description:
@@ -1506,6 +1522,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  video_player_platform_interface:
+    dependency: transitive
+    description:
+      name: video_player_platform_interface
+      sha256: "318a6d20577e1c78cf0bf40670883cc571ea860c72a4f7426d7dacce4bdd4343"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.4"
+  video_player_web:
+    dependency: transitive
+    description:
+      name: video_player_web
+      sha256: fb3bbeaf0302cb0c31340ebd6075487939aa1fe3b379d1a8784ef852b679940e
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.15"
   watcher:
     dependency: transitive
     description:

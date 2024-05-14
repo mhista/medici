@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:medici/data/services/firebase_services/firebase_storage_services.dart';
 import 'package:medici/features/authentication/authentication_repository/authentication_repository.dart';
 import 'package:medici/features/authentication/controllers/login_controller.dart';
 import 'package:medici/features/chat/repositories/chat_repository.dart';
@@ -21,6 +23,9 @@ StateProvider<UserModel> userProvider =
 // FIREBASE REPOSITORIES
 final firebaseAuthProvider = Provider((ref) => FirebaseAuth.instance);
 final firestoreProvider = Provider((ref) => FirebaseFirestore.instance);
+final firebaseStorageProvider = Provider((ref) => FirebaseStorage.instance);
+final firebaseStorageHandler = Provider((ref) => PFirebaseStorageServices(
+    firebaseStorage: ref.watch(firebaseStorageProvider)));
 
 // AUTHENTICATION REPOSITORY
 final authenticationProvider = Provider(
@@ -45,7 +50,7 @@ final loginController = Provider((ref) => LoginController(
 final userRepository = Provider((ref) {
   final db = ref.watch(firestoreProvider);
   final authRepo = ref.watch(authenticationProvider);
-  return UserRepository(db: db, authRepo: authRepo);
+  return UserRepository(db: db, authRepo: authRepo, ref: ref);
 });
 
 // USER CONTROLLER
@@ -71,3 +76,5 @@ final chatRepo = Provider((ref) {
 // CHAT CONTROLLER
 final chatController =
     Provider((ref) => ChatContoller(ref.watch(chatRepo), ref: ref));
+// USER ONLINE/ OFFLINE STATE
+final userOnlineState = StateProvider((ref) => false);

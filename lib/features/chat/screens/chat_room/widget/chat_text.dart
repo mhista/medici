@@ -1,8 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:medici/utils/constants/enums.dart';
 
+import '../../../../../common/widgets/shimmer/shimmer.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/helpers/helper_functions.dart';
+import 'chat_image_message.dart';
+import 'chat_text_message.dart';
 
 class ChatText extends StatelessWidget {
   const ChatText({
@@ -12,10 +17,11 @@ class ChatText extends StatelessWidget {
     this.color,
     this.isUser = true,
     required this.time,
-    required this.width,
+    this.width = 0,
+    required this.messageType,
   });
 
-  final String text, time;
+  final String text, time, messageType;
   final Color? textColor, color;
   final bool isUser;
   final double width;
@@ -32,43 +38,12 @@ class ChatText extends StatelessWidget {
         children: [
           Stack(
             children: [
-              // TEXT CONTAINER
-              Container(
-                width: width,
-                decoration: BoxDecoration(
-                    color: isUser
-                        ? PColors.primary
-                        : isDark
-                            ? PColors.darkerGrey
-                            : PColors.grey,
-                    border: Border.all(width: 0.02, color: Colors.grey),
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: const Radius.circular(15),
-                        topLeft:
-                            isUser ? const Radius.circular(15) : Radius.zero,
-                        topRight:
-                            !isUser ? const Radius.circular(15) : Radius.zero,
-                        bottomRight: const Radius.circular(15))),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: PSizes.sm,
-                      left: PSizes.spaceBtwItems / 2,
-                      right: PSizes.spaceBtwSections,
-                      bottom: PSizes.spaceBtwSections),
-                  child: Text(
-                    text,
-                    style: Theme.of(context).textTheme.bodyMedium!.apply(
-                          color: isUser
-                              ? PColors.white.withOpacity(0.9)
-                              : isDark
-                                  ? PColors.light
-                                  : PColors.dark,
-                        ),
-                    // textWidthBasis: TextWidthBasis.longestLine,
-                    softWrap: true,
-                  ),
-                ),
-              ),
+              messageType == MessageType.text.name
+                  ?
+                  // TEXT CONTAINER
+                  ChatTextContainer(
+                      width: width, isUser: isUser, isDark: isDark, text: text)
+                  : ChatTextImage(isUser: isUser, isDark: isDark, text: text),
               Positioned(
                 bottom: 4,
                 right: 7,

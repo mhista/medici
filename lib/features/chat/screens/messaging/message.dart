@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:medici/common/widgets/appbar/searchBar.dart';
 import 'package:medici/common/widgets/cards/chat_card.dart';
 import 'package:medici/common/widgets/shimmer/chat_card_shimmer.dart';
@@ -49,6 +50,7 @@ class MessageScreen extends StatelessWidget {
             builder: (_, WidgetRef ref, __) {
               // user1 =  current user
               // user2 = the receiver
+              // FETCH THE LAST CHAT OF THE USER AND DISPLAY ON THE MESSAGE SCREEN
               return ref.watch(chatContactProvider).when(
                   data: (data) {
                     if (data.isEmpty) {
@@ -58,6 +60,7 @@ class MessageScreen extends StatelessWidget {
                           const SizedBox(
                             height: PSizes.spaceBtwSections * 2,
                           ),
+                          // IF DATA IS EMPTY, DISPLAY EMPTY MESSAGE
                           Text(
                             'No Messages',
                             style: Theme.of(context)
@@ -85,6 +88,7 @@ class MessageScreen extends StatelessWidget {
                         ],
                       );
                     }
+                    // DISPLAY THE LIST OF USER MESSAGES
                     return Padding(
                       padding: const EdgeInsets.all(PSizes.spaceBtwItems),
                       child: Column(
@@ -95,6 +99,7 @@ class MessageScreen extends StatelessWidget {
                             itemCount: data.length,
                             itemBuilder: (context, index) {
                               final chat = data[index];
+                              // RETURNS THE COUNT OF UNREPLIED MESSAGES AND DISPLAYS IT ON THE CHAT CARD
                               final unreadMessages = ref
                                   .watch(
                                       unrepliedMessagesProvider(chat.user2.id))
@@ -103,8 +108,13 @@ class MessageScreen extends StatelessWidget {
                                 return e.receiverId == chat.user1.id;
                               }).toList();
                               final count = unreadMessages?.length;
-                              debugPrint(count.toString());
+                              // CHECKS IF THE USDER IS ONLINE
+                              final isOnline = ref
+                                  .watch(checkOnlineStatus(chat.user2.id))
+                                  .value;
+                              // debugPrint(isOnline.toString());
                               return ChatCard(
+                                isOnline: isOnline ?? false,
                                 unreadMessageCount: count != null && count >= 1
                                     ? count.toString()
                                     : '',
@@ -140,6 +150,11 @@ class MessageScreen extends StatelessWidget {
             },
           )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.goNamed('doctors'),
+        backgroundColor: PColors.primary,
+        child: const Icon(Iconsax.add),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:medici/utils/constants/colors.dart';
 
@@ -5,7 +6,7 @@ import '../../../utils/constants/sizes.dart';
 import '../images/rounded_rect_image.dart';
 import '../texts/title_subtitle.dart';
 
-class ChatCard extends StatelessWidget {
+class ChatCard extends ConsumerWidget {
   const ChatCard(
       {super.key,
       required this.title,
@@ -24,7 +25,7 @@ class ChatCard extends StatelessWidget {
   final Function() onPressed;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: onPressed,
       child: Card(
@@ -95,7 +96,7 @@ class ChatCard extends StatelessWidget {
   }
 }
 
-class OnlineIndicator extends StatelessWidget {
+class OnlineIndicator extends ConsumerWidget {
   const OnlineIndicator({
     super.key,
     this.isOnline = true,
@@ -104,7 +105,7 @@ class OnlineIndicator extends StatelessWidget {
   final bool isOnline;
   final double size;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Badge(
       backgroundColor: isOnline ? Colors.green : PColors.grey,
       smallSize: size,
