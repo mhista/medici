@@ -54,18 +54,23 @@ class _ChatListState extends ConsumerState<ChatList> {
               itemCount: data.length,
               itemBuilder: (context, index) {
                 final message = data[index];
-                return ChatText(
-                  messageType: message.type,
-                  text: message.text,
-                  time: PHelperFunctions.getFormattedTime(message.timeSent),
-                  isUser: message.receiverId == widget.user.id ? true : false,
-                  width: message.type == MessageType.text.name
-                      ? message.text.length < 10
-                          ? screenWidth / 3
-                          : message.text.length < 30
-                              ? screenWidth / 1.7
-                              : screenWidth / 1.5
-                      : 0,
+                return GestureDetector(
+                  onLongPress: () {
+                    debugPrint('delete');
+                  },
+                  child: ChatText(
+                    messageType: message.type,
+                    text: message.text,
+                    time: PHelperFunctions.getFormattedTime(message.timeSent),
+                    isUser: message.receiverId == widget.user.id ? true : false,
+                    width: message.type == MessageType.text.name
+                        ? message.text.length < 10
+                            ? screenWidth / 3
+                            : message.text.length < 30
+                                ? screenWidth / 1.7
+                                : screenWidth / 1.5
+                        : 0,
+                  ),
                 );
               },
             );

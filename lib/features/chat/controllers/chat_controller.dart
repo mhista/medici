@@ -10,6 +10,7 @@ import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/enums.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../utils/constants/file_formats.dart';
 import '../../authentication/models/user_model.dart';
 
 class ChatContoller {
@@ -24,7 +25,7 @@ class ChatContoller {
   GlobalKey<FormState> chatFormKey = GlobalKey<FormState>();
   final unRepliedMessages =
       StateProvider<List<MessageModel>>((ref) => <MessageModel>[]);
-
+  final showEmojiContainer = StateProvider((ref) => true);
 // SEND MESSAGE TO USER
   Future<void> sendMessage(
       {required UserModel receiver, required MessageType type}) async {
@@ -33,6 +34,10 @@ class ChatContoller {
       final isConnected =
           await ref.watch(networkService.notifier).isConnected();
       if (!isConnected) {
+        return;
+      }
+      if (text.text.isEmpty) {
+        debugPrint('empty text');
         return;
       }
       final messageText = text.text;
@@ -64,8 +69,7 @@ class ChatContoller {
   }
 
   // UPLOAD IMAGE IN CHAT
-  void sendMessageFile(
-      {required UserModel receiver, required MessageType type}) async {
+  void sendMessageFile({required UserModel receiver}) async {
     try {
       final user = ref.read(userProvider);
       final image = await ImagePicker().pickMedia(imageQuality: 70);
@@ -77,12 +81,14 @@ class ChatContoller {
         final imageuRL = await ref.read(firebaseStorageHandler).uploadImageFile(
             'Chat/${MessageType.values}/${user.id}/${receiver.id}/$uuid',
             image);
+        final url = videoFormats
+            .contains(imageuRL.split('.').last.split('?').first.toUpperCase());
         // SAVE THE MESSAGE IN DATABASE
         final message = MessageModel(
             senderId: user.id,
             receiverId: receiver.id,
             text: imageuRL,
-            type: type.name,
+            type: url ? MessageType.video.name : MessageType.image.name,
             timeSent: timeSent,
             messageId: uuid,
             isSeen: false);

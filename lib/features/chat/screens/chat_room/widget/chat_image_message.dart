@@ -22,7 +22,8 @@ class ChatTextImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: 300,
+      height: 300,
+      width: 200,
       decoration: BoxDecoration(
           color: isUser
               ? PColors.primary
@@ -51,6 +52,7 @@ class ChatTextImage extends StatelessWidget {
                     text.split('.').last.split('?').first.toUpperCase())
                 ? VideoPlayerContainer(videoUrl: text)
                 : CachedNetworkImage(
+                    width: 200,
                     imageUrl: text,
                     fit: BoxFit.contain,
                     progressIndicatorBuilder:
@@ -58,7 +60,7 @@ class ChatTextImage extends StatelessWidget {
                             const PShimmerEffect(
                       color: PColors.primary,
                       height: 300,
-                      width: 250,
+                      width: 200,
                       radius: 15,
                     ),
                   ),

@@ -18,7 +18,9 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
       this.textController,
       this.usePrefixSuffix = false,
       this.onChanged,
-      this.prefixWidget});
+      this.prefixWidget,
+      this.focusNode,
+      this.onTap});
 
   // to add the background color to tabs, wrap with material widget.
   final Color? color;
@@ -28,6 +30,9 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? textFieldWidget, prefixWidget;
   final TextEditingController? textController;
   final Function(String)? onChanged;
+  final Function()? onTap;
+
+  final FocusNode? focusNode;
   @override
   Widget build(BuildContext context) {
     final isDark = PHelperFunctions.isDarkMode(context);
@@ -35,6 +40,8 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
       padding:
           const EdgeInsets.symmetric(horizontal: PSizes.spaceBtwInputFields),
       child: TextField(
+        onTap: onTap,
+        focusNode: focusNode,
         onChanged: onChanged,
         controller: textController,
         decoration: InputDecoration(
@@ -54,7 +61,7 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
             suffixIcon: useSuffix || usePrefixSuffix
                 ? textFieldWidget ?? SearchIcon(isDark: isDark)
                 : null,
-            prefixIcon: !useSuffix ? SearchIcon(isDark: isDark) : prefixWidget,
+            prefixIcon: !useSuffix ? prefixWidget : SearchIcon(isDark: isDark),
             border: inputBorder(isDark, useBorder, radius),
             focusedBorder: inputBorder(isDark, useBorder, radius),
             enabledBorder: inputBorder(isDark, useBorder, radius)),

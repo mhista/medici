@@ -10,6 +10,10 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 class PDeviceUtils {
   static void hideKeyboard(BuildContext context) {
+    FocusScope.of(context).unfocus();
+  }
+
+  static void showKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(FocusNode());
   }
 
