@@ -13,19 +13,34 @@ import 'package:uuid/uuid.dart';
 import '../../../utils/constants/file_formats.dart';
 import '../../authentication/models/user_model.dart';
 
-class ChatContoller {
+class ChatController {
   final Ref ref;
   final ChatRepository chatRepository;
-  ChatContoller(
+  ChatController(
     this.chatRepository, {
     required this.ref,
   });
 
   final text = TextEditingController();
+  // UPDATES ACCORDING TO THE STATE OF THE TEXT EDITING CONTROLLER
+  final textProvider = StateProvider<bool>((ref) => false);
+
   GlobalKey<FormState> chatFormKey = GlobalKey<FormState>();
+
   final unRepliedMessages =
       StateProvider<List<MessageModel>>((ref) => <MessageModel>[]);
+
   final showEmojiContainer = StateProvider((ref) => true);
+
+// UPDATES THE STATE OF THE TEXTPOVIDER WHEN THE STRING CHANGES IN TEXTEDITING CONTROLLER
+  checkEmptyText() {
+    text.addListener(() {
+      bool hasNoText = text.text.isNotEmpty;
+      debugPrint(hasNoText.toString());
+      ref.read(textProvider.notifier).state = hasNoText;
+    });
+  }
+
 // SEND MESSAGE TO USER
   Future<void> sendMessage(
       {required UserModel receiver, required MessageType type}) async {
@@ -68,21 +83,54 @@ class ChatContoller {
     }
   }
 
+// RECORD VOICE MESSAGE
+  void recordMessage(
+      {required UserModel receiver, required String path}) async {
+    try {
+      final user = ref.read(userProvider);
+
+      final timeSent = DateTime.now();
+      var uuid = const Uuid().v4();
+      // SAVE THE MESSAGE IN DATABASE
+      final message = MessageModel(
+          senderId: user.id,
+          receiverId: receiver.id,
+          text: path,
+          type: 'voice note',
+          timeSent: timeSent,
+          messageId: uuid,
+          isSeen: false);
+      await chatRepository.sendMessage(message: message);
+      // SAVE CHAT CONTACTS
+      saveChatContacts(
+          timeSent: timeSent,
+          receiver: receiver,
+          sender: user,
+          message: message);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   // UPLOAD IMAGE IN CHAT
   void sendMessageFile({required UserModel receiver}) async {
     try {
       final user = ref.read(userProvider);
       final image = await ImagePicker().pickMedia(imageQuality: 70);
-      debugPrint(user.email);
+      // debugPrint(image!.name);
 
       if (image != null) {
         final timeSent = DateTime.now();
         var uuid = const Uuid().v4();
+        // check if it is an video file
+
+        final url =
+            videoFormats.contains(image.name.split('.').last.toUpperCase());
+
         final imageuRL = await ref.read(firebaseStorageHandler).uploadImageFile(
-            'Chat/${MessageType.values}/${user.id}/${receiver.id}/$uuid',
+            'Chat/${url ? MessageType.video.name : MessageType.image.name}/${user.id}/${receiver.id}/$uuid',
             image);
-        final url = videoFormats
-            .contains(imageuRL.split('.').last.split('?').first.toUpperCase());
+
         // SAVE THE MESSAGE IN DATABASE
         final message = MessageModel(
             senderId: user.id,
@@ -195,3 +243,10 @@ final unrepliedMessagesProvider =
   final chatControllerr = ref.watch(chatController);
   return chatControllerr.unrepliedMessages(id);
 });
+
+
+// final hasNoText =
+//     StreamProvider.autoDispose.family((ref) {
+//   final chatControllerr = ref.watch(chatController);
+//   return chatControllerr.checkEmptyText();
+// });

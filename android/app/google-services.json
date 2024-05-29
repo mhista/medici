@@ -12,7 +12,20 @@
           "package_name": "com.example.medici"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "921010982650-hajn7l67etoofiuhmosuotbvdggv0rhs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.medici",
+            "certificate_hash": "593e9bc6756b83bac2edb18a414ef2e83ec420eb"
+          }
+        },
+        {
+          "client_id": "921010982650-2liu4damst9qi11orfblkl8utlv7css3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDDRXxbd4wYcXXz5nM9_bA-NvgCn0XwBwA"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "921010982650-2liu4damst9qi11orfblkl8utlv7css3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "921010982650-fiql7ua3638o9e2fibm1krdsvmscnd9j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.medici.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }

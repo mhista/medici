@@ -1,6 +1,5 @@
 import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 
 class VideoPlayerContainer extends StatefulWidget {
   const VideoPlayerContainer({super.key, required this.videoUrl});

@@ -15,8 +15,8 @@ class TAppTheme {
 
   static ThemeData lightTheme = ThemeData(
     scrollbarTheme: const ScrollbarThemeData(
-        thickness: MaterialStatePropertyAll(0),
-        trackColor: MaterialStatePropertyAll(PColors.transparent)),
+        thickness: WidgetStatePropertyAll(0),
+        trackColor: WidgetStatePropertyAll(PColors.transparent)),
     fontFamily: 'nunito',
     brightness: Brightness.light,
     primaryColor: PColors.primary,
@@ -32,8 +32,8 @@ class TAppTheme {
   );
   static ThemeData darkTheme = ThemeData(
     scrollbarTheme: const ScrollbarThemeData(
-        thickness: MaterialStatePropertyAll(0),
-        trackColor: MaterialStatePropertyAll(PColors.transparent)),
+        thickness: WidgetStatePropertyAll(0),
+        trackColor: WidgetStatePropertyAll(PColors.transparent)),
     fontFamily: 'nunito',
     brightness: Brightness.dark,
     primaryColor: PColors.primary,

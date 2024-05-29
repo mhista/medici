@@ -66,6 +66,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '921010982650',
     projectId: 'medici-2bdb5',
     storageBucket: 'medici-2bdb5.appspot.com',
+    androidClientId: '921010982650-hajn7l67etoofiuhmosuotbvdggv0rhs.apps.googleusercontent.com',
+    iosClientId: '921010982650-nujn7fd624bmjbppf6l3o1nogoknen3g.apps.googleusercontent.com',
     iosBundleId: 'com.example.medici',
   );
 
@@ -75,6 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '921010982650',
     projectId: 'medici-2bdb5',
     storageBucket: 'medici-2bdb5.appspot.com',
+    androidClientId: '921010982650-hajn7l67etoofiuhmosuotbvdggv0rhs.apps.googleusercontent.com',
+    iosClientId: '921010982650-fiql7ua3638o9e2fibm1krdsvmscnd9j.apps.googleusercontent.com',
     iosBundleId: 'com.example.medici.RunnerTests',
   );
 }

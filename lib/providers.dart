@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/data/services/firebase_services/firebase_storage_services.dart';
 import 'package:medici/features/authentication/authentication_repository/authentication_repository.dart';
 import 'package:medici/features/authentication/controllers/login_controller.dart';
+import 'package:medici/features/chat/controllers/recorder_controller.dart';
 import 'package:medici/features/chat/repositories/chat_repository.dart';
 import 'package:medici/features/personalization/controllers/user_controller.dart';
 import 'package:medici/features/personalization/repositories/user_repository.dart';
@@ -75,6 +76,11 @@ final chatRepo = Provider((ref) {
 });
 // CHAT CONTROLLER
 final chatController =
-    Provider((ref) => ChatContoller(ref.watch(chatRepo), ref: ref));
+    Provider((ref) => ChatController(ref.watch(chatRepo), ref: ref));
 // USER ONLINE/ OFFLINE STATE
 final userOnlineState = StateProvider((ref) => false);
+
+// RECORDER CONTROLLER
+final recorderController = Provider<RecordingController>((ref) {
+  return RecordingController(ref: ref);
+});

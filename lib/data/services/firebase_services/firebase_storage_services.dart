@@ -73,4 +73,23 @@ class PFirebaseStorageServices {
       throw 'something went wrong, please try again';
     }
   }
+
+  // UPLOAD IMAGE ON CLOUD FIREBASE STORAGE
+  // RETURNS THE DOWNLOAD URL OF THE UPLOADED IMAGE
+  Future<String> sendRecordFile(String path, File record) async {
+    try {
+      final ref = firebaseStorage.ref(path).child(record.path);
+      debugPrint(record.path);
+
+      await ref.putFile(record);
+      final url = await ref.getDownloadURL();
+      return url;
+    } on FirebaseException catch (e) {
+      throw KFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw KPlatformException(e.code).message;
+    } catch (e) {
+      throw 'something went wrong, please try again';
+    }
+  }
 }

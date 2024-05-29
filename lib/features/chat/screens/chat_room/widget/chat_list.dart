@@ -56,7 +56,7 @@ class _ChatListState extends ConsumerState<ChatList> {
                 final message = data[index];
                 return GestureDetector(
                   onLongPress: () {
-                    debugPrint('delete');
+                    debugPrint('delete ');
                   },
                   child: ChatText(
                     messageType: message.type,

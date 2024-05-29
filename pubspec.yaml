@@ -47,7 +47,7 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   fpdart: ^1.1.0
   routemaster: ^1.0.1
-  uuid: ^4.4.0
+  uuid: ^3.0.1
   file_picker: ^6.1.1
   hooks_riverpod: ^2.4.10
   riverpod_annotation: ^2.3.4
@@ -68,7 +68,7 @@ dependencies:
   readmore: ^2.2.0
   flutter_native_splash: ^2.3.10
   get: ^4.6.6
-  device_preview: ^1.1.0
+  # device_preview: ^1.1.0
   responsive_framework: ^1.4.0
   flutter_rating_bar: ^4.0.1
   table_calendar: ^3.0.9
@@ -82,6 +82,11 @@ dependencies:
   # cached_video_player: ^2.0.4
   cached_video_player_plus: ^1.0.1
   emoji_picker_flutter: ^2.1.1
+  permission_handler: ^11.3.1
+  flutter_sound: ^9.2.13
+  path_provider: ^2.1.3
+  record: ^5.1.0
+  path: ^1.9.0
 
 
 
@@ -89,6 +94,8 @@ dependencies:
 
 
 
+  http: any
+  audio_waveforms: ^1.0.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
