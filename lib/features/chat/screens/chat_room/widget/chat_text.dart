@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medici/features/chat/screens/chat_room/widget/record_widget.dart';
 import 'package:medici/utils/constants/enums.dart';
 
 import '../../../../../utils/constants/colors.dart';
@@ -41,7 +42,15 @@ class ChatText extends StatelessWidget {
                   // TEXT CONTAINER
                   ChatTextContainer(
                       width: width, isUser: isUser, isDark: isDark, text: text)
-                  : ChatTextImage(isUser: isUser, isDark: isDark, text: text),
+                  : messageType == MessageType.audio.name
+                      ? AudioPlayerWidget(
+                          size: Size(width, 50),
+                          path: text,
+                          isUser: isUser,
+                          isDark: isDark,
+                        )
+                      : ChatTextImage(
+                          isUser: isUser, isDark: isDark, text: text),
               Positioned(
                 bottom: 4,
                 right: 7,

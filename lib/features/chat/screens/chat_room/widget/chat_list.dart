@@ -69,7 +69,9 @@ class _ChatListState extends ConsumerState<ChatList> {
                             : message.text.length < 30
                                 ? screenWidth / 1.7
                                 : screenWidth / 1.5
-                        : 0,
+                        : message.type == MessageType.text.name
+                            ? screenWidth / 4
+                            : 0,
                   ),
                 );
               },

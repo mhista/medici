@@ -96,7 +96,7 @@ class ChatController {
           senderId: user.id,
           receiverId: receiver.id,
           text: path,
-          type: 'voice note',
+          type: MessageType.audio.name,
           timeSent: timeSent,
           messageId: uuid,
           isSeen: false);

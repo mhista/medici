@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../common/styles/borderRadius.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/sizes.dart';
 
@@ -28,11 +29,7 @@ class ChatTextContainer extends StatelessWidget {
                   ? PColors.darkerGrey
                   : PColors.grey,
           border: Border.all(width: 0.02, color: Colors.grey),
-          borderRadius: BorderRadius.only(
-              bottomLeft: const Radius.circular(15),
-              topLeft: isUser ? const Radius.circular(15) : Radius.zero,
-              topRight: !isUser ? const Radius.circular(15) : Radius.zero,
-              bottomRight: const Radius.circular(15))),
+          borderRadius: chatBorderRadius(isUser)),
       child: Padding(
           padding: const EdgeInsets.only(
               top: PSizes.sm,

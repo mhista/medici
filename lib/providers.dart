@@ -81,6 +81,6 @@ final chatController =
 final userOnlineState = StateProvider((ref) => false);
 
 // RECORDER CONTROLLER
-final recorderController = Provider<RecordingController>((ref) {
-  return RecordingController(ref: ref);
-});
+// final recorderController = Provider<RecordingController>((ref) {
+//   return RecordingController(ref: ref);
+// });
