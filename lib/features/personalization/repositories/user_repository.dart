@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -38,7 +37,7 @@ class UserRepository {
     } on PlatformException catch (e) {
       throw KPlatformException(e.code).message;
     } catch (e) {
-      throw 'something went wrong, please try again';
+      throw 'Unable to save user details';
     }
   }
 
@@ -61,7 +60,7 @@ class UserRepository {
     } on PlatformException catch (e) {
       throw KPlatformException(e.code).message;
     } catch (e) {
-      throw 'something went wrong, please try again';
+      throw 'user snapshot does not exist';
     }
   }
 
@@ -152,12 +151,12 @@ class UserRepository {
 
   // FETCH USER DATA FROM FIRESTORE
   // SET USER ONLINE/OFFLINE STATE
-  setUserState(bool state) async {
+  setUserState({required bool state, String? id}) async {
     await _db
         .collection('Users')
-        .doc(_authRepo.authUser?.uid)
+        .doc(id ?? _authRepo.authUser?.uid)
         .update({'isOnline': state});
-    // await _db.collection('Users').doc(_authRepo.authUser?.uid).
+    // await _db.collection('Users').doc(_authRepo.authUser?.uid)
   }
 
   Stream<bool> getOnlineStatus(String id) {

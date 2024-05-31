@@ -17,15 +17,24 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,42 +52,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA_g2yuP7wd_WeM2pEn2pRhuJoM_H04dxI',
-    appId: '1:921010982650:web:272714b468882988e0c343',
-    messagingSenderId: '921010982650',
-    projectId: 'medici-2bdb5',
-    authDomain: 'medici-2bdb5.firebaseapp.com',
-    storageBucket: 'medici-2bdb5.appspot.com',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDDRXxbd4wYcXXz5nM9_bA-NvgCn0XwBwA',
     appId: '1:921010982650:android:4229dea3e3f108b6e0c343',
     messagingSenderId: '921010982650',
     projectId: 'medici-2bdb5',
     storageBucket: 'medici-2bdb5.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCuPl-xQ8VuoCeN-8wgUnla48SRRZdKgO0',
-    appId: '1:921010982650:ios:cb9e9bdb7a7c48c4e0c343',
-    messagingSenderId: '921010982650',
-    projectId: 'medici-2bdb5',
-    storageBucket: 'medici-2bdb5.appspot.com',
-    androidClientId: '921010982650-hajn7l67etoofiuhmosuotbvdggv0rhs.apps.googleusercontent.com',
-    iosClientId: '921010982650-nujn7fd624bmjbppf6l3o1nogoknen3g.apps.googleusercontent.com',
-    iosBundleId: 'com.example.medici',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCuPl-xQ8VuoCeN-8wgUnla48SRRZdKgO0',
-    appId: '1:921010982650:ios:29a83aa5f2f58020e0c343',
-    messagingSenderId: '921010982650',
-    projectId: 'medici-2bdb5',
-    storageBucket: 'medici-2bdb5.appspot.com',
-    androidClientId: '921010982650-hajn7l67etoofiuhmosuotbvdggv0rhs.apps.googleusercontent.com',
-    iosClientId: '921010982650-fiql7ua3638o9e2fibm1krdsvmscnd9j.apps.googleusercontent.com',
-    iosBundleId: 'com.example.medici.RunnerTests',
   );
 }

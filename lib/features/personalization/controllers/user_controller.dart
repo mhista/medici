@@ -47,6 +47,7 @@ class UserController {
 
       final user = await _userRepository.fetchUserData();
       _ref.read(userProvider.notifier).update((state) => user);
+      await _userRepository.setUserState(state: true);
     } catch (e) {
       _ref.read(userProvider.notifier).update((state) => UserModel.empty());
     } finally {
@@ -57,8 +58,9 @@ class UserController {
 // SAVE USER RECORD
   Future<void> saveUserRecord(UserCredential? userCredential) async {
     try {
+      debugPrint(userCredential?.user.toString());
       await fetchUserRecord();
-      await _userRepository.setUserState(true);
+
       final user = _ref.watch(userProvider);
       if (user.id.isEmpty) {
         // CONVERT THE DISPLAY NAME TO FIRST AND LAST NAME
@@ -82,6 +84,7 @@ class UserController {
           _ref.read(userProvider.notifier).update((state) => user);
 
           await _userRepository.saveUser(user);
+          _userRepository.setUserState(state: true, id: user.id);
         }
       }
     } catch (e) {
@@ -221,7 +224,7 @@ class UserController {
 
   // SIGNOUT USER
   void signOut() async {
-    await _userRepository.setUserState(false);
+    await _userRepository.setUserState(state: false);
     await _authenticationRepository.logout();
     _ref.read(userProvider.notifier).update((state) => UserModel.empty());
   }
@@ -230,13 +233,13 @@ class UserController {
   void setUserState(bool userState) async {
     final isConnected = await _ref.watch(networkService.notifier).isConnected();
     if (!isConnected) {
-      _userRepository.setUserState(false);
+      _userRepository.setUserState(state: false);
       return;
     } else if (kIsWeb || isConnected) {
-      _userRepository.setUserState(true);
+      _userRepository.setUserState(state: true);
       return;
     }
-    _userRepository.setUserState(userState);
+    _userRepository.setUserState(state: userState);
   }
 
   Stream<bool> getOnlineStatus(String id) {

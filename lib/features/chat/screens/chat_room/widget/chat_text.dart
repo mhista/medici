@@ -44,7 +44,7 @@ class ChatText extends StatelessWidget {
                       width: width, isUser: isUser, isDark: isDark, text: text)
                   : messageType == MessageType.audio.name
                       ? AudioPlayerWidget(
-                          size: Size(width, 50),
+                          size: width,
                           path: text,
                           isUser: isUser,
                           isDark: isDark,

@@ -181,7 +181,6 @@ class AuthenticationRepository {
   Future<UserCredential> signInWithGoogle() async {
     try {
       // TRIGGER THE AUTHENTICATION FLOW
-      debugPrint('signing');
       if (kIsWeb) {
         GoogleAuthProvider authProvider = GoogleAuthProvider();
         final UserCredential userCredential =
@@ -196,8 +195,10 @@ class AuthenticationRepository {
       // CREATE A NEW CREDENTIAL
       final credential = GoogleAuthProvider.credential(
           idToken: googleAuth?.idToken, accessToken: googleAuth?.accessToken);
+
       // ONCE SIGNED IN GET THE USER CREDENTIALS
-      return await _auth.signInWithCredential(credential);
+      final cred = await _auth.signInWithCredential(credential);
+      return cred;
     } on FirebaseAuthException catch (e) {
       throw KFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {

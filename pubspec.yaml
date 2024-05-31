@@ -40,9 +40,10 @@ dependencies:
   animations: ^2.0.11
   firebase_core: ^2.25.4
   firebase_helpers: ^0.6.1
-  firebase_storage: ^11.6.5
-  cloud_firestore: ^4.15.4
-  firebase_auth: ^4.17.4
+  firebase_storage: ^11.6.7
+  cloud_firestore: ^4.15.6
+  firebase_auth: ^4.17.6
+
   google_sign_in: ^6.2.1
   font_awesome_flutter: ^10.7.0
   fpdart: ^1.1.0
@@ -90,6 +91,7 @@ dependencies:
   http: any
   audio_waveforms: ^1.0.5
   audioplayers: ^6.0.0
+  flutter_audio_waveforms: ^1.2.1+8
 dev_dependencies:
   flutter_test:
     sdk: flutter

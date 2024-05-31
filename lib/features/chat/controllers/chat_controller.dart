@@ -36,7 +36,7 @@ class ChatController {
   checkEmptyText() {
     text.addListener(() {
       bool hasNoText = text.text.isNotEmpty;
-      debugPrint(hasNoText.toString());
+      // debugPrint(hasNoText.toString());
       ref.read(textProvider.notifier).state = hasNoText;
     });
   }

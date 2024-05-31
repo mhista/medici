@@ -1,5 +1,7 @@
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_audio_waveforms/flutter_audio_waveforms.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../common/styles/borderRadius.dart';
@@ -13,7 +15,7 @@ class AudioPlayerWidget extends ConsumerStatefulWidget {
       required this.isUser,
       required this.isDark,
       super.key});
-  final Size size;
+  final double size;
   final String path;
   final bool isUser;
   final bool isDark;
@@ -25,17 +27,56 @@ class AudioPlayerWidget extends ConsumerStatefulWidget {
 
 class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
   late final PlayerController playerController;
-
+  AudioPlayer? _audioPlayer;
+  List<double> _waveformData = [];
+  bool _isPlaying = false;
+  bool pausedPlaying = false;
   @override
   void initState() {
     super.initState();
     playerController = PlayerController();
+    _audioPlayer = AudioPlayer();
     _prepPlayer();
     // playerController!.extractWaveformData(path: widget.path);
   }
 
-  void _prepPlayer() async {
-    await playerController!.preparePlayer(path: widget.path);
+  Future<void> _prepPlayer() async {
+    await _audioPlayer!.setSourceUrl(widget.path);
+    setState(() {
+      _waveformData = List.generate(1000, (index) => index % 10);
+    });
+    // await playerController!.preparePlayer(path: widget.path);
+  }
+
+  doSomthing() async {
+    // if (_stillPlaying) {
+    //   _audioPlayer!.resume();
+    // }
+    // setState(() {
+    //   _stillPlaying = false;
+    // });
+  }
+  // void pausePlay() {
+  //   if (!pausedPlaying) {
+  //     _audioPlayer!.pause();
+  //   } else {
+  //     _audioPlayer!.resume();
+  //   }
+  //   setState(() {
+  //     pausedPlaying = true;
+  //   });
+  // }
+
+  void startStopAudio() {
+    if (!_isPlaying) {
+      _audioPlayer!.play(UrlSource(widget.path));
+    } else {
+      _audioPlayer!.stop();
+    }
+    setState(() {
+      _isPlaying = !_isPlaying;
+      pausedPlaying = !pausedPlaying;
+    });
   }
 
   @override
@@ -53,36 +94,28 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
           borderRadius: chatBorderRadius(widget.isUser)),
       child: Padding(
           padding: const EdgeInsets.only(
-              top: PSizes.sm,
+              top: 0,
               left: PSizes.spaceBtwItems / 2,
               right: PSizes.spaceBtwSections,
-              bottom: PSizes.spaceBtwSections),
+              bottom: PSizes.xs),
           child: Row(
             children: [
               // if (!playerController!.playerState.isStopped)
               IconButton(
                   color: Colors.white,
-                  onPressed: () async {
-                    playerController!.playerState.isPlaying
-                        ? await playerController!.stopPlayer()
-                        : await playerController!
-                            .startPlayer(finishMode: FinishMode.loop);
-                  },
-                  icon: playerController!.playerState.isPlaying
+                  onPressed: () => startStopAudio(),
+                  icon: _isPlaying
                       ? const Icon(Icons.pause)
                       : const Icon(Icons.play_arrow)),
               Expanded(
-                child: AudioFileWaveforms(
-                  size: widget.size,
-                  playerController: playerController!,
-                  playerWaveStyle: const PlayerWaveStyle(
-                    fixedWaveColor: Colors.white54,
-                    liveWaveColor: Colors.white,
-                    // spacing: 6,
-                    waveCap: StrokeCap.butt,
-                  ),
-                ),
-              )
+                  child: PolygonWaveform(
+                invert: true,
+                height: 2,
+                samples: _waveformData,
+                width: 100,
+                inactiveColor: Colors.white,
+                showActiveWaveform: true,
+              ))
             ],
           )),
     );
@@ -90,7 +123,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
 
   @override
   void dispose() {
-    playerController!.dispose();
+    _audioPlayer!.dispose();
     super.dispose();
   }
 }
