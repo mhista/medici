@@ -20,6 +20,11 @@ class EmojiPickerr extends ConsumerStatefulWidget {
 
 class _EmojiPickerrState extends ConsumerState<EmojiPickerr> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDark = PHelperFunctions.isDarkMode(context);
     final emojiColor =

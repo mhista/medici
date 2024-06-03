@@ -14,9 +14,11 @@ import '../../../../utils/constants/colors.dart';
 import '../../../../utils/helpers/helper_functions.dart';
 import '../../../authentication/models/user_model.dart';
 import '../../../personalization/controllers/user_controller.dart';
+import '../../models/message_reply.dart';
 import 'widget/chat_input_field.dart';
 import 'widget/chat_list.dart';
 import 'widget/emoji_picker.dart';
+import 'widget/message_reply_preview.dart';
 
 class ChatRoom extends ConsumerWidget {
   const ChatRoom({
@@ -29,6 +31,8 @@ class ChatRoom extends ConsumerWidget {
     final controller = ref.watch(chatController);
     final isDark = PHelperFunctions.isDarkMode(context);
     final isOnline = ref.watch(checkOnlineStatus(user.id)).value;
+    final messageReply = ref.watch(messageReplyProvider);
+    final isShowMessageReply = messageReply != null;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -112,7 +116,17 @@ class ChatRoom extends ConsumerWidget {
         children: [
           // DAILY TIME
           Expanded(child: ChatList(user: user)),
-          ChatInputField(controller: controller, user: user),
+
+          isShowMessageReply
+              ? MessageReplyPreview(
+                  messageReply: messageReply,
+                  messageOwner: 'Dr ${user.fullName}')
+              : const SizedBox(),
+          ChatInputField(
+            controller: controller,
+            user: user,
+            messageReply: messageReply,
+          ),
           EmojiPickerr(controller: controller)
         ],
       ),

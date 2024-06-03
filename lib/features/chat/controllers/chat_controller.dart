@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:medici/features/chat/models/chat_contact.dart';
 import 'package:medici/features/chat/models/message_model.dart';
+import 'package:medici/features/chat/models/message_reply.dart';
 import 'package:medici/features/chat/repositories/chat_repository.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/enums.dart';
@@ -43,7 +44,9 @@ class ChatController {
 
 // SEND MESSAGE TO USER
   Future<void> sendMessage(
-      {required UserModel receiver, required MessageType type}) async {
+      {required UserModel receiver,
+      required MessageType type,
+      required MessageReply? messageReply}) async {
     try {
       // check internet connection
       final isConnected =
@@ -63,14 +66,22 @@ class ChatController {
       final timeSent = DateTime.now();
       var uuid = const Uuid().v4();
       // SAVE THE MESSAGE IN DATABASE
-      final message = MessageModel(
+      final message = formMessage(
           senderId: user.id,
           receiverId: receiver.id,
           text: messageText,
           type: type.name,
+          messageID: uuid,
           timeSent: timeSent,
-          messageId: uuid,
-          isSeen: false);
+          repliedMessage: messageReply == null ? '' : messageReply.message,
+          repliiedMessageType:
+              messageReply == null ? '' : messageReply.messageEnum,
+          repliedTo: messageReply == null
+              ? ''
+              : messageReply.isMe
+                  ? user.username
+                  : receiver.username);
+
       await chatRepository.sendMessage(message: message);
       // SAVE CHAT CONTACTS
       saveChatContacts(
@@ -85,21 +96,31 @@ class ChatController {
 
 // RECORD VOICE MESSAGE
   void recordMessage(
-      {required UserModel receiver, required String path}) async {
+      {required UserModel receiver,
+      required String path,
+      required MessageReply? messageReply}) async {
     try {
       final user = ref.read(userProvider);
 
       final timeSent = DateTime.now();
       var uuid = const Uuid().v4();
       // SAVE THE MESSAGE IN DATABASE
-      final message = MessageModel(
+      final message = formMessage(
           senderId: user.id,
           receiverId: receiver.id,
           text: path,
           type: MessageType.audio.name,
+          messageID: uuid,
           timeSent: timeSent,
-          messageId: uuid,
-          isSeen: false);
+          repliedMessage: messageReply == null ? '' : messageReply.message,
+          repliiedMessageType:
+              messageReply == null ? '' : messageReply.messageEnum,
+          repliedTo: messageReply == null
+              ? ''
+              : messageReply.isMe
+                  ? user.username
+                  : receiver.username);
+
       await chatRepository.sendMessage(message: message);
       // SAVE CHAT CONTACTS
       saveChatContacts(
@@ -113,7 +134,9 @@ class ChatController {
   }
 
   // UPLOAD IMAGE IN CHAT
-  void sendMessageFile({required UserModel receiver}) async {
+  void sendMessageFile(
+      {required UserModel receiver,
+      required MessageReply? messageReply}) async {
     try {
       final user = ref.read(userProvider);
       final image = await ImagePicker().pickMedia(imageQuality: 70);
@@ -132,14 +155,22 @@ class ChatController {
             image);
 
         // SAVE THE MESSAGE IN DATABASE
-        final message = MessageModel(
+        final message = formMessage(
             senderId: user.id,
             receiverId: receiver.id,
             text: imageuRL,
             type: url ? MessageType.video.name : MessageType.image.name,
+            messageID: uuid,
             timeSent: timeSent,
-            messageId: uuid,
-            isSeen: false);
+            repliedMessage: messageReply == null ? '' : messageReply.message,
+            repliiedMessageType:
+                messageReply == null ? '' : messageReply.messageEnum,
+            repliedTo: messageReply == null
+                ? ''
+                : messageReply.isMe
+                    ? user.username
+                    : receiver.username);
+
         await chatRepository.sendMessage(message: message);
         // SAVE CHAT CONTACTS
         saveChatContacts(
@@ -195,6 +226,29 @@ class ChatController {
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  MessageModel formMessage(
+      {required String senderId,
+      required String receiverId,
+      required String text,
+      required String type,
+      required String messageID,
+      required DateTime timeSent,
+      required String repliedMessage,
+      required String repliiedMessageType,
+      required String repliedTo}) {
+    return MessageModel(
+        senderId: senderId,
+        receiverId: receiverId,
+        text: text,
+        type: type,
+        timeSent: timeSent,
+        messageId: messageID,
+        isSeen: false,
+        repliedMessage: repliedMessage,
+        repliedMessageType: repliiedMessageType,
+        repliedTo: repliedTo);
   }
 
   // RETRIEVE ALL USER CURRENT MESSAGES AS STREAM

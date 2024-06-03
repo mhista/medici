@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:medici/features/chat/models/message_reply.dart';
+import 'package:medici/features/chat/screens/chat_room/widget/message_reply_preview.dart';
 
 import '../../../../../common/widgets/appbar/searchBar.dart';
 import '../../../../../utils/constants/enums.dart';
@@ -13,11 +15,13 @@ class ChatInputField extends ConsumerStatefulWidget {
   const ChatInputField({
     super.key,
     required this.controller,
+    required this.messageReply,
     required this.user,
   });
 
   final ChatController controller;
   final UserModel user;
+  final MessageReply? messageReply;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ChatInputFieldState();
@@ -35,8 +39,9 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
   Widget build(BuildContext context) {
     final isShowEmojiContainer =
         ref.watch(widget.controller.showEmojiContainer);
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0, right: 5),
+      padding: const EdgeInsets.only(bottom: 10.0, right: 5, top: 5),
       child: Row(
         children: [
           Flexible(
@@ -84,15 +89,23 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
                     });
                   }
                 }),
-                hintText: 'Type Something...',
+                hintText: ref.watch(isRecordingProvider)
+                    ? 'recording....'
+                    : 'Type Something...',
                 textFieldWidget: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                        onPressed: () => widget.controller.sendMessageFile(
-                              receiver: widget.user,
-                            ),
+                        onPressed: () {
+                          widget.controller.sendMessageFile(
+                            receiver: widget.user,
+                            messageReply: widget.messageReply,
+                          );
+                          ref
+                              .read(messageReplyProvider.notifier)
+                              .update((state) => null);
+                        },
                         icon: const Icon(Icons.camera_alt)),
                     IconButton(
                         onPressed: () {}, icon: const Icon(Icons.attach_file)),
@@ -103,8 +116,16 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
           ),
           ref.watch(widget.controller.textProvider)
               ? IconButton(
-                  onPressed: () => widget.controller.sendMessage(
-                      receiver: widget.user, type: MessageType.text),
+                  onPressed: () {
+                    widget.controller.sendMessage(
+                        receiver: widget.user,
+                        type: MessageType.text,
+                        messageReply: widget.messageReply);
+                    ref
+                        .read(messageReplyProvider.notifier)
+                        .update((state) => null);
+                    focusNode.unfocus();
+                  },
                   icon: const Icon(Iconsax.send_1))
               : RecorderButton(
                   user: widget.user,

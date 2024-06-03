@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:medici/features/chat/models/message_reply.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -107,7 +108,9 @@ class RecordingController {
   }
 
   Future<void> stopRecording(
-      {required UserModel sender, required UserModel receiver}) async {
+      {required UserModel sender,
+      required UserModel receiver,
+      required MessageReply? messageReply}) async {
     if (!isRecordingInit) {
       return;
     }
@@ -120,9 +123,8 @@ class RecordingController {
         final recordedMessage = await ref
             .read(firebaseStorageHandler)
             .sendRecordFile(senderReceiver, File(path));
-        ref
-            .read(chatController)
-            .recordMessage(receiver: receiver, path: recordedMessage);
+        ref.read(chatController).recordMessage(
+            receiver: receiver, path: recordedMessage, messageReply: null);
       }
       debugPrint(path);
 

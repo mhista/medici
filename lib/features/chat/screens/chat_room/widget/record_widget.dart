@@ -71,7 +71,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
     if (!_isPlaying) {
       _audioPlayer!.play(UrlSource(widget.path));
     } else {
-      _audioPlayer!.stop();
+      _audioPlayer!.pause();
     }
     setState(() {
       _isPlaying = !_isPlaying;
@@ -104,9 +104,7 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
               IconButton(
                   color: Colors.white,
                   onPressed: () => startStopAudio(),
-                  icon: _isPlaying
-                      ? const Icon(Icons.pause)
-                      : const Icon(Icons.play_arrow)),
+                  icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow)),
               Expanded(
                   child: PolygonWaveform(
                 invert: true,

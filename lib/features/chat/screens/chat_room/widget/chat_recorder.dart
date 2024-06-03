@@ -6,35 +6,7 @@ import 'package:medici/features/chat/controllers/recorder_controller.dart';
 import 'package:medici/providers.dart';
 
 import '../../../../authentication/models/user_model.dart';
-
-// class RecorderButton extends StatefulWidget {
-//   const RecorderButton({
-//     super.key,
-//   });
-
-//   @override
-//   State<RecorderButton> createState() => _RecorderButtonState();
-// }
-
-// class _RecorderButtonState extends State<RecorderButton> {
-//   @override
-//   Widget build(BuildContext context) {
-//     final recordController = ref.watch(recorderController);
-//     return Consumer(
-//       builder: (_, WidgetRef ref, __) {
-//         return ref.watch(recordController.isRecording)
-//             ? IconButton(
-//                 onPressed: () => recordController.stopRecording(),
-//                 icon: const Icon(Iconsax.close_circle))
-//             : IconButton(
-//                 onPressed: () => recordController.startRecording(),
-//                 icon: const Icon(Iconsax.microphone));
-//       },
-//     );
-//     // onPressed: () => recordController.startRecording(),
-//     // icon: const Icon(Iconsax.microphone));
-//   }
-// }
+import '../../../models/message_reply.dart';
 
 class RecorderButton extends ConsumerStatefulWidget {
   const RecorderButton({super.key, required this.user});
@@ -46,7 +18,6 @@ class RecorderButton extends ConsumerStatefulWidget {
 
 class _RecorderButtonState extends ConsumerState<RecorderButton> {
   RecordingController? recordingController;
-  bool isRecording = false;
   @override
   void initState() {
     super.initState();
@@ -58,28 +29,41 @@ class _RecorderButtonState extends ConsumerState<RecorderButton> {
   }
 
   void startStopRecording(
-      {required UserModel sender, required UserModel receiver}) {
+      {required UserModel sender,
+      required UserModel receiver,
+      required MessageReply? messageReply}) {
     if (!recordingController!.isRecordingInit) {
       return;
     }
-    if (!isRecording) {
+    if (!ref.read(isRecordingProvider)) {
       recordingController!.startRecording();
     } else {
-      recordingController!.stopRecording(sender: sender, receiver: receiver);
+      recordingController!.stopRecording(
+          sender: sender, receiver: receiver, messageReply: messageReply);
     }
-    setState(() {
-      isRecording = !isRecording;
-    });
+    ref.read(isRecordingProvider.notifier).update((state) => state = !state);
+    // setState(() {
+
+    //   isRecording = !isRecording;
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
     // final recordControler = ref.watch(recorderController);
+    final messageReply = ref.watch(messageReplyProvider);
 
     return IconButton(
-      onPressed: () => startStopRecording(
-          sender: ref.read(userProvider), receiver: widget.user),
-      icon: Icon(isRecording ? Iconsax.close_circle : Iconsax.microphone),
+      onPressed: () {
+        startStopRecording(
+            sender: ref.read(userProvider),
+            receiver: widget.user,
+            messageReply: messageReply);
+        ref.read(messageReplyProvider.notifier).update((state) => null);
+      },
+      icon: Icon(ref.watch(isRecordingProvider)
+          ? Iconsax.close_circle
+          : Iconsax.microphone),
     );
   }
 
@@ -90,3 +74,5 @@ class _RecorderButtonState extends ConsumerState<RecorderButton> {
     super.dispose();
   }
 }
+
+final isRecordingProvider = StateProvider<bool>((ref) => false);

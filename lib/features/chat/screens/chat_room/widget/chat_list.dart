@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:medici/features/chat/models/message_reply.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/enums.dart';
 
@@ -25,6 +26,12 @@ class ChatList extends ConsumerStatefulWidget {
 
 class _ChatListState extends ConsumerState<ChatList> {
   final ScrollController messageController = ScrollController();
+
+  void onMessageSwipe(String message, bool isMe, String messageEnum) {
+    ref.read(messageReplyProvider.notifier).update((state) =>
+        MessageReply(message: message, isMe: isMe, messageEnum: messageEnum));
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = PHelperFunctions.screenWidth(context);
@@ -72,6 +79,13 @@ class _ChatListState extends ConsumerState<ChatList> {
                         : message.type == MessageType.text.name
                             ? screenWidth / 4
                             : 0,
+                    repliedText: message.repliedMessage,
+                    repliedMessageType: message.repliedMessageType,
+                    onLeftSwipe: () => onMessageSwipe(
+                        message.text,
+                        message.receiverId == widget.user.id ? true : false,
+                        message.type),
+                    username: message.repliedTo,
                   ),
                 );
               },
