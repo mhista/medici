@@ -16,11 +16,11 @@ class ChatInputField extends ConsumerStatefulWidget {
     super.key,
     required this.controller,
     required this.messageReply,
-    required this.user,
+    required this.receiver,
   });
 
   final ChatController controller;
-  final UserModel user;
+  final UserModel receiver;
   final MessageReply? messageReply;
 
   @override
@@ -99,7 +99,7 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
                     IconButton(
                         onPressed: () {
                           widget.controller.sendMessageFile(
-                            receiver: widget.user,
+                            receiver: widget.receiver,
                             messageReply: widget.messageReply,
                           );
                           ref
@@ -118,7 +118,7 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
               ? IconButton(
                   onPressed: () {
                     widget.controller.sendMessage(
-                        receiver: widget.user,
+                        receiver: widget.receiver,
                         type: MessageType.text,
                         messageReply: widget.messageReply);
                     ref
@@ -128,7 +128,7 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
                   },
                   icon: const Icon(Iconsax.send_1))
               : RecorderButton(
-                  user: widget.user,
+                  receiver: widget.receiver,
                 )
         ],
       ),

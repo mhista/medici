@@ -109,10 +109,10 @@ class MessageScreen extends StatelessWidget {
                               }).toList();
                               final count = unreadMessages?.length;
                               // CHECKS IF THE USDER IS ONLINE
+
                               final isOnline = ref
                                   .watch(checkOnlineStatus(chat.user2.id))
                                   .value;
-                              // debugPrint(isOnline.toString());
                               return ChatCard(
                                 isOnline: isOnline ?? false,
                                 unreadMessageCount: count != null && count >= 1

@@ -23,14 +23,14 @@ import 'widget/message_reply_preview.dart';
 class ChatRoom extends ConsumerWidget {
   const ChatRoom({
     super.key,
-    required this.user,
+    required this.receiver,
   });
-  final UserModel user;
+  final UserModel receiver;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(chatController);
     final isDark = PHelperFunctions.isDarkMode(context);
-    final isOnline = ref.watch(checkOnlineStatus(user.id)).value;
+    final isOnline = ref.watch(checkOnlineStatus(receiver.id)).value;
     final messageReply = ref.watch(messageReplyProvider);
     final isShowMessageReply = messageReply != null;
 
@@ -60,7 +60,7 @@ class ChatRoom extends ConsumerWidget {
             Stack(
               children: [
                 TitleAndSubTitle(
-                    title: 'Dr ${user.fullName}',
+                    title: 'Dr ${receiver.fullName}',
                     subTitle: isOnline ?? false ? 'Online' : 'Offline'),
                 Positioned(
                     left: 43,
@@ -86,7 +86,8 @@ class ChatRoom extends ConsumerWidget {
             hasIconColor: true,
             color: PColors.light,
             bgColor: PColors.primary,
-            onPressed: () {},
+            onPressed: () =>
+                ref.read(callController).makeCall(receiver, context),
             size: 18,
           ),
           const SizedBox(
@@ -115,16 +116,21 @@ class ChatRoom extends ConsumerWidget {
       body: Column(
         children: [
           // DAILY TIME
-          Expanded(child: ChatList(user: user)),
+          Expanded(
+              child: Stack(
+            children: [
+              ChatList(receiver: receiver),
+            ],
+          )),
 
           isShowMessageReply
               ? MessageReplyPreview(
                   messageReply: messageReply,
-                  messageOwner: 'Dr ${user.fullName}')
+                  messageOwner: 'Dr ${receiver.fullName}')
               : const SizedBox(),
           ChatInputField(
             controller: controller,
-            user: user,
+            receiver: receiver,
             messageReply: messageReply,
           ),
           EmojiPickerr(controller: controller)

@@ -5,25 +5,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/features/chat/models/message_reply.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:record/record.dart';
+
 import 'package:uuid/uuid.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:medici/features/authentication/models/user_model.dart';
 import 'package:medici/providers.dart';
 
 class RecordingController {
-  AudioRecorder? _soundRecorder;
   RecorderController? _recorderController;
-  PlayerController? _playerController;
   final WidgetRef ref;
-  RecordState? _recordState;
-  // Amplitude? _amplitude;
 
   RecordingController({required this.ref}) {
     // INITIALIZE THE SOUND RECORDER
-    _soundRecorder = AudioRecorder();
-    _recordState = RecordState.stop;
+
     _recorderController = RecorderController();
     // _playerController = PlayerController();
     _openAudio();
@@ -32,29 +26,8 @@ class RecordingController {
   bool isRecordingInit = false;
   // prompts user for permission to access the device microphone
   void _openAudio() async {
-    // final status = await Permission.microphone.request();
-    // if (status != PermissionStatus.granted) {
-    //   debugPrint('not granted');
-    //   return;
-    // }
-
-    // final devs = await _soundRecorder!.listInputDevices();
-    // debugPrint(devs.toString());
     if (!await _recorderController!.checkPermission()) {
-      // assign encoder for the audio
-      // const encoder = AudioEncoder.aacLc;
-
-      // check if the encoder is supported
-      // if (!await _isEncoderSupported(encoder)) {
-      //   return;
-      // }
-      // const config = RecordConfig(encoder: encoder, numChannels: 1);
-
-      // record to a file
-      // await startRecording();
       return;
-
-      // _startTimer()
     }
     isRecordingInit = true;
   }
@@ -65,23 +38,6 @@ class RecordingController {
     var uuid = const Uuid().v4();
     return p.join(dir.path, 'flutter_sound_$uuid.m4a');
   }
-
-  // check if encoder is supported
-  // Future<bool> _isEncoderSupported(AudioEncoder encoder) async {
-  //   final isSupported = await _soundRecorder!.isEncoderSupported(encoder);
-
-  //   if (!isSupported) {
-  //     debugPrint('${encoder.name} is not supported on this platform.');
-  //     debugPrint('Supported encoders are:');
-
-  //     for (final e in AudioEncoder.values) {
-  //       if (await _soundRecorder!.isEncoderSupported(e)) {
-  //         debugPrint('- ${encoder.name}');
-  //       }
-  //     }
-  //   }
-  //   return isSupported;
-  // }
 
   Future<void> startRecording() async {
     var path = await _getPath();

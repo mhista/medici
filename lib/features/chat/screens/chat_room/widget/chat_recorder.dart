@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/features/chat/controllers/recorder_controller.dart';
 import 'package:medici/providers.dart';
@@ -9,8 +8,8 @@ import '../../../../authentication/models/user_model.dart';
 import '../../../models/message_reply.dart';
 
 class RecorderButton extends ConsumerStatefulWidget {
-  const RecorderButton({super.key, required this.user});
-  final UserModel user;
+  const RecorderButton({super.key, required this.receiver});
+  final UserModel receiver;
 
   @override
   ConsumerState<RecorderButton> createState() => _RecorderButtonState();
@@ -57,7 +56,7 @@ class _RecorderButtonState extends ConsumerState<RecorderButton> {
       onPressed: () {
         startStopRecording(
             sender: ref.read(userProvider),
-            receiver: widget.user,
+            receiver: widget.receiver,
             messageReply: messageReply);
         ref.read(messageReplyProvider.notifier).update((state) => null);
       },

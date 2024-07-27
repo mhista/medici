@@ -14,6 +14,8 @@ import 'package:medici/utils/helpers/network_manager.dart';
 
 import 'features/authentication/controllers/signup_controller.dart';
 import 'features/authentication/models/user_model.dart';
+import 'features/call/controllers/call_controller.dart';
+import 'features/call/repositories/call_repository.dart';
 import 'features/chat/controllers/chat_controller.dart';
 
 // OBSERVABLE USERMODEL
@@ -84,3 +86,15 @@ final userOnlineState = StateProvider((ref) => false);
 // final recorderController = Provider<RecordingController>((ref) {
 //   return RecordingController(ref: ref);
 // });
+
+// CALL
+final callRepository = Provider((ref) {
+  final db = ref.watch(firestoreProvider);
+  final auth = ref.watch(firebaseAuthProvider);
+  return CallRepository(auth: auth, db: db);
+});
+
+final callController = Provider((ref) {
+  final callRepo = ref.watch(callRepository);
+  return CallController(ref: ref, callRepository: callRepo);
+});

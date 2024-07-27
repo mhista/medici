@@ -1,5 +1,5 @@
 // EMOJI SELECTOR
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+// import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,27 +32,30 @@ class _EmojiPickerrState extends ConsumerState<EmojiPickerr> {
     final isShowEmojiContainer =
         ref.watch(widget.controller.showEmojiContainer);
     return isShowEmojiContainer
-        ? EmojiPicker(
-            config: Config(
-                swapCategoryAndBottomBar: true,
-                height: 310,
-                skinToneConfig:
-                    SkinToneConfig(dialogBackgroundColor: emojiColor),
-                searchViewConfig: SearchViewConfig(backgroundColor: emojiColor),
-                emojiViewConfig:
-                    EmojiViewConfig(columns: 8, backgroundColor: emojiColor),
-                bottomActionBarConfig: BottomActionBarConfig(
-                    enabled: false,
-                    backgroundColor: emojiColor,
-                    buttonColor: emojiColor),
-                categoryViewConfig:
-                    CategoryViewConfig(backgroundColor: emojiColor)),
-            onEmojiSelected: ((category, emoji) {
-              setState(() {
-                widget.controller.text.text =
-                    widget.controller.text.text + emoji.emoji;
-              });
-            }))
+        ? const SizedBox(
+            height: 310,
+          )
+        // EmojiPicker(
+        //     config: Config(
+        //         swapCategoryAndBottomBar: true,
+        //         height: 310,
+        //         skinToneConfig:
+        //             SkinToneConfig(dialogBackgroundColor: emojiColor),
+        //         searchViewConfig: SearchViewConfig(backgroundColor: emojiColor),
+        //         emojiViewConfig:
+        //             EmojiViewConfig(columns: 8, backgroundColor: emojiColor),
+        //         bottomActionBarConfig: BottomActionBarConfig(
+        //             enabled: false,
+        //             backgroundColor: emojiColor,
+        //             buttonColor: emojiColor),
+        //         categoryViewConfig:
+        //             CategoryViewConfig(backgroundColor: emojiColor)),
+        //     onEmojiSelected: ((category, emoji) {
+        //       setState(() {
+        //         widget.controller.text.text =
+        //             widget.controller.text.text + emoji.emoji;
+        //       });
+        //     }))
         : const SizedBox();
   }
 }

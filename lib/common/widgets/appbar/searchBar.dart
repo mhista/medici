@@ -12,7 +12,7 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
       required this.hintText,
       this.useSuffix = false,
       this.useBorder = true,
-      this.hasColor = false,
+      this.hasColor = false, 
       this.radius,
       this.textFieldWidget,
       this.textController,
@@ -53,9 +53,7 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
             filled: true,
             contentPadding: useSuffix
                 ? const EdgeInsets.symmetric(vertical: 15, horizontal: 10)
-                : const EdgeInsets.symmetric(
-                    vertical: 15,
-                  ),
+                : const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
             hintText: hintText,
             hintStyle: Theme.of(context).textTheme.labelMedium,
             suffixIcon: useSuffix || usePrefixSuffix

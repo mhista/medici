@@ -15,10 +15,10 @@ import 'chat_text.dart';
 class ChatList extends ConsumerStatefulWidget {
   const ChatList({
     super.key,
-    required this.user,
+    required this.receiver,
   });
 
-  final UserModel user;
+  final UserModel receiver;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ChatListState();
@@ -35,7 +35,7 @@ class _ChatListState extends ConsumerState<ChatList> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = PHelperFunctions.screenWidth(context);
-    final messages = ref.watch(chatMessagesProvider(widget.user.id));
+    final messages = ref.watch(chatMessagesProvider(widget.receiver.id));
 
     return ListView(shrinkWrap: true, controller: messageController, children: [
       const Center(
@@ -69,7 +69,10 @@ class _ChatListState extends ConsumerState<ChatList> {
                     messageType: message.type,
                     text: message.text,
                     time: PHelperFunctions.getFormattedTime(message.timeSent),
-                    isUser: message.receiverId == widget.user.id ? true : false,
+                    // checks if the current user is the same as the message recepient
+                    // TODO : message.senderId == ref.watch(userProvider).id ? true :false
+                    isUser:
+                        message.receiverId == widget.receiver.id ? true : false,
                     width: message.type == MessageType.text.name
                         ? message.text.length < 10
                             ? screenWidth / 3
@@ -83,7 +86,7 @@ class _ChatListState extends ConsumerState<ChatList> {
                     repliedMessageType: message.repliedMessageType,
                     onLeftSwipe: () => onMessageSwipe(
                         message.text,
-                        message.receiverId == widget.user.id ? true : false,
+                        message.receiverId == widget.receiver.id ? true : false,
                         message.type),
                     username: message.repliedTo,
                   ),

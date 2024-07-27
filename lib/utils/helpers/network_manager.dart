@@ -6,16 +6,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class NetworkManager extends StateNotifier<ConnectivityResult> {
   final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
 
   NetworkManager() : super(ConnectivityResult.none) {
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
   }
 
-  void _updateConnectionStatus(ConnectivityResult result) {
-    state = result;
-    if (result == ConnectivityResult.none) {
+  void _updateConnectionStatus(List<ConnectivityResult> result) {
+    state = result.first;
+    if (state == ConnectivityResult.none) {
       // PLoaders.warningSnackBar(title: 'No internet connection');
     }
   }
@@ -23,7 +23,7 @@ class NetworkManager extends StateNotifier<ConnectivityResult> {
   Future<bool> isConnected() async {
     try {
       final result = await _connectivity.checkConnectivity();
-      return result != ConnectivityResult.none;
+      return result.first != ConnectivityResult.none;
     } on PlatformException catch (_) {
       return false;
     }
