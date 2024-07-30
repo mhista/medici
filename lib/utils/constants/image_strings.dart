@@ -45,4 +45,8 @@ class PImages {
   static const String loading = 'assets/images/lottie/loading.json';
   static const String cloud = 'assets/images/lottie/cloud.json';
   static const String whops = 'assets/images/lottie/whops.json';
+
+  // ringing tones
+  static const String android1 = 'assets/tones/sincere_android.mp3';
+  static const String iphone1 = 'assets/tones/sincere_iphone.m4r';
 }

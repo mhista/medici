@@ -89,6 +89,7 @@ dependencies:
   swipe_to: ^1.0.6
   agora_rtm: ^1.5.9
   agora_rtc_engine: ^6.3.2
+  flutter_ringtone_player: ^4.0.0+3
 
   # app_popup_menu
   # model_bottom_sheet
@@ -112,6 +113,8 @@ flutter:
   assets:
     - assets/images/dp/
     - assets/images/social/
+    - assets/tones/
+
 
     
 # For information on the generic Dart part of this file, see the

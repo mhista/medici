@@ -12,6 +12,8 @@ import 'package:medici/features/call/screens/call_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../providers.dart';
+import "package:http/http.dart" as http;
+import 'dart:convert';
 
 class CallController {
   final Ref ref;
@@ -77,6 +79,22 @@ class CallController {
       ref.read(listProvider.notifier).state = list;
     }
     return num;
+  }
+}
+
+Future<String> getRtcToken(
+    {required String channelName,
+    required String role,
+    required String tokenType,
+    required String uid}) async {
+  String baseUrl = "https://momentous-rings.pipeops.app";
+  final response = await http
+      .get(Uri.parse('$baseUrl/rtc/$channelName/$role/$tokenType/$uid'));
+  if (response.statusCode == 200) {
+    debugPrint(response.body.toString());
+    return jsonDecode(response.body)['rtcToken'];
+  } else {
+    throw Exception('Failed to get token');
   }
 }
 

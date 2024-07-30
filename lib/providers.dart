@@ -1,3 +1,4 @@
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/data/services/firebase_services/firebase_storage_services.dart';
 import 'package:medici/features/authentication/authentication_repository/authentication_repository.dart';
 import 'package:medici/features/authentication/controllers/login_controller.dart';
+import 'package:medici/features/call/agora_events/agora_egine_events.dart';
+import 'package:medici/features/call/controllers/agora_engine_controller.dart';
 import 'package:medici/features/chat/controllers/recorder_controller.dart';
 import 'package:medici/features/chat/repositories/chat_repository.dart';
 import 'package:medici/features/personalization/controllers/user_controller.dart';
@@ -29,7 +32,6 @@ final firestoreProvider = Provider((ref) => FirebaseFirestore.instance);
 final firebaseStorageProvider = Provider((ref) => FirebaseStorage.instance);
 final firebaseStorageHandler = Provider((ref) => PFirebaseStorageServices(
     firebaseStorage: ref.watch(firebaseStorageProvider)));
-
 // AUTHENTICATION REPOSITORY
 final authenticationProvider = Provider(
     (ref) => AuthenticationRepository(auth: ref.read(firebaseAuthProvider)));
@@ -97,4 +99,10 @@ final callRepository = Provider((ref) {
 final callController = Provider((ref) {
   final callRepo = ref.watch(callRepository);
   return CallController(ref: ref, callRepository: callRepo);
+});
+
+// AGORA ENGINE CONTROLLER
+
+final agoraEngineEvents = Provider((ref) {
+  return AgoraEngineEvents();
 });

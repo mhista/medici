@@ -50,6 +50,7 @@ class RoundedIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = PHelperFunctions.isDarkMode(context);
     return Container(
+      alignment: Alignment.center,
       height: height,
       width: width,
       margin: EdgeInsets.only(right: marginRight),
@@ -65,18 +66,17 @@ class RoundedIcon extends StatelessWidget {
           padding: EdgeInsets.all(padding),
           child: Stack(
             children: [
-              Center(
-                child: IconButton(
-                  onPressed: onPressed,
-                  icon: Icon(
-                    iconData,
-                    size: size,
-                    color: hasIconColor
-                        ? color
-                        : isDark
-                            ? PColors.white
-                            : PColors.black,
-                  ),
+              IconButton(
+                padding: EdgeInsets.zero,
+                onPressed: onPressed,
+                icon: Icon(
+                  iconData,
+                  size: size,
+                  color: hasIconColor
+                      ? color
+                      : isDark
+                          ? PColors.white
+                          : PColors.black,
                 ),
               ),
               if (isPositioned)
