@@ -59,8 +59,10 @@ class CallPickupScreen extends ConsumerWidget {
                             color: PColors.primary,
                             isPositioned: false,
                             iconData: Icons.call_outlined,
-                            onPressed: () =>
-                                context.goNamed('video', extra: data))
+                            onPressed: () => context.goNamed(
+                                  'video',
+                                  extra: data,
+                                ))
                       ],
                     )
                   ],

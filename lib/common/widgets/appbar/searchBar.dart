@@ -12,7 +12,7 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
       required this.hintText,
       this.useSuffix = false,
       this.useBorder = true,
-      this.hasColor = false, 
+      this.hasColor = false,
       this.radius,
       this.textFieldWidget,
       this.textController,

@@ -10,11 +10,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Theme.of(context).scaffoldBackgroundColor,
-        statusBarIconBrightness: Brightness.dark
-        // systemStatusBarContrastEnforced: true,
-        ));
     return MaterialApp.router(
       routerConfig: routes,
       builder: (context, child) =>

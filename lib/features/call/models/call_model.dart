@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:medici/features/chat/models/message_model.dart';
 
 class CallModel {
@@ -11,6 +12,7 @@ class CallModel {
   final String receiverName;
   final String callId;
   final bool hasDialled;
+  final int uniqueId;
 
   CallModel(
       {required this.callerId,
@@ -19,7 +21,8 @@ class CallModel {
       required this.receiverId,
       required this.receiverName,
       required this.callId,
-      required this.hasDialled});
+      required this.hasDialled,
+      required this.uniqueId});
 
   static CallModel empty() => CallModel(
       callerId: '',
@@ -28,7 +31,8 @@ class CallModel {
       receiverId: '',
       receiverName: '',
       callId: '',
-      hasDialled: false);
+      hasDialled: false,
+      uniqueId: 0);
 
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
@@ -40,6 +44,7 @@ class CallModel {
     result.addAll({'receiverName': receiverName});
     result.addAll({'callId': callId});
     result.addAll({'hasDialled': hasDialled});
+    result.addAll({'uniqueId': uniqueId});
 
     return result;
   }
@@ -53,6 +58,7 @@ class CallModel {
       receiverName: map['receiverName'] ?? '',
       callId: map['callId'] ?? '',
       hasDialled: map['hasDialled'] ?? false,
+      uniqueId: map['uniqueId']?.toInt() ?? 0,
     );
   }
 
@@ -68,9 +74,15 @@ class CallModel {
         receiverName: map['receiverName'] ?? '',
         callId: map['callId'] ?? '',
         hasDialled: map['hasDialled'] ?? false,
+        uniqueId: map['uniqueId']?.toInt() ?? 0,
       );
     } else {
       return CallModel.empty();
     }
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory CallModel.fromJson(String source) =>
+      CallModel.fromMap(json.decode(source));
 }

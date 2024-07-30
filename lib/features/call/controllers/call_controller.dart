@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +16,7 @@ import '../../../providers.dart';
 class CallController {
   final Ref ref;
   final CallRepository callRepository;
+  final listProvider = StateProvider<List<int>>((ref) => []);
   CallController({required this.ref, required this.callRepository});
 
 // CREATES A CALL DOCUMENT WHEN A CALL IS INITIATED AND IS DELETED WHEN A CALL IS ENDED OR DECLINED
@@ -36,7 +39,8 @@ class CallController {
           receiverId: receiver.id,
           receiverName: receiver.fullName,
           callId: callId,
-          hasDialled: true);
+          hasDialled: true,
+          uniqueId: generateUserId());
       final receiverCallData = CallModel(
           callerId: user.id,
           callerName: user.fullName,
@@ -44,10 +48,14 @@ class CallController {
           receiverId: receiver.id,
           receiverName: receiver.fullName,
           callId: callId,
-          hasDialled: false);
+          hasDialled: false,
+          uniqueId: generateUserId());
       await callRepository
           .makeCall(senderCallData, receiverCallData)
-          .then((data) => context.goNamed('video', extra: senderCallData));
+          .then((data) => context.goNamed(
+                'video',
+                extra: senderCallData,
+              ));
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -55,6 +63,20 @@ class CallController {
 
   Stream<CallModel> getCallStream() {
     return callRepository.getCallStream();
+  }
+
+  // generate random unique id
+  int generateUserId() {
+    final list = ref.read(listProvider);
+    var random = Random();
+    int num = 100 + random.nextInt(900);
+    if (list.contains(num)) {
+      generateUserId();
+    } else {
+      list.add(num);
+      ref.read(listProvider.notifier).state = list;
+    }
+    return num;
   }
 }
 

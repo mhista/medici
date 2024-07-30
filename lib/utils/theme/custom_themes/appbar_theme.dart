@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../constants/colors.dart';
 
@@ -6,6 +7,7 @@ class TAppBarTheme {
   TAppBarTheme._();
 
   static const lightAppBarTheme = AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
       elevation: 0,
       centerTitle: false,
       scrolledUnderElevation: 0,
@@ -16,6 +18,7 @@ class TAppBarTheme {
       titleTextStyle: TextStyle(
           fontSize: 18.0, fontWeight: FontWeight.w600, color: PColors.black));
   static const darkAppBarTheme = AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle.light,
       elevation: 0,
       centerTitle: false,
       scrolledUnderElevation: 0,
