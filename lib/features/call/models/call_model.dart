@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:medici/features/chat/models/message_model.dart';
-
 class CallModel {
   final String callerId;
   final String callerName;
@@ -12,6 +10,7 @@ class CallModel {
   final String receiverName;
   final String callId;
   final bool hasDialled;
+  final bool isVideo;
   final int uniqueId;
 
   CallModel(
@@ -22,6 +21,7 @@ class CallModel {
       required this.receiverName,
       required this.callId,
       required this.hasDialled,
+      required this.isVideo,
       required this.uniqueId});
 
   static CallModel empty() => CallModel(
@@ -32,6 +32,7 @@ class CallModel {
       receiverName: '',
       callId: '',
       hasDialled: false,
+      isVideo: false,
       uniqueId: 0);
 
   Map<String, dynamic> toMap() {
@@ -58,6 +59,7 @@ class CallModel {
       receiverName: map['receiverName'] ?? '',
       callId: map['callId'] ?? '',
       hasDialled: map['hasDialled'] ?? false,
+      isVideo: map['isVideo'] ?? false,
       uniqueId: map['uniqueId']?.toInt() ?? 0,
     );
   }
@@ -74,6 +76,7 @@ class CallModel {
         receiverName: map['receiverName'] ?? '',
         callId: map['callId'] ?? '',
         hasDialled: map['hasDialled'] ?? false,
+        isVideo: map['isVideo'] ?? false,
         uniqueId: map['uniqueId']?.toInt() ?? 0,
       );
     } else {
@@ -85,4 +88,9 @@ class CallModel {
 
   factory CallModel.fromJson(String source) =>
       CallModel.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'CallModel(callerId: $callerId, callerName: $callerName, callerPic: $callerPic, receiverId: $receiverId, receiverName: $receiverName, callId: $callId, hasDialled: $hasDialled, isVideo: $isVideo, uniqueId: $uniqueId)';
+  }
 }

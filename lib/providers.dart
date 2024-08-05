@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medici/data/services/firebase_services/firebase_storage_services.dart';
 import 'package:medici/features/authentication/authentication_repository/authentication_repository.dart';
 import 'package:medici/features/authentication/controllers/login_controller.dart';
@@ -14,13 +15,19 @@ import 'package:medici/features/chat/repositories/chat_repository.dart';
 import 'package:medici/features/personalization/controllers/user_controller.dart';
 import 'package:medici/features/personalization/repositories/user_repository.dart';
 import 'package:medici/utils/helpers/network_manager.dart';
+import 'package:medici/utils/notification/device_notification.dart';
 
 import 'features/authentication/controllers/signup_controller.dart';
 import 'features/authentication/models/user_model.dart';
 import 'features/call/controllers/call_controller.dart';
 import 'features/call/repositories/call_repository.dart';
 import 'features/chat/controllers/chat_controller.dart';
+import 'router.dart';
 
+// GOROUTER PROVIDER
+final goRouterProvider = Provider<GoRouter>((ref) {
+  return routes;
+});
 // OBSERVABLE USERMODEL
 StateProvider<UserModel> userProvider =
     StateProvider<UserModel>((ref) => UserModel.empty());
@@ -32,9 +39,12 @@ final firestoreProvider = Provider((ref) => FirebaseFirestore.instance);
 final firebaseStorageProvider = Provider((ref) => FirebaseStorage.instance);
 final firebaseStorageHandler = Provider((ref) => PFirebaseStorageServices(
     firebaseStorage: ref.watch(firebaseStorageProvider)));
+// final agoraEngine = Provider((ref) => createAgoraRtcEngine());
 // AUTHENTICATION REPOSITORY
 final authenticationProvider = Provider(
     (ref) => AuthenticationRepository(auth: ref.read(firebaseAuthProvider)));
+// NOTIFICATION SERVICE
+final notificationProvider = Provider((ref) => NotificationService(ref: ref));
 
 // CONTROLLERS
 // SIGNUP CONTROLLER
@@ -103,6 +113,6 @@ final callController = Provider((ref) {
 
 // AGORA ENGINE CONTROLLER
 
-final agoraEngineEvents = Provider((ref) {
-  return AgoraEngineEvents();
-});
+// final agoraEngineEvents = Provider((ref) {
+//   return AgoraEngineEvents();
+// });

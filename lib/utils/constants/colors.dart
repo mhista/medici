@@ -17,13 +17,18 @@ class PColors {
         Color(0xfffad0c4),
       ]);
 
+  static const videoGradient = LinearGradient(
+      begin: Alignment.topCenter,
+      end: AlignmentDirectional.bottomCenter,
+      colors: [Color(0xFF6e64e1), Color(0xff272727)]);
+
   // Text Colors
   static const Color textPrimary = Color(0xff333333);
   static const Color textSecondary = Color(0xff6c7570);
   static const Color textWhite = Colors.white;
 
   // Background Colors
-  static const Color dark = Color(0xff272727);
+  static const Color dark = Color(0xFF272727);
   static const Color primaryBackground = Color(0xfff3f5ff);
   static const Color transparent = Colors.transparent;
 

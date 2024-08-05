@@ -7,6 +7,7 @@ import 'package:swipe_to/swipe_to.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/helpers/helper_functions.dart';
+import 'chat_call_message.dart';
 import 'chat_image_message.dart';
 import 'chat_text_message.dart';
 import 'message_reply_container.dart';
@@ -74,8 +75,16 @@ class ChatText extends StatelessWidget {
                             isUser: isUser,
                             isDark: isDark,
                           )
-                        : ChatTextImage(
-                            isUser: isUser, isDark: isDark, text: text),
+                        : messageType == MessageType.videoCall.name ||
+                                messageType == MessageType.voiceCall.name
+                            ? ChatCallContainer(
+                                width: width,
+                                isUser: isUser,
+                                isDark: isDark,
+                                text: text,
+                                type: messageType)
+                            : ChatTextImage(
+                                isUser: isUser, isDark: isDark, text: text),
                 Positioned(
                   bottom: 4,
                   right: 7,

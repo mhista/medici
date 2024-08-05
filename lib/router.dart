@@ -1,30 +1,3 @@
-// // display 2 routes
-// // LOGGED OUT ROUTE
-// // LOGGED IN ROUTE
-
-// import 'package:flutter/material.dart';
-// import 'package:medici/features/authentication/screens/signup.dart';
-// import 'package:medici/features/main_app/screens/chat_room/chat_room.dart';
-// import 'package:medici/features/main_app/screens/home/home.dart';
-// import 'package:medici/features/main_app/screens/home/homeview.dart';
-// import 'package:routemaster/routemaster.dart';
-
-// final loggedOutRoute = RouteMap(
-//   routes: {
-//     "/": (_) => const MaterialPage(child: SignupScreen()),
-//   },
-// );
-// final loggedInRoute = RouteMap(
-//   routes: {
-//     "/": (_) => const MaterialPage(
-//           child: HomeView(),
-//         ),
-//     'chat': (routeData) => const MaterialPage(
-//           child: ChatRoom(),
-//         )
-//   },
-// );
-
 import 'package:go_router/go_router.dart';
 import 'package:medici/features/authentication/models/user_model.dart';
 import 'package:medici/features/call/models/call_model.dart';
@@ -63,6 +36,13 @@ final routes = GoRouter(routes: [
     GoRoute(
         name: 'video',
         path: 'video',
+        builder: ((context, state) {
+          CallModel call = state.extra as CallModel;
+          return CallScreen(call: call);
+        })),
+    GoRoute(
+        name: 'incomingCall',
+        path: 'incomingCall',
         builder: ((context, state) {
           CallModel call = state.extra as CallModel;
           return CallScreen(call: call);

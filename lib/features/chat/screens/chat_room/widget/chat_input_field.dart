@@ -117,7 +117,7 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
           ref.watch(widget.controller.textProvider)
               ? IconButton(
                   onPressed: () {
-                    widget.controller.sendMessage(
+                    widget.controller.sendTextMessage(
                         receiver: widget.receiver,
                         type: MessageType.text,
                         messageReply: widget.messageReply);

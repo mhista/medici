@@ -2,7 +2,7 @@ enum DeviceType { mobile, tablet, desktop }
 
 enum TextSizes { small, medium, large }
 
-enum MessageType { text, image, audio, video, gif }
+enum MessageType { text, image, audio, video, gif, videoCall, voiceCall }
 
 // enhanced enum
 enum MessageEnum {

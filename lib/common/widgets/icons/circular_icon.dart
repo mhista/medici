@@ -1,10 +1,11 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:medici/utils/constants/sizes.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../../utils/helpers/helper_functions.dart';
 
-class PCircularIcon extends StatelessWidget {
+class PCircularIcon extends ConsumerWidget {
   // Custom circular icon with a backgrund
 
   // properties
@@ -20,6 +21,8 @@ class PCircularIcon extends StatelessWidget {
     this.onPressed,
     this.size = PSizes.lg,
     this.boxShadow,
+    this.isChanged = true,
+    this.secondIcon,
   });
 
   final IconData icon;
@@ -27,11 +30,12 @@ class PCircularIcon extends StatelessWidget {
   final double? width, height, size;
   final VoidCallback? onPressed;
   final List<BoxShadow>? boxShadow;
+  final bool isChanged;
+  final IconData? secondIcon;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = PHelperFunctions.isDarkMode(context);
-
     return Container(
       alignment: Alignment.center,
       width: width,
@@ -43,14 +47,22 @@ class PCircularIcon extends StatelessWidget {
                   ? PColors.dark.withOpacity(0.9)
                   : PColors.light.withOpacity(0.9)),
           borderRadius: BorderRadius.circular(100)),
-      child: IconButton(
-          padding: EdgeInsets.zero,
-          onPressed: onPressed,
-          icon: Icon(
-            icon,
-            color: color,
-            size: size,
-          )),
+      child: Consumer(
+        builder: (
+          _,
+          WidgetRef ref,
+          __,
+        ) {
+          return IconButton(
+              padding: EdgeInsets.zero,
+              onPressed: onPressed,
+              icon: Icon(
+                isChanged ? icon : secondIcon,
+                color: color,
+                size: size,
+              ));
+        },
+      ),
     );
   }
 }

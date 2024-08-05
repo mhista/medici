@@ -7,6 +7,12 @@
     <uses-permission  android:name="android.permission.CAMERA"  />
     <uses-permission  android:name="android.permission.MODIFY_AUDIO_SETTINGS"  />
     <uses-permission  android:name="android.permission.ACCESS_NETWORK_STATE"  />
+    <!-- permission for noifications -->
+    <uses-permission  android:name="android.permission.RECEIVE_BOOT_COMPLETED"  />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
     <!-- The Agora SDK requires Bluetooth permissions in case users are using Bluetooth devices.-->
     <uses-permission  android:name="android.permission.BLUETOOTH"  />
 
@@ -19,6 +25,16 @@
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyARJSC5LCdCY6KU41XJGnf-4ct6iQyYGGw" />
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".MainActivity"
             android:exported="true"

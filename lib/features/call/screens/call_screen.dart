@@ -5,24 +5,19 @@ import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:medici/common/widgets/icons/circular_icon.dart';
-import 'package:medici/common/widgets/icons/rounded_icons.dart';
-import 'package:medici/common/widgets/images/circular_images.dart';
-import 'package:medici/config/agora/agora_config.dart';
 import 'package:medici/features/call/controllers/agora_engine_controller.dart';
 import 'package:medici/features/call/models/call_model.dart';
-import 'package:medici/providers.dart';
+import 'package:medici/features/call/screens/call_sender_screen.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/image_strings.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import "package:http/http.dart" as http;
-import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../common/styles/spacing_styles.dart';
 import '../../../common/widgets/containers/rounded_container.dart';
 import 'widgets/call_buttons.dart';
+import 'widgets/user_video_widget.dart';
 
 class CallScreen extends ConsumerStatefulWidget {
   const CallScreen({required this.call, this.isGroupChat = false, super.key});
@@ -67,31 +62,31 @@ class _CallScreenState extends ConsumerState<CallScreen> {
     await [Permission.camera, Permission.microphone].request();
     _engine = createAgoraRtcEngine();
     // create engene
-
-    // _engine = createAgoraRtcEngine();
-    // await _engine.initialize(RtcEngineContext(
-    //     appId: AgoraConfig.appId,
-    //     channelProfile: ChannelProfileType.channelProfileLiveBroadcasting));
-    // _client = await AgoraRtmClient.createInstance(AgoraConfig.appId);
+    await AgoraEngineController.initializeEngine(_engine, ref);
 
     // enable video
     // sets the engine view mode
     // _engine.setChannelProfile(ChannelProfileType.channelProfileCommunication);
-    await AgoraEngineController.initializeEngine(_engine);
 
     // GET TOKEN
     String token = await getRtcToken(
         channelName: widget.call.callId,
         role: 'publisher',
         tokenType: 'uid',
-        uid: '0');
+        uid: widget.call.uniqueId.toString());
 
     // LOGIN CLIENT AND ALLOW THEM TO JOIN CHANNEL
-    // await _client?.login(null, widget.call.uniqueId.toString());
+    // await _client?.login(null,' widget.call.uniqueId.toString()');
     // _channel = await _client?.createChannel(widget.call.callId);
     // await _channel?.join();
-    await AgoraEngineController.joinChannel(widget.call.callId, token, _engine);
-    await AgoraEngineController.enableDisableVideo(_engine);
+    await AgoraEngineController.joinChannel(widget.call, token, _engine);
+    if (widget.call.isVideo) {
+      // checks if its an audio or video call
+      await AgoraEngineController.enableDisableVideo(_engine, ref);
+      ref.read(cameraEnabled.notifier).state = true;
+    }
+    await AgoraEngineController.enableDisableAudio(_engine, ref);
+
     await AgoraEngineController.setClientRole(_engine);
     await AgoraEngineController.startStopPreview(_engine);
 
@@ -101,15 +96,21 @@ class _CallScreenState extends ConsumerState<CallScreen> {
         onJoinChannelSuccess: (RtcConnection connect, int elapsed) {
           // show a popup message
           debugPrint('joined successfully');
+          // ref.read(localUserJoinedProvider.notifier).state = true;
           setState(() {
             _localUserJoined = true;
           });
+          // debugPrint(ref.read(localUserJoinedProvider).toString());
+          // ref.read(localUserJoinedProvider.notifier).state = false;
+          // debugPrint(ref.read(localUserJoinedProvider).toString());
+
           FlutterRingtonePlayer()
               .play(fromAsset: PImages.iphone1, looping: true);
         },
         onUserJoined: (connection, remoteUid, elapsed) {
           setState(() {
-            _remoteUid = remoteUid;
+            if (remoteUid > 0) _remoteUid = remoteUid;
+            debugPrint('remote user joined successfully');
           });
         },
         onTokenPrivilegeWillExpire: (connection, token) {
@@ -122,10 +123,12 @@ class _CallScreenState extends ConsumerState<CallScreen> {
               channelName: widget.call.callId,
               role: 'publisher',
               tokenType: 'uid',
-              uid: '0');
+              uid: widget.call.uniqueId.toString());
           _engine.renewToken(token);
         },
-        onLeaveChannel: (RtcConnection connect, RtcStats stats) {},
+        onLeaveChannel: (RtcConnection connect, RtcStats stats) {
+          // ref.read(localUserJoinedProvider.notifier).state = false;
+        },
         onConnectionStateChanged: (connection, state, reason) {
           debugPrint("$state changed  to $reason");
         },
@@ -161,70 +164,61 @@ class _CallScreenState extends ConsumerState<CallScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final responsive = ResponsiveBreakpoints.of(context);
-
     return Scaffold(
       backgroundColor: PColors.transparent,
-      body: Padding(
-        padding: PSpacingStyle.paddingWithAppBarHeight,
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Center(
-                child: _remoteVideo(),
-              ),
+      body: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Center(
+              child: _remoteVideo(),
             ),
-            Align(
-              alignment: Alignment.topRight,
-              child: TRoundedContainer(
-                borderColor: PColors.primary,
-                backgroundColor: PColors.transparent,
-                showBorder: true,
-                height: 200,
-                width: 130,
-                child: _localUserJoined
-                    ? ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(PSizes.cardRadiusLg),
-                        child: AgoraVideoView(
-                          controller: VideoViewController(
-                            rtcEngine: _engine,
-                            canvas: const VideoCanvas(
-                              uid: 0,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Container(
-                        height: 10,
-                        width: 10,
-                        child: const CircularProgressIndicator.adaptive()),
-              ),
-            ),
-            Positioned(
-              bottom: 90,
-              left: responsive.screenWidth / 10,
+          ),
+          if (_remoteUid != null)
+            Padding(
+              padding: PSpacingStyle.videoePadding,
               child: Align(
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.topRight,
                 child: TRoundedContainer(
-                  margin: const EdgeInsets.only(bottom: PSizes.spaceBtwItems),
-                  shadow: [
-                    BoxShadow(
-                        color: PColors.transparent.withOpacity(0.2),
-                        blurRadius: 15,
-                        spreadRadius: 2)
-                  ],
-                  backgroundColor: PColors.transparent.withOpacity(0.2),
-                  height: 40,
-                  width: 250,
-                  radius: 50,
-                ),
+                    borderColor: PColors.primary,
+                    backgroundColor: PColors.transparent,
+                    showBorder: true,
+                    height: 200,
+                    width: 130,
+                    child: _localUserJoined
+                        ? ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(PSizes.cardRadiusLg),
+                            child: LocalUserVideoView(
+                                engine: _engine,
+                                remoteUid: widget.call.uniqueId,
+                                widget: widget))
+                        : const CircularProgressIndicator(
+                            strokeWidth: 2,
+                          )),
               ),
             ),
-            const CallButtons()
-          ],
-        ),
+          _localUserJoined
+              ? CallButtons(
+                  engine: _engine,
+                )
+              : Align(
+                  alignment: Alignment.bottomCenter,
+                  child: TRoundedContainer(
+                    margin: const EdgeInsets.only(bottom: PSizes.spaceBtwItems),
+                    shadow: [
+                      BoxShadow(
+                          color: PColors.dark.withOpacity(0.7),
+                          blurRadius: 15,
+                          spreadRadius: 2)
+                    ],
+                    backgroundColor: PColors.transparent.withOpacity(0.2),
+                    height: 70,
+                    width: 300,
+                    radius: 50,
+                  ),
+                ),
+        ],
       ),
     );
   }
@@ -236,13 +230,12 @@ class _CallScreenState extends ConsumerState<CallScreen> {
   }
 
   Future<void> _dispose() async {
+    FlutterRingtonePlayer().stop();
     await _engine.leaveChannel();
     await _engine.release();
   }
 
   Widget _remoteVideo() {
-    final responsive = ResponsiveBreakpoints.of(context);
-
     if (_remoteUid != null) {
       return AgoraVideoView(
         controller: VideoViewController.remote(
@@ -251,13 +244,16 @@ class _CallScreenState extends ConsumerState<CallScreen> {
             connection: RtcConnection(channelId: widget.call.callId)),
       );
     } else {
-      return MCircularImage(
-        imageUrl: widget.call.callerPic,
-        isNetworkImage: true,
-        height: responsive.screenHeight / 4,
-        width: responsive.screenWidth / 2,
-        backgroundColor: PColors.transparent,
-      );
+      return !_localUserJoined
+          ? TRoundedContainer(
+              backgroundColor: PColors.dark,
+              gradient: PColors.videoGradient,
+              child: UserVideoWidget(
+                widget: widget,
+              ),
+            )
+          : LocalUserVideoView(
+              engine: _engine, remoteUid: widget.call.uniqueId, widget: widget);
     }
   }
 }

@@ -79,7 +79,7 @@ class RecordingController {
         final recordedMessage = await ref
             .read(firebaseStorageHandler)
             .sendRecordFile(senderReceiver, File(path));
-        ref.read(chatController).recordMessage(
+        ref.read(chatController).sendVoiceNote(
             receiver: receiver, path: recordedMessage, messageReply: null);
       }
       debugPrint(path);

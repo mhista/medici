@@ -86,8 +86,11 @@ class ChatRoom extends ConsumerWidget {
             hasIconColor: true,
             color: PColors.light,
             bgColor: PColors.primary,
-            onPressed: () =>
-                ref.read(callController).makeCall(receiver, context),
+            onPressed: () {
+              ref.read(callController).makeCall(receiver, context, true);
+              ref.read(chatController).sendCallMessage(
+                  receiver: receiver, messageReply: messageReply, type: true);
+            },
             size: 18,
           ),
           const SizedBox(
@@ -106,7 +109,11 @@ class ChatRoom extends ConsumerWidget {
             hasIconColor: true,
             color: PColors.light,
             bgColor: PColors.primary,
-            onPressed: () {},
+            onPressed: () {
+              ref.read(callController).makeCall(receiver, context, false);
+              ref.read(chatController).sendCallMessage(
+                  receiver: receiver, messageReply: messageReply, type: false);
+            },
           ),
           const SizedBox(
             width: PSizes.iconXs,

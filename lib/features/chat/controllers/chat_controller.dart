@@ -43,7 +43,7 @@ class ChatController {
   }
 
 // SEND MESSAGE TO USER
-  Future<void> sendMessage(
+  Future<void> sendTextMessage(
       {required UserModel receiver,
       required MessageType type,
       required MessageReply? messageReply}) async {
@@ -95,7 +95,7 @@ class ChatController {
   }
 
 // RECORD VOICE MESSAGE
-  void recordMessage(
+  void sendVoiceNote(
       {required UserModel receiver,
       required String path,
       required MessageReply? messageReply}) async {
@@ -185,6 +185,57 @@ class ChatController {
     }
   }
 
+  // SEND A MESSAGE WHEN A USER CALLS
+  void sendCallMessage(
+      {required UserModel receiver,
+      required MessageReply? messageReply,
+      required bool type}) async {
+    try {
+      // check internet connection
+      final isConnected =
+          await ref.watch(networkService.notifier).isConnected();
+      if (!isConnected) {
+        return;
+      }
+
+      final messageText = type == true ? "Video call" : "Voice call";
+      // clear the textcontroller
+      dispose();
+
+      final user = ref.read(userProvider);
+      final timeSent = DateTime.now();
+      var uuid = const Uuid().v4();
+      // SAVE THE MESSAGE IN DATABASE
+      final message = formMessage(
+          senderId: user.id,
+          receiverId: receiver.id,
+          text: messageText,
+          type: type == true
+              ? MessageType.videoCall.name
+              : MessageType.voiceCall.name,
+          messageID: uuid,
+          timeSent: timeSent,
+          repliedMessage: messageReply == null ? '' : messageReply.message,
+          repliiedMessageType:
+              messageReply == null ? '' : messageReply.messageEnum,
+          repliedTo: messageReply == null
+              ? ''
+              : messageReply.isMe
+                  ? user.username
+                  : receiver.username);
+
+      await chatRepository.sendMessage(message: message);
+      // SAVE CHAT CONTACTS
+      saveChatContacts(
+          timeSent: timeSent,
+          receiver: receiver,
+          sender: user,
+          message: message);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   // SAVE THE MESSAGE AS A CHAT CONTACT TO BE SHOWN ON THE CHAT SCREEN
   Future<void> saveChatContacts(
       {required DateTime timeSent,
@@ -203,7 +254,11 @@ class ChatController {
                     ? '🔉 Audio'
                     : message.type == MessageType.gif.name
                         ? 'GIF'
-                        : message.text,
+                        : message.type == MessageType.videoCall.name
+                            ? "📹 Video call"
+                            : message.type == MessageType.voiceCall.name
+                                ? "📞 Voice call"
+                                : message.text,
         user2: receiver,
         user1: sender,
       );
@@ -218,7 +273,11 @@ class ChatController {
                       ? '🔉 Audio'
                       : message.type == MessageType.gif.name
                           ? 'GIF'
-                          : message.text,
+                          : message.type == MessageType.videoCall.name
+                              ? "📹 Video call"
+                              : message.type == MessageType.voiceCall.name
+                                  ? "📞 Voice call"
+                                  : message.text,
           user2: sender,
           user1: receiver);
       await chatRepository.saveChatContacts(
@@ -281,23 +340,25 @@ class ChatController {
 }
 
 // CHAT CONTROLLER METHOD PROVIDERS
+// stream provider to get the last message sent to a user
 final chatContactProvider = StreamProvider.autoDispose((ref) {
   final chatControllerr = ref.watch(chatController);
   return chatControllerr.getUserChatContacts();
 });
 
+//  stream provider to get all user messages
 final chatMessagesProvider =
     StreamProvider.autoDispose.family((ref, String id) {
   final chatControllerr = ref.watch(chatController);
   return chatControllerr.getAllUserMessages(id);
 });
 
+// stream provider to get all uneplied messages
 final unrepliedMessagesProvider =
     StreamProvider.autoDispose.family((ref, String id) {
   final chatControllerr = ref.watch(chatController);
   return chatControllerr.unrepliedMessages(id);
 });
-
 
 // final hasNoText =
 //     StreamProvider.autoDispose.family((ref) {

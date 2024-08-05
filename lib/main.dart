@@ -3,13 +3,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/firebase_options.dart';
-
+import 'package:medici/utils/notification/device_notification.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'app.dart';
 
 Future<void> main() async {
   //   Add Widgets Binding
   // final WidgetsBinding widgetsBinding =
   WidgetsFlutterBinding.ensureInitialized();
+
+  // initialize the timezone
+  tz.initializeTimeZones();
   // Init local storage
   // await GetStorage.init();
   // Todo: init payment methods

@@ -2,13 +2,14 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medici/features/authentication/models/user_model.dart';
 import 'package:medici/features/call/models/call_model.dart';
 import 'package:medici/features/call/repositories/call_repository.dart';
 import 'package:medici/features/call/screens/call_screen.dart';
+import 'package:medici/utils/notification/device_notification.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../providers.dart';
@@ -19,10 +20,12 @@ class CallController {
   final Ref ref;
   final CallRepository callRepository;
   final listProvider = StateProvider<List<int>>((ref) => []);
+
   CallController({required this.ref, required this.callRepository});
 
 // CREATES A CALL DOCUMENT WHEN A CALL IS INITIATED AND IS DELETED WHEN A CALL IS ENDED OR DECLINED
-  void makeCall(UserModel receiver, BuildContext context) async {
+  void makeCall(UserModel receiver, BuildContext context, bool isVideo,
+      {bool checked = false}) async {
     try {
       // check internet connection
       final isConnected =
@@ -42,7 +45,8 @@ class CallController {
           receiverName: receiver.fullName,
           callId: callId,
           hasDialled: true,
-          uniqueId: generateUserId());
+          isVideo: isVideo,
+          uniqueId: 0);
       final receiverCallData = CallModel(
           callerId: user.id,
           callerName: user.fullName,
@@ -51,13 +55,27 @@ class CallController {
           receiverName: receiver.fullName,
           callId: callId,
           hasDialled: false,
-          uniqueId: generateUserId());
+          isVideo: isVideo,
+          uniqueId: 0);
       await callRepository
           .makeCall(senderCallData, receiverCallData)
-          .then((data) => context.goNamed(
-                'video',
-                extra: senderCallData,
-              ));
+          .then((data) {
+        if (senderCallData.callerId == user.id) {
+          context.goNamed(
+            'video',
+            extra: senderCallData,
+          );
+
+          // schedule notification for future
+          // NotificationService.scheduleNotification("New notification",
+          //     "check it out", DateTime.now().add(const Duration(minutes: 10)));
+        } else if (senderCallData.receiverId == user.id) {
+          context.goNamed(
+            'incomingCall',
+            extra: senderCallData,
+          );
+        }
+      });
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -68,18 +86,37 @@ class CallController {
   }
 
   // generate random unique id
-  int generateUserId() {
+  int generateUserId({int numb = 0}) {
     final list = ref.read(listProvider);
-    var random = Random();
-    int num = 100 + random.nextInt(900);
+    int num = numb;
     if (list.contains(num)) {
-      generateUserId();
+      num++;
+      generateUserId(numb: num);
     } else {
       list.add(num);
       ref.read(listProvider.notifier).state = list;
     }
     return num;
   }
+
+  void goToCallScreen(NotificationResponse response) {
+    if (response.actionId == "pick") {
+      final call = jsonDecode(response.payload!);
+      CallModel data = CallModel.fromMap(call);
+      ref.read(goRouterProvider).goNamed(
+            'video',
+            extra: data,
+          );
+    }
+  }
+
+  // factory CallController.goTo(CallModel data) {
+  //   ref.read(goRouterProvider).goNamed(
+  //         'video',
+  //         extra: data,
+  //       );
+  //   return null;
+  // }
 }
 
 Future<String> getRtcToken(
