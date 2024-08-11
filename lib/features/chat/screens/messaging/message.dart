@@ -15,6 +15,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../utils/helpers/helper_functions.dart';
 import '../../controllers/chat_controller.dart';
+import '../chat_room/chat_room.dart';
 
 class MessageScreen extends StatelessWidget {
   const MessageScreen({super.key});
@@ -108,8 +109,8 @@ class MessageScreen extends StatelessWidget {
                                 return e.receiverId == chat.user1.id;
                               }).toList();
                               final count = unreadMessages?.length;
-                              // CHECKS IF THE USDER IS ONLINE
 
+                              // CHECKS IF THE USDER IS ONLINE
                               final isOnline = ref
                                   .watch(checkOnlineStatus(chat.user2.id))
                                   .value;
@@ -127,6 +128,9 @@ class MessageScreen extends StatelessWidget {
                                   ref.watch(chatController).markAsRead(
                                       unreadMessages!, chat.user2.id);
                                   context.goNamed('chat', extra: chat.user2);
+                                  // ref
+                                  // .read(loadingCompleteProvider.notifier)
+                                  // .state = false;
                                 },
                                 time: PHelperFunctions.getFormattedTime(
                                     chat.timeSent),

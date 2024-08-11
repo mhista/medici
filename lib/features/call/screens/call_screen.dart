@@ -16,6 +16,9 @@ import "package:http/http.dart" as http;
 
 import '../../../common/styles/spacing_styles.dart';
 import '../../../common/widgets/containers/rounded_container.dart';
+import '../../../providers.dart';
+import '../../chat/screens/chat_room/chat_room.dart';
+import '../controllers/call_controller.dart';
 import 'widgets/call_buttons.dart';
 import 'widgets/user_video_widget.dart';
 
@@ -60,7 +63,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
 
   Future<void> initAgora() async {
     await [Permission.camera, Permission.microphone].request();
-    _engine = createAgoraRtcEngine();
+    _engine = ref.read(agoraEngine);
     // create engene
     await AgoraEngineController.initializeEngine(_engine, ref);
 
@@ -82,13 +85,12 @@ class _CallScreenState extends ConsumerState<CallScreen> {
     await AgoraEngineController.joinChannel(widget.call, token, _engine);
     if (widget.call.isVideo) {
       // checks if its an audio or video call
-      await AgoraEngineController.enableDisableVideo(_engine, ref);
+      await AgoraEngineController.enableDisableVideo(_engine);
       ref.read(cameraEnabled.notifier).state = true;
     }
-    await AgoraEngineController.enableDisableAudio(_engine, ref);
-
-    await AgoraEngineController.setClientRole(_engine);
+    // await AgoraEngineController.enableDisableAudio(_engine, ref);
     await AgoraEngineController.startStopPreview(_engine);
+    await AgoraEngineController.setClientRole(_engine);
 
     // SETUP CALLBACKS FOR RTC ENGINE
     _engine.registerEventHandler(
@@ -103,14 +105,13 @@ class _CallScreenState extends ConsumerState<CallScreen> {
           // debugPrint(ref.read(localUserJoinedProvider).toString());
           // ref.read(localUserJoinedProvider.notifier).state = false;
           // debugPrint(ref.read(localUserJoinedProvider).toString());
-
-          FlutterRingtonePlayer()
-              .play(fromAsset: PImages.iphone1, looping: true);
         },
         onUserJoined: (connection, remoteUid, elapsed) {
+          // debugPrint(remoteUid.toString());
           setState(() {
             if (remoteUid > 0) _remoteUid = remoteUid;
             debugPrint('remote user joined successfully');
+            FlutterRingtonePlayer().stop();
           });
         },
         onTokenPrivilegeWillExpire: (connection, token) {
@@ -164,6 +165,8 @@ class _CallScreenState extends ConsumerState<CallScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final callModel = ref.watch(callModelProvider);
+    // if (callModel)
     return Scaffold(
       backgroundColor: PColors.transparent,
       body: Stack(
@@ -191,7 +194,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
                                 BorderRadius.circular(PSizes.cardRadiusLg),
                             child: LocalUserVideoView(
                                 engine: _engine,
-                                remoteUid: widget.call.uniqueId,
+                                remoteUid: _remoteUid,
                                 widget: widget))
                         : const CircularProgressIndicator(
                             strokeWidth: 2,
@@ -201,6 +204,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
           _localUserJoined
               ? CallButtons(
                   engine: _engine,
+                  call: widget.call,
                 )
               : Align(
                   alignment: Alignment.bottomCenter,
@@ -224,15 +228,18 @@ class _CallScreenState extends ConsumerState<CallScreen> {
   }
 
   @override
+  void deactivate() {
+    _dispose();
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     super.dispose();
-    _dispose();
   }
 
   Future<void> _dispose() async {
-    FlutterRingtonePlayer().stop();
-    await _engine.leaveChannel();
-    await _engine.release();
+    await AgoraEngineController.endCall(_engine, ref, widget.call);
   }
 
   Widget _remoteVideo() {
@@ -250,10 +257,11 @@ class _CallScreenState extends ConsumerState<CallScreen> {
               gradient: PColors.videoGradient,
               child: UserVideoWidget(
                 widget: widget,
+                remoteUid: _remoteUid,
               ),
             )
           : LocalUserVideoView(
-              engine: _engine, remoteUid: widget.call.uniqueId, widget: widget);
+              engine: _engine, remoteUid: _remoteUid, widget: widget);
     }
   }
 }

@@ -29,7 +29,7 @@ class LocalUserVideoView extends ConsumerWidget {
       children: [
         TRoundedContainer(
           // backgroundColor: PColors.transparent,
-          child: ref.watch(enableVideo)
+          child: ref.watch(muteVideo)
               ? AgoraVideoView(
                   controller: VideoViewController(
                     rtcEngine: _engine,
@@ -45,10 +45,15 @@ class LocalUserVideoView extends ConsumerWidget {
                   gradient: PColors.videoGradient,
                   child: UserVideoWidget(
                     widget: widget,
+                    remoteUid: _remoteUid,
                   ),
                 ),
         ),
-        if (_remoteUid == null) UserVideoWidget(widget: widget)
+        if (_remoteUid == null)
+          UserVideoWidget(
+            widget: widget,
+            remoteUid: _remoteUid,
+          )
       ],
     );
   }

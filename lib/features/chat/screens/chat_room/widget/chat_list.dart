@@ -10,6 +10,7 @@ import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/helpers/helper_functions.dart';
 import '../../../../authentication/models/user_model.dart';
 import '../../../controllers/chat_controller.dart';
+import '../chat_room.dart';
 import 'chat_text.dart';
 
 class ChatList extends ConsumerStatefulWidget {
@@ -54,6 +55,8 @@ class _ChatListState extends ConsumerState<ChatList> {
                   messageController.position.maxScrollExtent,
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.linear);
+              // ref.read(loadingCompleteProvider.notifier).state = true;
+              // debugPrint(ref.read(loadingCompleteProvider).toString());
             });
             return ListView.builder(
               shrinkWrap: true,

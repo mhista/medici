@@ -79,8 +79,10 @@ class NotificationService {
       String? channelId,
       String? description,
       String? category,
-      required bool ongoing,
-      int timeOutAfter = 5000,
+      bool ongoing = false,
+      bool enableLights = false,
+      bool enableVibration = false,
+      required int timeOutAfter,
       required String actionId,
       required int notificationId,
       List<AndroidNotificationAction>? notificationActions}) async {
@@ -91,6 +93,9 @@ class NotificationService {
             priority: Priority.high,
             timeoutAfter: timeOutAfter,
             ongoing: ongoing,
+            enableLights: enableLights,
+            enableVibration: enableVibration,
+            // ledColor: ,
             actions: notificationActions),
         iOS: const DarwinNotificationDetails());
     await flutterLocalNotificationsPlugin.show(

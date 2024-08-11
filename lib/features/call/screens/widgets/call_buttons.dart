@@ -11,13 +11,16 @@ import '../../../../common/widgets/containers/rounded_container.dart';
 import '../../../../common/widgets/icons/circular_icon.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../models/call_model.dart';
 
 class CallButtons extends ConsumerWidget {
   const CallButtons({
     required this.engine,
+    required this.call,
     super.key,
   });
   final RtcEngine engine;
+  final CallModel call;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Align(
@@ -55,9 +58,9 @@ class CallButtons extends ConsumerWidget {
                 icon: Icons.videocam,
                 color: PColors.light,
                 secondIcon: Icons.videocam_off_rounded,
-                isChanged: ref.watch(enableVideo),
+                isChanged: ref.watch(muteVideo),
                 onPressed: () {
-                  AgoraEngineController.enableDisableVideo(engine, ref);
+                  AgoraEngineController.muteUnmuteVideo(engine, ref);
                 }),
             PCircularIcon(
                 width: 50,
@@ -65,17 +68,17 @@ class CallButtons extends ConsumerWidget {
                 backgroundColor: Colors.red,
                 icon: Iconsax.call5,
                 color: PColors.light,
-                onPressed: () {
-                  context.pop();
+                onPressed: () async {
+                  await AgoraEngineController.endCall(engine, ref, call);
                 }),
             PCircularIcon(
                 backgroundColor: PColors.transparent,
-                isChanged: ref.watch(enableAudio),
+                isChanged: ref.watch(muteAudio),
                 icon: Iconsax.microphone5,
                 secondIcon: Iconsax.microphone_slash5,
                 color: PColors.light,
                 onPressed: () {
-                  AgoraEngineController.enableDisableAudio(engine, ref);
+                  AgoraEngineController.muteUnmuteAudio(engine, ref);
                 }),
             PCircularIcon(
                 backgroundColor: PColors.transparent,

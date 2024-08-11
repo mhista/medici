@@ -11,6 +11,7 @@ class CallModel {
   final String callId;
   final bool hasDialled;
   final bool isVideo;
+  final bool callEnded;
   final int uniqueId;
 
   CallModel(
@@ -22,6 +23,7 @@ class CallModel {
       required this.callId,
       required this.hasDialled,
       required this.isVideo,
+      required this.callEnded,
       required this.uniqueId});
 
   static CallModel empty() => CallModel(
@@ -32,6 +34,7 @@ class CallModel {
       receiverName: '',
       callId: '',
       hasDialled: false,
+      callEnded: false,
       isVideo: false,
       uniqueId: 0);
 
@@ -59,6 +62,7 @@ class CallModel {
       receiverName: map['receiverName'] ?? '',
       callId: map['callId'] ?? '',
       hasDialled: map['hasDialled'] ?? false,
+      callEnded: map['callEnded'] ?? false,
       isVideo: map['isVideo'] ?? false,
       uniqueId: map['uniqueId']?.toInt() ?? 0,
     );
@@ -76,6 +80,7 @@ class CallModel {
         receiverName: map['receiverName'] ?? '',
         callId: map['callId'] ?? '',
         hasDialled: map['hasDialled'] ?? false,
+        callEnded: map['callEnded'] ?? false,
         isVideo: map['isVideo'] ?? false,
         uniqueId: map['uniqueId']?.toInt() ?? 0,
       );
@@ -91,6 +96,6 @@ class CallModel {
 
   @override
   String toString() {
-    return 'CallModel(callerId: $callerId, callerName: $callerName, callerPic: $callerPic, receiverId: $receiverId, receiverName: $receiverName, callId: $callId, hasDialled: $hasDialled, isVideo: $isVideo, uniqueId: $uniqueId)';
+    return 'CallModel(callerId: $callerId, callerName: $callerName, callerPic: $callerPic, receiverId: $receiverId, receiverName: $receiverName, callId: $callId, hasDialled: $hasDialled, isVideo: $isVideo, callEnded: $callEnded, uniqueId: $uniqueId)';
   }
 }

@@ -1,30 +1,33 @@
-import 'dart:math';
+import 'dart:convert';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:medici/features/authentication/models/user_model.dart';
 import 'package:medici/features/call/models/call_model.dart';
 import 'package:medici/features/call/repositories/call_repository.dart';
-import 'package:medici/features/call/screens/call_screen.dart';
-import 'package:medici/utils/notification/device_notification.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../providers.dart';
-import "package:http/http.dart" as http;
-import 'dart:convert';
+import '../../../utils/constants/image_strings.dart';
+import '../../chat/screens/chat_room/chat_room.dart';
+
+final callModelProvider = StateProvider<CallModel>((ref) => CallModel.empty());
+final listProvider = StateProvider<List<int>>((ref) => []);
+// checks to know when the call has ended in the receivers end
+final callEnded = StateProvider<bool>((ref) => true);
 
 class CallController {
   final Ref ref;
   final CallRepository callRepository;
-  final listProvider = StateProvider<List<int>>((ref) => []);
 
   CallController({required this.ref, required this.callRepository});
 
 // CREATES A CALL DOCUMENT WHEN A CALL IS INITIATED AND IS DELETED WHEN A CALL IS ENDED OR DECLINED
-  void makeCall(UserModel receiver, BuildContext context, bool isVideo,
+  Future<void> makeCall(UserModel receiver, BuildContext context, bool isVideo,
       {bool checked = false}) async {
     try {
       // check internet connection
@@ -46,7 +49,8 @@ class CallController {
           callId: callId,
           hasDialled: true,
           isVideo: isVideo,
-          uniqueId: 0);
+          uniqueId: 0,
+          callEnded: false);
       final receiverCallData = CallModel(
           callerId: user.id,
           callerName: user.fullName,
@@ -56,26 +60,24 @@ class CallController {
           callId: callId,
           hasDialled: false,
           isVideo: isVideo,
-          uniqueId: 0);
-      await callRepository
-          .makeCall(senderCallData, receiverCallData)
-          .then((data) {
-        if (senderCallData.callerId == user.id) {
-          context.goNamed(
-            'video',
-            extra: senderCallData,
-          );
+          uniqueId: 0,
+          callEnded: false);
+      await callRepository.makeCall(senderCallData, receiverCallData);
+      FlutterRingtonePlayer().play(fromAsset: PImages.iphone1, looping: true);
 
-          // schedule notification for future
-          // NotificationService.scheduleNotification("New notification",
-          //     "check it out", DateTime.now().add(const Duration(minutes: 10)));
-        } else if (senderCallData.receiverId == user.id) {
-          context.goNamed(
-            'incomingCall',
-            extra: senderCallData,
-          );
-        }
-      });
+      //     context.goNamed(
+      //       'video',
+      //       extra: senderCallData,
+      //     );
+      //     .then((data) {
+      //   // ref.read(callModelProvider.notifier).state = senderCallData;
+
+      //   i
+      //     // schedule notification for future
+      //     // NotificationService.scheduleNotification("New notification",
+      //     //     "check it out", DateTime.now().add(const Duration(minutes: 10)));
+      //   }
+      // });
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -99,24 +101,49 @@ class CallController {
     return num;
   }
 
-  void goToCallScreen(NotificationResponse response) {
+  void goToCallScreen(NotificationResponse response) async {
+    final isConnected = await ref.watch(networkService.notifier).isConnected();
+    if (!isConnected) {
+      return;
+    }
     if (response.actionId == "pick") {
       final call = jsonDecode(response.payload!);
       CallModel data = CallModel.fromMap(call);
-      ref.read(goRouterProvider).goNamed(
-            'video',
-            extra: data,
-          );
+      ref.read(callEnded.notifier).state = false;
+      debugPrint(ref.read(callEnded).toString());
+      FlutterRingtonePlayer().stop();
+      if (data.receiverId == ref.read(userProvider).id) {
+        ref.read(goRouterProvider).goNamed(
+              'chat',
+              extra: ref.read(userProvider),
+            );
+      }
+    }
+    if (response.actionId == "decline") {
+      final call = jsonDecode(response.payload!);
+      CallModel data = CallModel.fromMap(call);
+      endCall(data.callerId, data.receiverId, true);
     }
   }
 
-  // factory CallController.goTo(CallModel data) {
-  //   ref.read(goRouterProvider).goNamed(
-  //         'video',
-  //         extra: data,
-  //       );
-  //   return null;
-  // }
+  void endCall(String callerId, String receiverId, bool shouldPop) async {
+    FlutterRingtonePlayer().stop();
+    ref.read(callEnded.notifier).state = true;
+    // if (receiverId == ref.read(userProvider).id) {
+    //   ref.read(goRouterProvider).pop();
+    // }
+    debugPrint(ref.read(callEnded).toString());
+    await callRepository.deleteCall(callerId, receiverId);
+    ref.read(chatController).getAllUserMessages(receiverId);
+
+    // if (shouldPop) {
+    //   if (ref.read(userProvider).isOnline &&
+    //       callerId == ref.read(userProvider).id) {
+    //     ref.read(goRouterProvider).pop();
+    //   }
+    // }
+    // ref.read(callModelProvider.notifier).state = CallModel.empty();
+  }
 }
 
 Future<String> getRtcToken(

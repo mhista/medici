@@ -92,6 +92,7 @@ dependencies:
   flutter_ringtone_player: ^4.0.0+3
   flutter_local_notifications: ^17.2.1+2
   timezone: ^0.9.4
+  emoji_picker_flutter: ^2.2.0
 
   # app_popup_menu
   # model_bottom_sheet
