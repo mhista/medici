@@ -12,16 +12,16 @@ class PTexts {
   static const String chatSearchText = 'Search, eg. Dr';
 
 //   OnBoarding Texts
-  static const String onBoardingTitle1 = "choose your product";
-  static const String onBoardingTitle2 = "select payment method";
-  static const String onBoardingTitle3 = "Deliver at your doorstep";
+  static const String onBoardingTitle1 = "Access Expert Care Anywhere";
+  static const String onBoardingTitle2 = "Your Health, Your Way";
+  static const String onBoardingTitle3 = "Your Health Data, Secured";
 
   static const String onBoardingSubTitle1 =
-      "Welcome to a World of limitless choice - Your Perfect Product Awaits";
+      "Connect with certified doctors across the globe, no matter where you are. Receive expert medical advice, consultations, and personalized care at your convenience, all from the comfort of your home.";
   static const String onBoardingSubTitle2 =
-      "For Seamless Transaction, Choose Your Payment Path - Your Convenience, Our Priority";
+      "Take control of your health journey with easy appointment scheduling, seamless communication with healthcare providers, and personalized treatment plans tailored to your unique needs.";
   static const String onBoardingSubTitle3 =
-      "From Our Doorstep to Yours - Swift, Secure, and Contactless Delivery";
+      "Your health information is safe with us. Enjoy secure and private access to all your medical records and consultations, backed by state-of-the-art encryption to protect your data at every step.";
 
 // home
   static const String homeAppBarTitle = "Hi, Diwe";

@@ -11,7 +11,7 @@ class ProfileImage1 extends StatelessWidget {
       required this.image,
       this.imageSize = 50,
       this.radius = 10,
-      this.fit = BoxFit.fill,
+      this.fit = BoxFit.contain,
       this.errorImage = PImages.dp2});
   final bool isNetworkImage;
   final String image, errorImage;

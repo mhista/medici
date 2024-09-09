@@ -54,7 +54,7 @@ dependencies:
   
   intl: ^0.19.0
   
-  shared_preferences: ^2.2.2
+  # shared_preferences: ^2.2.2
   collection: ^1.18.0
   
   lottie: ^3.1.0
@@ -72,7 +72,7 @@ dependencies:
   google_maps_flutter: ^2.5.3
   fab_circular_menu_plus: ^0.0.2
   flutter_polyline_points: ^2.0.0
-  flip_card: ^0.7.0
+  # flip_card: ^0.7.0
   go_router: ^14.2.1
   envied: ^0.5.4+1
   envied_generator: ^0.5.4+1
@@ -93,6 +93,13 @@ dependencies:
   flutter_local_notifications: ^17.2.1+2
   timezone: ^0.9.4
   emoji_picker_flutter: ^2.2.0
+  flutter_datetime_picker_plus: ^2.2.0
+  flutter_credit_card: ^4.0.1
+  u_credit_card: ^1.3.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  hive_generator: ^2.0.1
+  smooth_page_indicator: ^1.2.0+3
 
   # app_popup_menu
   # model_bottom_sheet
@@ -102,6 +109,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.4.9
+  
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -114,8 +122,16 @@ flutter:
 
   uses-material-design: true
   assets:
+    - assets/images/logo/
     - assets/images/dp/
-    - assets/images/social/
+    - assets/images/social/ 
+    - assets/lottie/
+    - assets/animations/
+    - assets/images/icons/
+    - assets/images/hospital/
+    - assets/images/icons/payment_methods/
+
+
     - assets/tones/
 
 

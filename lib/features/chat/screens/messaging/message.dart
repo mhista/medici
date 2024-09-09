@@ -17,11 +17,11 @@ import '../../../../utils/helpers/helper_functions.dart';
 import '../../controllers/chat_controller.dart';
 import '../chat_room/chat_room.dart';
 
-class MessageScreen extends StatelessWidget {
+class MessageScreen extends ConsumerWidget {
   const MessageScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = PHelperFunctions.isDarkMode(context);
     final responseive = ResponsiveBreakpoints.of(context);
 
@@ -74,18 +74,19 @@ class MessageScreen extends StatelessWidget {
                           const SizedBox(
                             height: PSizes.spaceBtwSections,
                           ),
-                          SizedBox(
-                            width: responseive.screenWidth / 2,
-                            child: ElevatedButton(
-                                onPressed: () => context.goNamed('doctors'),
-                                child: Text(
-                                  'View Available Doctors',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .apply(color: Colors.white),
-                                )),
-                          )
+                          if (!ref.read(userProvider).isDoctor)
+                            SizedBox(
+                              width: responseive.screenWidth / 2,
+                              child: ElevatedButton(
+                                  onPressed: () => context.goNamed('doctors'),
+                                  child: Text(
+                                    'View Available Doctors',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .apply(color: Colors.white),
+                                  )),
+                            )
                         ],
                       );
                     }
@@ -120,14 +121,19 @@ class MessageScreen extends StatelessWidget {
                                     ? count.toString()
                                     : '',
                                 color: isDark ? PColors.dark : PColors.light,
-                                title: 'Dr ${chat.user2.fullName}',
+                                title: chat.user2.isDoctor
+                                    ? 'Dr ${chat.user2.fullName}'
+                                    : chat.user2.fullName,
                                 subTitle: chat.lastMessage,
                                 image: PImages.dp2,
                                 recent: false,
                                 onPressed: () {
                                   ref.watch(chatController).markAsRead(
                                       unreadMessages!, chat.user2.id);
-                                  context.goNamed('chat', extra: chat.user2);
+                                  // assign the user to a provider to be used accros the chats
+                                  ref.read(userChatProvider.notifier).state =
+                                      chat.user2;
+                                  context.goNamed('chatHolder');
                                   // ref
                                   // .read(loadingCompleteProvider.notifier)
                                   // .state = false;
@@ -155,11 +161,13 @@ class MessageScreen extends StatelessWidget {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.goNamed('doctors'),
-        backgroundColor: PColors.primary,
-        child: const Icon(Iconsax.add),
-      ),
+      floatingActionButton: ref.read(userProvider).isDoctor
+          ? null
+          : FloatingActionButton(
+              onPressed: () => context.goNamed('doctors'),
+              backgroundColor: PColors.primary,
+              child: const Icon(Iconsax.add),
+            ),
     );
   }
 }

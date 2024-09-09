@@ -121,9 +121,6 @@ class AuthenticationRepository {
     try {
       await GoogleSignIn().signOut();
       await _auth.signOut();
-
-      // deviceStorage.write('remember_me', false);
-      // Get.offAll(() => const LoginScreen());
     } on FirebaseAuthException catch (e) {
       throw KFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {

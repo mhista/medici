@@ -20,11 +20,15 @@ class AgoraEngineController {
 
 // initializes the agora engine
   static Future<void> initializeEngine(RtcEngine engine, WidgetRef ref) async {
-    await engine.initialize(
+    await engine
+        .initialize(
       RtcEngineContext(
           appId: AgoraConfig.appId,
           channelProfile: ChannelProfileType.channelProfileCommunication),
-    );
+    )
+        .then((v) {
+      debugPrint("Initializing");
+    });
     ref.read(muteVideo.notifier).state = false;
     // ref.read(muteAudio.notifier).state = false;
     ref.read(cameraEnabled.notifier).state = false;

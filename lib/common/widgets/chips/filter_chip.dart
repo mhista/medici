@@ -1,71 +1,76 @@
 import 'package:flutter/material.dart';
+import 'package:medici/common/widgets/icons/circular_icon.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../utils/helpers/helper_functions.dart';
 import '../icons/rounded_icons.dart';
 
-class KFilterChip extends StatelessWidget {
-  const KFilterChip({
+class ButtonChip extends StatelessWidget {
+  const ButtonChip({
     super.key,
     required this.iconData,
-    required this.text,
+    this.text,
     this.selected = true,
-    this.onSelected,
+    required this.onSelected,
+    this.textWeight = 0,
+    this.textSize = 0,
+    this.spaceBtwBtn = 0,
+    this.isNotSpecialist = true,
   });
 
   final IconData iconData;
-  final String text;
-  final bool selected;
-  final Function(bool)? onSelected;
+  final String? text;
+  final bool selected, isNotSpecialist;
+  final Function() onSelected;
+  final int textWeight, spaceBtwBtn;
+  final double textSize;
   @override
   Widget build(BuildContext context) {
-    final isDark = PHelperFunctions.isDarkMode(context);
+    // final isDark = PHelperFunctions.isDarkMode(context);
 
-    return FilterChip(
-        elevation: isDark ? PSizes.exs - 2.5 : PSizes.exs - 2.4,
-        pressElevation: PSizes.exs + 1,
-        showCheckmark: false,
-        selected: selected,
-        side: BorderSide(
-          width: 0.5,
-          color: selected
-              ? PColors.transparent
-              : isDark
-                  ? PColors.light.withOpacity(0.3)
-                  : PColors.dark.withOpacity(0.2),
-        ),
-        backgroundColor: !selected ? PColors.transparent : null,
-        selectedColor: isDark ? PColors.dark : PColors.light,
-        padding:
-            const EdgeInsetsDirectional.symmetric(vertical: 6, horizontal: 0),
-        label: Row(
-          mainAxisSize: MainAxisSize.min,
-          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return GestureDetector(
+      onTap: onSelected,
+      child: SizedBox(
+        width: 60,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Flexible(
-              child: RoundedIcon(
-                hasIconColor: true,
+            Container(
+              alignment: Alignment.center,
+              height: 50, width: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(60),
+                color: !selected
+                    ? PColors.transparent
+                    : PColors.primary.withOpacity(0.1),
+              ),
+              // elevation: isDark ? PSizes.exs - 2.5 : PSizes.exs - 2.4,
+
+              child: PCircularIcon(
                 color: PColors.primary,
-                padding: 0,
-                height: 30,
-                width: 30,
-                radius: 30,
-                iconData: iconData,
-                size: 16,
-                isPositioned: false,
+                backgroundColor: PColors.transparent,
+                // height: 30,
+                // width: 30,
+                size: 30,
+                icon: iconData,
                 onPressed: () {},
               ),
             ),
-            Text(
-              text,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelLarge!
-                  .apply(overflow: TextOverflow.ellipsis),
+            SizedBox(
+              height: (PSizes.spaceBtwItems / 2) + spaceBtwBtn,
             ),
+            if (isNotSpecialist)
+              Text(
+                text!,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall!.apply(
+                    fontWeightDelta: textWeight, fontSizeDelta: textSize),
+                overflow: TextOverflow.ellipsis,
+              )
           ],
         ),
-        onSelected: onSelected);
+      ),
+    );
   }
 }

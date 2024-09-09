@@ -15,15 +15,14 @@ class DoctorCardList extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 4,
+      padding: EdgeInsets.zero,
       scrollDirection: Axis.vertical,
-      separatorBuilder: (_, __) =>
-          const SizedBox(height: PSizes.spaceBtwItems / 2),
+      separatorBuilder: (_, __) => const SizedBox(height: PSizes.spaceBtwItems),
       itemBuilder: (_, index) {
         return const DoctorCard(
           title: 'Dr Anna Baker',
           subTitle: 'Heart Surgeon Specialist',
           rating: 4.5,
-          reviews: 120,
           image: PImages.dp1,
         );
       },

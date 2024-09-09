@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:medici/utils/constants/colors.dart';
+import 'package:medici/utils/device/device_utility.dart';
+import 'package:medici/utils/helpers/helper_functions.dart';
 
 import '../../../utils/constants/sizes.dart';
 import '../images/rounded_rect_image.dart';
@@ -13,14 +16,16 @@ class ContainerTile extends StatelessWidget {
       required this.subTitle,
       required this.image,
       this.useDecor = true,
-      this.color});
+      this.color,
+      this.textColor});
   final Widget? trailing;
   final bool hasTrailing, useDecor;
   final String title, subTitle, image;
-  final Color? color;
+  final Color? color, textColor;
 
   @override
   Widget build(BuildContext context) {
+    final isDark = PHelperFunctions.isDarkMode(context);
     return Container(
       decoration: useDecor
           ? BoxDecoration(
@@ -39,6 +44,8 @@ class ContainerTile extends StatelessWidget {
           ),
           // TITLE
           TitleAndSubTitle(
+            useThemeColor: true,
+            themeColor: textColor,
             title: title,
             subTitle: subTitle,
           ),

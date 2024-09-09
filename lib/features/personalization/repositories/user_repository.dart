@@ -41,11 +41,33 @@ class UserRepository {
     }
   }
 
-  // FETCH USER DATA FROM FIRESTORE BASED ON ID
+  // FETCH CURRENT USER DATA FROM FIRESTORE BASED ON ID
   Future<UserModel> fetchUserData() async {
     try {
       final documentSnapshot =
           await _db.collection('Users').doc(_authRepo.authUser?.uid).get();
+      if (documentSnapshot.exists) {
+        return UserModel.fromSnapshot(documentSnapshot);
+      } else {
+        return UserModel.empty();
+      }
+    } on FirebaseAuthException catch (e) {
+      throw KFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw KFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw const KFormatExceptions();
+    } on PlatformException catch (e) {
+      throw KPlatformException(e.code).message;
+    } catch (e) {
+      throw 'user snapshot does not exist';
+    }
+  }
+
+  // FETCH A USERS DATA FROM FIRESTORE BASED ON ID
+  Future<UserModel> fetchAUserData(String uid) async {
+    try {
+      final documentSnapshot = await _db.collection('Users').doc(uid).get();
       if (documentSnapshot.exists) {
         return UserModel.fromSnapshot(documentSnapshot);
       } else {

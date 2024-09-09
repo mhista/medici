@@ -6,20 +6,16 @@ import '../../../utils/constants/sizes.dart';
 import '../../../utils/helpers/helper_functions.dart';
 
 class TimeCard extends StatelessWidget {
-  const TimeCard({
-    super.key,
-    this.elevation = 1,
-  });
+  const TimeCard({super.key, this.elevation = 1, this.color = PColors.primary});
   final double? elevation;
+  final Color? color;
   @override
   Widget build(BuildContext context) {
     final isDark = PHelperFunctions.isDarkMode(context);
 
     return Card(
       elevation: elevation,
-      color: isDark
-          ? PColors.primary.withOpacity(0.1)
-          : PColors.primary.withOpacity(0.7),
+      color: isDark ? color!.withOpacity(0.1) : color!.withOpacity(0.7),
       child: Padding(
         padding: const EdgeInsets.all(PSizes.sm + 2),
         child: Row(

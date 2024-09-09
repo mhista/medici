@@ -14,7 +14,7 @@ class MRoundedImage extends StatelessWidget {
     this.applyImageRadius = true,
     this.isNetworkImage = false,
     this.backgroundColor = PColors.light,
-    this.fit = BoxFit.fill,
+    this.fit = BoxFit.contain,
     this.padding,
     this.onPressed,
     this.border,
@@ -34,38 +34,36 @@ class MRoundedImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: PSizes.sm),
-        child: Container(
-          padding: padding,
-          height: height,
-          width: width,
-          decoration: BoxDecoration(
-            border: border,
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(borderRadius),
-          ),
-          child: ClipRRect(
-            borderRadius: applyImageRadius
-                ? BorderRadius.circular(borderRadius)
-                : BorderRadius.zero,
-            child: isNetworkImage
-                ? CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    fit: fit,
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => PShimmerEffect(
-                      color: backgroundColor,
-                      height: 100,
-                      width: double.infinity,
-                      radius: borderRadius,
-                    ),
-                  )
-                : Image(
-                    image: AssetImage(imageUrl),
-                    fit: fit,
+      child: Container(
+        padding: padding,
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+          border: border,
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: ClipRRect(
+          borderRadius: applyImageRadius
+              ? BorderRadius.circular(borderRadius)
+              : BorderRadius.zero,
+          child: isNetworkImage
+              ? CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: fit,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      PShimmerEffect(
+                    color: backgroundColor,
+                    height: 100,
+                    width: double.infinity,
+                    radius: borderRadius,
                   ),
-          ),
+                )
+              : Image(
+                  image: AssetImage(imageUrl),
+                  fit: fit,
+                  // color: backgroundColor,
+                ),
         ),
       ),
     );

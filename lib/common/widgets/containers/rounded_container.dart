@@ -17,9 +17,10 @@ class TRoundedContainer extends StatelessWidget {
     this.showBorder = false,
     this.gradient,
     this.shadow,
+    this.borderWidth = 1.0,
   });
   final double? width, height;
-  final double radius;
+  final double radius, borderWidth;
   final Color backgroundColor, borderColor;
   final Widget? child;
   final EdgeInsetsGeometry? margin, padding;
@@ -38,7 +39,9 @@ class TRoundedContainer extends StatelessWidget {
           gradient: gradient,
           borderRadius: BorderRadius.circular(radius),
           color: backgroundColor,
-          border: showBorder ? Border.all(color: borderColor) : null,
+          border: showBorder
+              ? Border.all(color: borderColor, width: borderWidth)
+              : null,
           boxShadow: shadow),
       child: child,
     );

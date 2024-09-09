@@ -6,12 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medici/features/authentication/models/user_model.dart';
 import 'package:medici/features/call/controllers/call_controller.dart';
+import 'package:medici/features/specialists/controllers/specialist_controller.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/router.dart';
 import 'package:medici/utils/constants/image_strings.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import 'features/call/models/call_model.dart';
+import 'features/personalization/controllers/user_controller.dart';
 import 'utils/constants/colors.dart';
 import 'utils/notification/device_notification.dart';
 import 'utils/theme/theme.dart';
@@ -49,8 +51,8 @@ class App extends ConsumerWidget {
 
   void callCheck(WidgetRef ref, UserModel user) {
     ref.watch(callProvider).whenData((data) {
-      debugPrint(data.toString());
-
+      // debugPrint(data.toString());
+      ref.read(callModelProvider.notifier).state = data;
       if (data.receiverId == user.id && user.isOnline) {
         // context.push(
         //   'incomingCall',
@@ -79,6 +81,7 @@ class App extends ConsumerWidget {
         );
         FlutterRingtonePlayer().play(fromAsset: PImages.iphone1, looping: true);
       }
+      // else if (data == )
     });
   }
 }

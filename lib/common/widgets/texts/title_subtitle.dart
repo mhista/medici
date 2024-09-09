@@ -11,10 +11,13 @@ class TitleAndSubTitle extends ConsumerWidget {
     required this.title,
     this.textSize = TextSizes.small,
     required this.subTitle,
+    this.useThemeColor = false,
+    this.themeColor,
   });
   final String title, subTitle;
   final TextSizes textSize;
-  final bool recent;
+  final bool recent, useThemeColor;
+  final Color? themeColor;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
@@ -23,14 +26,18 @@ class TitleAndSubTitle extends ConsumerWidget {
         Text(
           title,
           style: textSize == TextSizes.small
-              ? Theme.of(context)
-                  .textTheme
-                  .labelLarge!
-                  .apply(overflow: TextOverflow.ellipsis)
-              : Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .apply(overflow: TextOverflow.ellipsis),
+              ? Theme.of(context).textTheme.labelLarge!.apply(
+                  overflow: TextOverflow.ellipsis,
+                  color: useThemeColor ? themeColor : null)
+              : textSize == TextSizes.medium
+                  ? Theme.of(context).textTheme.bodyMedium!.apply(
+                      overflow: TextOverflow.ellipsis,
+                      color: useThemeColor ? themeColor : null)
+                  : Theme.of(context).textTheme.titleLarge!.apply(
+                        fontWeightDelta: -1,
+                        overflow: TextOverflow.ellipsis,
+                        color: useThemeColor ? themeColor : null,
+                      ),
         ),
         const SizedBox(
           height: PSizes.spaceBtwItems / 3,
@@ -39,18 +46,19 @@ class TitleAndSubTitle extends ConsumerWidget {
           subTitle,
           style: textSize == TextSizes.small
               ? recent
-                  ? Theme.of(context)
-                      .textTheme
-                      .labelLarge!
-                      .apply(overflow: TextOverflow.ellipsis)
-                  : Theme.of(context)
-                      .textTheme
-                      .labelMedium!
-                      .apply(overflow: TextOverflow.ellipsis)
-              : Theme.of(context)
-                  .textTheme
-                  .labelLarge!
-                  .apply(overflow: TextOverflow.ellipsis),
+                  ? Theme.of(context).textTheme.labelLarge!.apply(
+                      overflow: TextOverflow.ellipsis,
+                      color: useThemeColor ? themeColor : null)
+                  : Theme.of(context).textTheme.labelMedium!.apply(
+                      overflow: TextOverflow.ellipsis,
+                      color: useThemeColor ? themeColor : null)
+              : textSize == TextSizes.medium
+                  ? Theme.of(context).textTheme.labelLarge!.apply(
+                      overflow: TextOverflow.ellipsis,
+                      color: useThemeColor ? themeColor : null)
+                  : Theme.of(context).textTheme.bodyMedium!.apply(
+                      overflow: TextOverflow.ellipsis,
+                      color: useThemeColor ? themeColor : null),
         ),
       ],
     );

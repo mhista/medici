@@ -13,6 +13,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../utils/constants/file_formats.dart';
 import '../../authentication/models/user_model.dart';
+import '../../personalization/controllers/user_controller.dart';
 
 class ChatController {
   final Ref ref;

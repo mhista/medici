@@ -15,7 +15,7 @@ class MCircularImage extends StatelessWidget {
     this.padding = PSizes.xs,
     this.isNetworkImage = false,
     this.backgroundColor,
-    this.fit = BoxFit.cover,
+    this.fit = BoxFit.contain,
     this.overLayColor,
   });
 

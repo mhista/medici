@@ -34,7 +34,7 @@ class CallModel {
       receiverName: '',
       callId: '',
       hasDialled: false,
-      callEnded: false,
+      callEnded: true,
       isVideo: false,
       uniqueId: 0);
 

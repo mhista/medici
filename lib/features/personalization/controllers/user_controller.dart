@@ -6,13 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:medici/features/specialists/controllers/specialist_controller.dart';
 import 'package:medici/providers.dart';
+import 'package:medici/router.dart';
 
 import '../../../common/loaders/loaders.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../authentication/authentication_repository/authentication_repository.dart';
 import '../../authentication/models/user_model.dart';
 import '../repositories/user_repository.dart';
+
+final allUsers = StateProvider((ref) => <UserModel>[]);
+// OBSERVABLE USERMODELS
+// CURRENT USERMODEL
+StateProvider<UserModel> userProvider =
+    StateProvider<UserModel>((ref) => UserModel.empty());
+// CURRENT USER BEING CHATTED WITH
+StateProvider<UserModel> userChatProvider =
+    StateProvider<UserModel>((ref) => UserModel.empty());
 
 class UserController {
   UserController(
@@ -38,8 +49,6 @@ class UserController {
   final verifyPassword = TextEditingController();
   GlobalKey<FormState> reAuthFormKey = GlobalKey<FormState>();
 
-  final allUsers = StateProvider((ref) => <UserModel>[]);
-
 // FETCH USER RECORD
   Future<void> fetchUserRecord() async {
     try {
@@ -50,6 +59,22 @@ class UserController {
       await _userRepository.setUserState(state: true);
     } catch (e) {
       _ref.read(userProvider.notifier).update((state) => UserModel.empty());
+    } finally {
+      // profileLoading.value = false;
+    }
+  }
+
+  // FETCH USER RECORD
+  Future<void> fetchAUserRecord(String uid) async {
+    try {
+      // profileLoading.value = true;
+
+      final user = await _userRepository.fetchAUserData(uid);
+      _ref.read(specialistUserModelProvider.notifier).update((state) => user);
+    } catch (e) {
+      _ref
+          .read(specialistUserModelProvider.notifier)
+          .update((state) => UserModel.empty());
     } finally {
       // profileLoading.value = false;
     }
@@ -80,7 +105,9 @@ class UserController {
               email: userCredential.user!.email ?? '',
               phoneNumber: userCredential.user!.phoneNumber ?? '',
               profilePicture: userCredential.user!.photoURL ?? '',
-              isOnline: false);
+              isOnline: false,
+              isDoctor: false,
+              onCall: false);
           _ref.read(userProvider.notifier).update((state) => user);
 
           await _userRepository.saveUser(user);
@@ -227,6 +254,7 @@ class UserController {
     await _userRepository.setUserState(state: false);
     await _authenticationRepository.logout();
     _ref.read(userProvider.notifier).update((state) => UserModel.empty());
+    // _ref.read(goRouterProvider).pushReplacementNamed('login');
   }
 
   // CHECK ONLINE/OFFLINE STATUS

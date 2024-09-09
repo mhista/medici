@@ -1,12 +1,37 @@
 class PImages {
+  static const logo = 'assets/images/logo/med.png';
+  // ONBOARDING IMAGES
+  static const onboarding = 'assets/animations/onboard.gif';
+  static const onboarding1 = 'assets/animations/onboard1.gif';
+  static const onboarding2 = 'assets/animations/onboard2.gif';
+  static const onboarding3 = 'assets/animations/onboard3.png';
+
   //  OFILE AVATERS
-  static const String dp1 = 'assets/images/dp/dp1.png';
-  static const String dp2 = 'assets/images/dp/dp2.png';
-  static const String dp3 = 'assets/images/dp/dp3.png';
+  static const String dp1 = 'assets/images/dp/doc1.png';
+  static const String dp2 = 'assets/images/dp/doc2.png';
+  static const String dp3 = 'assets/images/dp/doc3.png';
+  static const String dp4 = 'assets/images/dp/doc4.png';
+  static const String dp5 = 'assets/images/dp/doc5.png';
+  // static const String dp6 = 'assets/images/dp/doc6.png';
+  static const String dp7 = 'assets/images/dp/doc7.png';
+  static const String dp8 = 'assets/images/dp/doc8.png';
+  static const String dp9 = 'assets/images/dp/doc9.png';
+  static const String dp10 = 'assets/images/dp/doc10.png';
+  static const String dp11 = 'assets/images/dp/doc11.png';
+  static const String dp12 = 'assets/images/dp/doc12.png';
+  static const String dp13 = 'assets/images/dp/doc13.png';
+  static const String dp14 = 'assets/images/dp/doc14.png';
+  static const String dp15 = 'assets/images/dp/doc15.png';
 
 //   SOCIAL LOGOS
   static const String google = 'assets/images/social/google-icon.png';
   static const String facebook = 'assets/images/social/facebook-icon.png';
+
+// ICONS
+  static const String ambulance = 'assets/images/icons/ambulance.png';
+  static const String clinic = 'assets/images/icons/clinic.png';
+  static const String pill = 'assets/images/icons/pill.png';
+  static const String stethoscope = 'assets/images/icons/stethoscope.png';
 
 // MAP IMAGES
   static const String accountancy = 'assets/images/mapicons/accountancy.png';
@@ -49,4 +74,28 @@ class PImages {
   // ringing tones
   static const String android1 = 'assets/tones/sincere_android.mp3';
   static const String iphone1 = 'assets/tones/sincere_iphone.m4r';
+
+  // hospital images
+  static const String hospital1 = 'assets/images/hospital/hospital1.png';
+  static const String hospital2 = 'assets/images/hospital/hospital2.png';
+  static const String hospital3 = 'assets/images/hospital/hospital3.png';
+  static const String hospital4 = 'assets/images/hospital/hospital4.png';
+
+  // Payment Images
+  static const String paypal = 'assets/images/icons/payment_methods/paypal.png';
+  static const String applePay =
+      'assets/images/icons/payment_methods/apple-pay.png';
+  static const String creditCard =
+      'assets/images/icons/payment_methods/credit-card.png';
+  static const String mastercard =
+      'assets/images/icons/payment_methods/mastercard.png';
+  static const String googlePay =
+      'assets/images/icons/payment_methods/google-pay.png';
+  static const String paystack =
+      'assets/images/icons/payment_methods/paystack-logo.png';
+  static const String paytm = 'assets/images/icons/payment_methods/paytm.png';
+  static const String visa = 'assets/images/icons/payment_methods/visa.png';
+
+  // Lottie Image
+  static const String success = 'assets/lottie/blu.json';
 }

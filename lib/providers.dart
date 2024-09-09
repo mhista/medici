@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:medici/data/services/firebase_services/firebase_storage_services.dart';
 import 'package:medici/features/authentication/authentication_repository/authentication_repository.dart';
 import 'package:medici/features/authentication/controllers/login_controller.dart';
@@ -12,8 +13,12 @@ import 'package:medici/features/call/agora_events/agora_egine_events.dart';
 import 'package:medici/features/call/controllers/agora_engine_controller.dart';
 import 'package:medici/features/chat/controllers/recorder_controller.dart';
 import 'package:medici/features/chat/repositories/chat_repository.dart';
+import 'package:medici/features/checkout/controllers/card_controller.dart';
+import 'package:medici/features/checkout/controllers/checkout_controller.dart';
 import 'package:medici/features/personalization/controllers/user_controller.dart';
 import 'package:medici/features/personalization/repositories/user_repository.dart';
+import 'package:medici/features/specialists/controllers/specialist_controller.dart';
+import 'package:medici/features/specialists/repository/specialist_repository.dart';
 import 'package:medici/utils/helpers/network_manager.dart';
 import 'package:medici/utils/notification/device_notification.dart';
 
@@ -25,13 +30,11 @@ import 'features/chat/controllers/chat_controller.dart';
 import 'router.dart';
 
 // GOROUTER PROVIDER
-final goRouterProvider = Provider<GoRouter>((ref) {
-  return routes;
-});
-// OBSERVABLE USERMODEL
-StateProvider<UserModel> userProvider =
-    StateProvider<UserModel>((ref) => UserModel.empty());
-
+// final goRouterProvider = Provider<GoRouter>((ref) {
+//   return routes;
+// });
+// Hive Box
+final boxProvider = Provider((ref) => Hive);
 // REPOSITORIES
 // FIREBASE REPOSITORIES
 final firebaseAuthProvider = Provider((ref) => FirebaseAuth.instance);
@@ -111,8 +114,19 @@ final callController = Provider((ref) {
   return CallController(ref: ref, callRepository: callRepo);
 });
 
+// CHECKOUT CONTROLLER
+final checkoutController = Provider((ref) {
+  return CheckoutController(ref: ref);
+});
+
+// CARD CONTROLLER
+final cardController = Provider((ref) {
+  return CardController(ref: ref);
+});
 // AGORA ENGINE CONTROLLER
 
 // final agoraEngineEvents = Provider((ref) {
 //   return AgoraEngineEvents();
 // });
+final specialistController = Provider((ref) => SpecialistController(ref: ref));
+final specialistRepository = Provider((ref) => SpecialistRepository(ref: ref));

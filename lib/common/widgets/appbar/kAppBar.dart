@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:medici/common/widgets/icons/circular_icon.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
@@ -8,6 +9,7 @@ import 'package:medici/utils/constants/text_strings.dart';
 import 'package:medici/utils/device/device_utility.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../../../features/personalization/controllers/user_controller.dart';
 import '../icons/rounded_icons.dart';
 import 'searchBar.dart';
 
@@ -34,7 +36,7 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
             title: Row(children: [
               if (responsive.screenWidth < 700)
                 Padding(
-                  padding: const EdgeInsets.only(left: 5),
+                  padding: const EdgeInsets.all(0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -44,16 +46,27 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
 
                           return Text(
                             'Hi, ${user.fullName}',
-                            style: Theme.of(context).textTheme.headlineSmall,
+                            style: Theme.of(context).textTheme.headlineMedium,
                           );
                         },
                       ),
                       const SizedBox(
                         height: PSizes.spaceBtwItems / 2,
                       ),
-                      Text(
-                        PTexts.homeAppBarSubTitle,
-                        style: Theme.of(context).textTheme.labelMedium,
+                      Row(
+                        children: [
+                          const Icon(
+                            Iconsax.location5,
+                            color: PColors.primary,
+                          ),
+                          const SizedBox(
+                            width: PSizes.xs,
+                          ),
+                          Text(
+                            "New York, USA",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -71,10 +84,16 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       // NOTIFICATION BUTTON
 
-                      RoundedIcon(
-                        isPositioned: true,
-                        iconData: Iconsax.notification,
-                        onPressed: () {},
+                      Consumer(
+                        builder: (_, WidgetRef ref, __) {
+                          return RoundedIcon(
+                            isPositioned: true,
+                            iconData: Iconsax.notification,
+                            onPressed: () => ref
+                                .read(specialistController)
+                                .uploadSpecialistDummy(),
+                          );
+                        },
                       )
                     ],
                   ),
@@ -94,25 +113,36 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
             actions: [
               // SHOW ONLY A NOTIFICATION ICON ON SMALL SCREEN
               if (responsive.screenWidth < 700)
-                RoundedIcon(
+                PCircularIcon(
+                  backgroundColor: PColors.white,
                   height: 50,
                   width: 50,
-                  radius: 50,
-                  isPositioned: true,
-                  iconData: Iconsax.notification,
+                  icon: Iconsax.search_normal,
                   onPressed: () {},
-                )
+                ),
+              Consumer(
+                builder: (_, WidgetRef ref, __) {
+                  return PCircularIcon(
+                    backgroundColor: PColors.white,
+                    height: 50,
+                    width: 50,
+                    icon: Iconsax.notification,
+                    onPressed: () =>
+                        ref.read(specialistController).uploadSpecialistDummy(),
+                  );
+                },
+              )
             ],
           ),
         ),
-        if (responsive.screenWidth < 700)
-          const MSearchBar(hintText: PTexts.hintText),
+        // if (responsive.screenWidth < 700)
+        //   const MSearchBar(hintText: PTexts.hintText),
       ],
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(PDeviceUtils.getAppBarHeight() * 2);
+  Size get preferredSize => Size.fromHeight(PDeviceUtils.getAppBarHeight());
 }
 
 // // SEARCHBAR IF SCREEN WIDTH IS LESS DOWN 700

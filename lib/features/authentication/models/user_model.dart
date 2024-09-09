@@ -13,6 +13,8 @@ class UserModel {
   String phoneNumber;
   String profilePicture;
   final bool isOnline;
+  final bool isDoctor;
+  final bool onCall;
   // List addresses;
   UserModel({
     required this.id,
@@ -23,6 +25,8 @@ class UserModel {
     required this.phoneNumber,
     required this.profilePicture,
     required this.isOnline,
+    required this.isDoctor,
+    required this.onCall,
   });
 
   UserModel copyWith({
@@ -34,6 +38,8 @@ class UserModel {
     String? phoneNumber,
     String? profilePicture,
     bool? isOnline,
+    bool? isDoctor,
+    bool? onCall,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -44,6 +50,8 @@ class UserModel {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       profilePicture: profilePicture ?? this.profilePicture,
       isOnline: isOnline ?? this.isOnline,
+      isDoctor: isDoctor ?? this.isDoctor,
+      onCall: onCall ?? this.onCall,
     );
   }
 
@@ -58,6 +66,8 @@ class UserModel {
     result.addAll({'phoneNumber': phoneNumber});
     result.addAll({'profilePicture': profilePicture});
     result.addAll({'isOnline': isOnline});
+    result.addAll({'isDoctor': isDoctor});
+    result.addAll({'onCall': onCall});
 
     return result;
   }
@@ -72,6 +82,8 @@ class UserModel {
       phoneNumber: map['phoneNumber'] ?? '',
       profilePicture: map['profilePicture'] ?? '',
       isOnline: map['isOnline'] ?? false,
+      isDoctor: map['isDoctor'] ?? false,
+      onCall: map['onCall'] ?? false,
     );
   }
 
@@ -81,14 +93,17 @@ class UserModel {
       UserModel.fromMap(json.decode(source));
 
   static UserModel empty() => UserModel(
-        id: '',
-        firstName: '',
-        lastName: '',
-        username: '',
-        email: '',
-        phoneNumber: '',
-        profilePicture: '', isOnline: false,
-        // addresses: [],
+      id: '',
+      firstName: '',
+      lastName: '',
+      username: '',
+      email: '',
+      phoneNumber: '',
+      profilePicture: '',
+      isOnline: false,
+      isDoctor: false,
+      onCall: false
+      // addresses: [],
       );
 
 // factory methof to create a user model from firebase document snapshot
@@ -105,6 +120,9 @@ class UserModel {
         phoneNumber: data['phoneNumber'] ?? '',
         profilePicture: data['profilePicture'] ?? '',
         isOnline: data['isOnline'] ?? false,
+        isDoctor: data['isDoctor'] ?? false,
+        onCall: data['onCall'] ?? false,
+
         // addresses: data['addresses'] ?? '',
       );
     } else {
@@ -138,6 +156,37 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, firstName: $firstName, lastName: $lastName, username: $username, email: $email, phoneNumber: $phoneNumber, profilePicture: $profilePicture, isOnline: $isOnline)';
+    return 'UserModel(id: $id, firstName: $firstName, lastName: $lastName, username: $username, email: $email, phoneNumber: $phoneNumber, profilePicture: $profilePicture, isOnline: $isOnline, isDoctor: $isDoctor, onCall: $onCall)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is UserModel &&
+        other.id == id &&
+        other.firstName == firstName &&
+        other.lastName == lastName &&
+        other.username == username &&
+        other.email == email &&
+        other.phoneNumber == phoneNumber &&
+        other.profilePicture == profilePicture &&
+        other.isOnline == isOnline &&
+        other.isDoctor == isDoctor &&
+        other.onCall == onCall;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        firstName.hashCode ^
+        lastName.hashCode ^
+        username.hashCode ^
+        email.hashCode ^
+        phoneNumber.hashCode ^
+        profilePicture.hashCode ^
+        isOnline.hashCode ^
+        isDoctor.hashCode ^
+        onCall.hashCode;
   }
 }

@@ -11,9 +11,9 @@ class LoginController {
   final Ref ref;
   LoginController({required this.authenticationRepository, required this.ref});
   // VARIABLE
-  final rememberMe = false.obs;
-  final hidePassword = true.obs;
-  // final localStorage = GetStorage();
+  final hidePassword = StateProvider<bool>((ref) => true);
+  final rememberMe = StateProvider<bool>((ref) => true);
+
   final email = TextEditingController();
   final password = TextEditingController();
   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
@@ -35,6 +35,8 @@ class LoginController {
           await ref.watch(networkService.notifier).isConnected();
       if (!isConnected) {
         // PFullScreenLoader.stopLoading();
+        PLoaders.errorSnackBar(title: "Network is not connected");
+
         return;
       }
 
@@ -50,14 +52,16 @@ class LoginController {
       //   localStorage.writeIfNull('remember_me_password', password.text.trim());
       // }
       // // LOGIN USER
-      await authenticationRepository.loginWitheEmailAndPassword(
+      final user = await authenticationRepository.loginWitheEmailAndPassword(
           email.text.trim(), password.text.trim());
 
+      debugPrint(user.user.toString());
+      await ref.read(userController).saveUserRecord(user);
       // REMOVE LOADER
       // PFullScreenLoader.stopLoading();
 
       // REDIRECT TO HOME
-      authenticationRepository.screenRedirect();
+      // authenticationRepository.screenRedirect();
     } catch (e) {
       // PFullScreenLoader.stopLoading();
       PLoaders.errorSnackBar(title: "Ooops!", message: e.toString());

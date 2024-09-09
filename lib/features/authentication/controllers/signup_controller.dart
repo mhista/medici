@@ -62,7 +62,9 @@ class SignupController {
           email: email.text.trim(),
           phoneNumber: phoneNumber.text.trim(),
           profilePicture: '',
-          isOnline: false);
+          isOnline: false,
+          isDoctor: false,
+          onCall: false);
       await userRepository.saveUser(newUser);
       // remove loader
       // PFullScreenLoader.stopLoading();

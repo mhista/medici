@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:medici/features/authentication/screens/signup.dart';
+import 'package:medici/features/authentication/screens/signup/signup.dart';
 
 import '../screens/home/home.dart';
 import '../../chat/screens/messaging/message.dart';

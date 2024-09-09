@@ -5,6 +5,7 @@ import 'package:medici/features/chat/controllers/recorder_controller.dart';
 import 'package:medici/providers.dart';
 
 import '../../../../authentication/models/user_model.dart';
+import '../../../../personalization/controllers/user_controller.dart';
 import '../../../models/message_reply.dart';
 
 class RecorderButton extends ConsumerStatefulWidget {

@@ -12,13 +12,16 @@ import 'package:medici/features/call/models/call_model.dart';
 import 'package:medici/features/call/repositories/call_repository.dart';
 
 import '../../../providers.dart';
+import '../../../router.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../chat/screens/chat_room/chat_room.dart';
+import '../../personalization/controllers/user_controller.dart';
 
 final callModelProvider = StateProvider<CallModel>((ref) => CallModel.empty());
 final listProvider = StateProvider<List<int>>((ref) => []);
 // checks to know when the call has ended in the receivers end
 final callEnded = StateProvider<bool>((ref) => true);
+final callerId = StateProvider<String>((ref) => '');
 
 class CallController {
   final Ref ref;
@@ -62,30 +65,28 @@ class CallController {
           isVideo: isVideo,
           uniqueId: 0,
           callEnded: false);
-      await callRepository.makeCall(senderCallData, receiverCallData);
-      FlutterRingtonePlayer().play(fromAsset: PImages.iphone1, looping: true);
+      await callRepository.makeCall(senderCallData, receiverCallData).then((v) {
+        ref.read(callerId.notifier).state = senderCallData.callerId;
+        if (senderCallData.callerId == ref.read(userProvider).id) {
+          FlutterRingtonePlayer()
+              .play(fromAsset: PImages.iphone1, looping: true);
 
-      //     context.goNamed(
-      //       'video',
-      //       extra: senderCallData,
-      //     );
-      //     .then((data) {
-      //   // ref.read(callModelProvider.notifier).state = senderCallData;
-
-      //   i
-      //     // schedule notification for future
-      //     // NotificationService.scheduleNotification("New notification",
-      //     //     "check it out", DateTime.now().add(const Duration(minutes: 10)));
-      //   }
-      // });
+          ref.read(goRouterProvider).pushNamed(
+                'video',
+                extra: senderCallData,
+              );
+        }
+      });
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  Stream<CallModel> getCallStream() {
-    return callRepository.getCallStream();
-  }
+  void listenForChanges() {}
+
+  Stream<CallModel> get callStream => callRepository.getCallStream();
+
+  // Stream<CallModel> receiveCallStream(){}
 
   // generate random unique id
   int generateUserId({int numb = 0}) {
@@ -113,34 +114,43 @@ class CallController {
       debugPrint(ref.read(callEnded).toString());
       FlutterRingtonePlayer().stop();
       if (data.receiverId == ref.read(userProvider).id) {
-        ref.read(goRouterProvider).goNamed(
-              'chat',
-              extra: ref.read(userProvider),
-            );
+        ref.read(goRouterProvider).pushNamed('chatHolder');
       }
     }
     if (response.actionId == "decline") {
+      FlutterRingtonePlayer().stop();
+
       final call = jsonDecode(response.payload!);
       CallModel data = CallModel.fromMap(call);
-      endCall(data.callerId, data.receiverId, true);
+      endCallNotification(data.callerId, data.receiverId);
     }
+  }
+
+  void endCallNotification(
+    String callerId,
+    String receiverId,
+  ) async {
+    await callRepository.deleteCall(callerId, receiverId);
   }
 
   void endCall(String callerId, String receiverId, bool shouldPop) async {
     FlutterRingtonePlayer().stop();
-    ref.read(callEnded.notifier).state = true;
-    // if (receiverId == ref.read(userProvider).id) {
-    //   ref.read(goRouterProvider).pop();
+    // ref.read(callEnded.notifier).state = true;
+    // if (receiverId == ref.read(userProvider).id &&
+    //     ref.read(userProvider).isOnline) {
     // }
-    debugPrint(ref.read(callEnded).toString());
+    // debugPrint(ref.read(callEnded).toString());
     await callRepository.deleteCall(callerId, receiverId);
     ref.read(chatController).getAllUserMessages(receiverId);
+    ref.read(goRouterProvider).pop();
 
     // if (shouldPop) {
-    //   if (ref.read(userProvider).isOnline &&
-    //       callerId == ref.read(userProvider).id) {
-    //     ref.read(goRouterProvider).pop();
-    //   }
+    // if  (
+    //     callerId == ref.read(userProvider).id && ) {
+    // ref.read(goRouterProvider).pushReplacement(
+
+    // );
+    // }
     // }
     // ref.read(callModelProvider.notifier).state = CallModel.empty();
   }
@@ -164,5 +174,5 @@ Future<String> getRtcToken(
 
 final callProvider = StreamProvider((ref) {
   final callControl = ref.watch(callController);
-  return callControl.getCallStream();
+  return callControl.callStream;
 });

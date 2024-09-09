@@ -9,15 +9,12 @@ import 'package:medici/features/call/controllers/agora_engine_controller.dart';
 import 'package:medici/features/call/models/call_model.dart';
 import 'package:medici/features/call/screens/call_sender_screen.dart';
 import 'package:medici/utils/constants/colors.dart';
-import 'package:medici/utils/constants/image_strings.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import "package:http/http.dart" as http;
 
 import '../../../common/styles/spacing_styles.dart';
 import '../../../common/widgets/containers/rounded_container.dart';
-import '../../../providers.dart';
-import '../../chat/screens/chat_room/chat_room.dart';
 import '../controllers/call_controller.dart';
 import 'widgets/call_buttons.dart';
 import 'widgets/user_video_widget.dart';
@@ -50,7 +47,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
       required String role,
       required String tokenType,
       required String uid}) async {
-    String baseUrl = "https://momentous-rings.pipeops.app";
+    String baseUrl = "https://ultra-van.pipeops.app";
     final response = await http
         .get(Uri.parse('$baseUrl/rtc/$channelName/$role/$tokenType/$uid'));
     if (response.statusCode == 200) {
@@ -63,7 +60,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
 
   Future<void> initAgora() async {
     await [Permission.camera, Permission.microphone].request();
-    _engine = ref.read(agoraEngine);
+    _engine = createAgoraRtcEngine();
     // create engene
     await AgoraEngineController.initializeEngine(_engine, ref);
 
@@ -134,7 +131,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
           debugPrint("$state changed  to $reason");
         },
         onError: (type, string) {
-          debugPrint("error type ${type} occured $string");
+          debugPrint("error type $type occured $string");
         },
       ),
     );
@@ -165,8 +162,14 @@ class _CallScreenState extends ConsumerState<CallScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final callModel = ref.watch(callModelProvider);
-    // if (callModel)
+    final callModel = ref.watch(callModelProvider);
+
+    // });
+    // ref.listen<CallModel>(callModelProvider, (previous, next) {
+    //   if (next == CallModel.empty()) {
+    //     _dispose();
+    //   }
+    // });
     return Scaffold(
       backgroundColor: PColors.transparent,
       body: Stack(
@@ -237,6 +240,18 @@ class _CallScreenState extends ConsumerState<CallScreen> {
   void dispose() {
     super.dispose();
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   // ref.listen(provider, listener)
+  //   // ref.listenManual(callModelProvider, listener)
+  //   // ref.listen<CallModel>(callModelProvider, (previous, next) {
+  //   //   if (next == CallModel.empty()) {
+  //   //     _dispose();
+  //   //   }
+  //   // });
+  //   super.didChangeDependencies();
+  // }
 
   Future<void> _dispose() async {
     await AgoraEngineController.endCall(_engine, ref, widget.call);

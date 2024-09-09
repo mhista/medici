@@ -6,6 +6,7 @@ import '../../../../providers.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../../personalization/controllers/user_controller.dart';
 import '../call_screen.dart';
 
 class UserVideoWidget extends ConsumerWidget {

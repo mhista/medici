@@ -1,62 +1,91 @@
-// import 'package:get_storage/get_storage.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:hive/hive.dart';
 
-// class PLocalStorage {
-//   // static  PLocalStorage _instance = PLocalStorage._internal();
-//   // SINGLETON INSTANCE
-//   static PLocalStorage? _instance;
+class HiveService {
+  // static  HiveService _instance = HiveService._internal();
+  // SINGLETON INSTANCE
+  static HiveService? _instance;
+  Box? _box;
 
-//   factory PLocalStorage.instance() {
-//     _instance ??= PLocalStorage._internal();
-//     return _instance!;
-//   }
+  factory HiveService.instance() {
+    _instance ??= HiveService._internal();
+    return _instance!;
+  }
 
-//   PLocalStorage._internal();
+  HiveService._internal();
 
-//   late final GetStorage _storage;
+  // late final _storage;
 
-//   static Future<void> init(String bucketName) async {
-//     await GetStorage.init(bucketName);
-//     _instance = PLocalStorage._internal();
-//     _instance!._storage = GetStorage(bucketName);
-//   }
+  static Future<void> init(String path) async {
+    //  Hive.init(bucketName);
+    Hive.init(path);
+    _instance = HiveService._internal();
+    // _instance!._storage = Hive.init();
+  }
 
-// // generic method to save data
-//   Future<void> saveData<T>(String key, T value) async {
-//     if (_instance == null) {
-//       throw Exception('PLocalStorage is not initialized');
-//     }
-//     await _storage.write(key, value);
-//   }
+  static Future<void> openBox(String boxName) async {
+    if (_instance == null) {
+      throw Exception('HiveService is not initialized');
+    }
+    _instance!._box = await Hive.openBox(boxName);
+  }
 
-//   // generic method to read data
-//   T? readData<T>(String key) {
-//     if (_instance == null) {
-//       throw Exception('PLocalStorage is not initialized');
-//     }
-//     return _storage.read<T>(key);
-//   }
+  // get a box from the instance
+  Box get box => _instance!._box!;
 
-// // generic method to remove data
-//   Future<void> removeData(String key) async {
-//     if (_instance == null) {
-//       throw Exception('PLocalStorage is not initialized');
-//     }
-//     await _storage.remove(key);
-//   }
+// generic method to save data
+  Future<void> put<T>(String key, T value) async {
+    if (_instance == null) {
+      throw Exception('HiveService is not initialized');
+    }
+    await _box?.put(key, value);
+  }
 
-// // clear all data in storage
-//   Future<void> clearAll() async {
-//     if (_instance == null) {
-//       throw Exception('PLocalStorage is not initialized');
-//     }
-//     await _storage.erase();
-//   }
-// }
+  // generic method to read data
+  T? get<T>(String key, {T? defaultValue}) {
+    if (_instance == null) {
+      throw Exception('HiveService is not initialized');
+    }
+    return _box?.get(key, defaultValue: defaultValue) as T?;
+  }
+
+  // check if key exists in the box
+  bool containsKey(String key) {
+    if (_instance == null) {
+      throw Exception('HiveService is not initialized');
+    }
+    return _box?.containsKey(key) ?? false;
+  }
+
+  // check if box is empty
+  bool isEmpty() {
+    if (_instance == null) {
+      throw Exception('HiveService is not initialized');
+    }
+    return _box?.isEmpty ?? false;
+  }
+
+// generic method to remove data
+  Future<void> removeData(String key) async {
+    if (_instance == null) {
+      throw Exception('HiveService is not initialized');
+    }
+    await _box?.delete(key);
+  }
+
+// clear all data in storage
+  Future<void> clearAll(Iterable<dynamic> keys) async {
+    if (_instance == null) {
+      throw Exception('HiveService is not initialized');
+    }
+    await _box?.deleteAll(keys);
+  }
+}
 
 // //
 
 // // void work() {
-// //   PLocalStorage localStorage = PLocalStorage._instance;
+// //   HiveService localStorage = HiveService._instance;
 
 // // // SAVE DATA
 // //   localStorage.saveData('UserName', 'JohnDoe');
