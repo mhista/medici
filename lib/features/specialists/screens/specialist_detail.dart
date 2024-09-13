@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:medici/common/widgets/containers/rounded_container.dart';
 import 'package:medici/common/widgets/icons/circular_icon.dart';
 import 'package:medici/features/hospital/screens/widgets/about/about.dart';
+import 'package:medici/features/personalization/controllers/user_controller.dart';
+import 'package:medici/features/specialists/controllers/specialist_controller.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
@@ -17,8 +18,10 @@ import 'widgets/specialist_heading.dart';
 
 class SpecialistDetail extends ConsumerWidget {
   const SpecialistDetail({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final doctor = ref.watch(specialistProvider);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -57,7 +60,9 @@ class SpecialistDetail extends ConsumerWidget {
           padding: const EdgeInsets.all(PSizes.spaceBtwItems),
           child: Column(
             children: [
-              const SpecialistHeading(),
+              SpecialistHeading(
+                doctor: doctor,
+              ),
               const SizedBox(
                 height: PSizes.spaceBtwItems,
               ),
@@ -71,25 +76,25 @@ class SpecialistDetail extends ConsumerWidget {
                   SpecialistDetailButton(
                     iconData: Iconsax.people5,
                     onPressed: () {},
-                    title: '7,500+',
+                    title: doctor.noOfPatients,
                     subTitle: 'Patients',
                   ),
                   SpecialistDetailButton(
-                    iconData: Iconsax.message5,
+                    iconData: Iconsax.calendar5,
                     onPressed: () {},
-                    title: '10+',
+                    title: doctor.yearOfExp,
                     subTitle: 'years Exp',
                   ),
                   SpecialistDetailButton(
                     iconData: Iconsax.call5,
                     onPressed: () {},
-                    title: '4.9+',
+                    title: doctor.rating.toString(),
                     subTitle: 'Rating',
                   ),
                   SpecialistDetailButton(
                     iconData: Iconsax.map_15,
                     onPressed: () {},
-                    title: '4,956',
+                    title: '1000',
                     subTitle: 'Review',
                   ),
                 ],
@@ -114,12 +119,18 @@ class SpecialistDetail extends ConsumerWidget {
             const SizedBox(
               width: PSizes.spaceBtwItems,
             ),
-            const PCircularIcon(
+            PCircularIcon(
               icon: Iconsax.message5,
               height: 60,
               width: 60,
               size: PSizes.lg + 4,
               color: PColors.primary,
+              onPressed: () async {
+                await ref.read(userController).fetchAUserRecord(doctor.id);
+                ref.read(userChatProvider.notifier).state =
+                    ref.read(specialistUserModelProvider);
+                ref.read(goRouterProvider).goNamed('chatHolder');
+              },
             ),
             Expanded(
               child: BottomButton(
@@ -138,7 +149,7 @@ class SpecialistDetail extends ConsumerWidget {
                   debugPrint(
                     dateTime.toLocal().toString(),
                   );
-                  return ref.read(goRouterProvider).goNamed("patientDetail");
+                  return ref.read(goRouterProvider).pushNamed("patientDetail");
                 }, onCancel: () {
                   debugPrint("cancelled");
                 }),

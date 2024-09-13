@@ -1,13 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
-import 'package:medici/features/authentication/models/user_model.dart';
 import 'package:medici/features/authentication/screens/login/login.dart';
 import 'package:medici/features/authentication/screens/signup/signup.dart';
 import 'package:medici/features/call/models/call_model.dart';
-import 'package:medici/features/chat/screens/chat_room/chat_room.dart';
-import 'package:medici/features/chat/screens/chat_room/widget/chat_call_message.dart';
 import 'package:medici/features/chat/screens/messaging/all_doctors.dart';
 import 'package:medici/features/checkout/screens/summary.dart';
 import 'package:medici/features/hospital/screens/hospital_detail.dart';
@@ -20,6 +16,7 @@ import 'package:medici/features/specialists/screens/patient_detail.dart';
 
 import 'features/call/screens/call_screen.dart';
 import 'features/chat/screens/chat_room/chat_call_sceen.dart';
+import 'features/main_app/screens/alert_screens/success_screen.dart';
 import 'features/specialists/screens/specialist_detail.dart';
 
 // final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -127,17 +124,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   return const PaymentSummary();
                 }),
               ),
-              // GoRoute(
-              //   name: 'success_payment',
-              //   path: 'success_payment',
-              //   builder: ((context, state) {
-              //     return  SuccessScreen1(
-              //         image: state.pathParameters["image"]!,
-              //         title: state.pathParameters["title"]!,
-              //         subtitle: state.pathParameters["subtitle"]!,
-              //         onPressed: );
-              //   }),
-              // ),
+              GoRoute(
+                name: 'success_payment',
+                path: 'success_payment',
+                builder: ((context, state) {
+                  return const SuccessScreen1();
+                }),
+              ),
               GoRoute(
                   name: 'specialist',
                   path: 'specialist',
@@ -152,6 +145,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         return const PatientDetailForm();
                       }),
                     ),
+                    // chat with doctors
+                    // GoRoute(
+                    //     name: 'chatHolderS',
+                    //     path: 'chatHolderS',
+                    //     builder: ((context, state) {
+                    //       return const CallChatPlaceHolder();
+                    //     })),
                   ]),
             ]),
       ]);

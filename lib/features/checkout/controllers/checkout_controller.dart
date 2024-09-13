@@ -16,6 +16,8 @@ final selectedPaymentProvider = StateProvider<PaymentModel>((ref) {
 final paymentSuccessProvider = StateProvider<PaymentSuccessful>((ref) {
   return PaymentSuccessful.empty();
 });
+final canPopAfterSelect = StateProvider<bool>((ref) => true);
+final isLoading = StateProvider<bool>((ref) => false);
 
 class CheckoutController {
   final Ref ref;

@@ -1,33 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:medici/common/widgets/images/edge_rounded_images.dart';
 
 import '../../../../common/widgets/containers/rounded_container.dart';
-import '../../../../common/widgets/images/circular_images.dart';
 import '../../../../common/widgets/texts/title_subtitle.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/enums.dart';
-import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../models/specialist_model.dart';
 
 class SpecialistHeading extends StatelessWidget {
   const SpecialistHeading({
     super.key,
+    required this.doctor,
   });
-
+  final Doctor doctor;
   @override
   Widget build(BuildContext context) {
     return TRoundedContainer(
       child: Row(
         children: [
-          const Stack(
+          Stack(
             children: [
-              MCircularImage(
-                height: 100,
-                width: 100,
-                imageUrl: PImages.dp2,
+              MRoundedImage(
+                height: 90,
+                width: 90,
+                borderRadius: 100,
+                fit: BoxFit.fill,
+                imageUrl: doctor.profileImage,
                 backgroundColor: PColors.light,
+                isNetworkImage: true,
               ),
-              Positioned(
+              const Positioned(
                 bottom: 6,
                 right: -3,
                 child: Icon(
@@ -36,7 +40,7 @@ class SpecialistHeading extends StatelessWidget {
                   size: 30,
                 ),
               ),
-              Positioned(
+              const Positioned(
                 bottom: 10,
                 right: 0,
                 child: Icon(
@@ -53,9 +57,9 @@ class SpecialistHeading extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const TitleAndSubTitle(
-                title: "Dr. Jonny Wilson",
-                subTitle: 'Dentist',
+              TitleAndSubTitle(
+                title: doctor.name,
+                subTitle: doctor.specialty,
                 textSize: TextSizes.large,
               ),
               const SizedBox(
@@ -70,9 +74,10 @@ class SpecialistHeading extends StatelessWidget {
                   ),
                   const SizedBox(width: PSizes.xs),
                   Text(
-                    "New York, United States",
+                    doctor.location,
                     style: Theme.of(context).textTheme.labelMedium,
                   ),
+                  const SizedBox(width: PSizes.xs),
                   const Icon(
                     Iconsax.map_15,
                     color: PColors.primary,

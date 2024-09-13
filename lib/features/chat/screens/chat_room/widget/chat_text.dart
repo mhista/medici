@@ -1,5 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_waveforms/flutter_audio_waveforms.dart';
+import 'package:medici/features/chat/models/message_reply.dart';
 import 'package:medici/features/chat/screens/chat_room/widget/record_widget.dart';
 import 'package:medici/utils/constants/enums.dart';
 import 'package:swipe_to/swipe_to.dart';
@@ -12,7 +13,7 @@ import 'chat_image_message.dart';
 import 'chat_text_message.dart';
 import 'message_reply_container.dart';
 
-class ChatText extends StatelessWidget {
+class ChatText extends ConsumerWidget {
   const ChatText({
     super.key,
     required this.text,
@@ -26,6 +27,7 @@ class ChatText extends StatelessWidget {
     required this.repliedMessageType,
     required this.onLeftSwipe,
     required this.username,
+    required this.onRightSwipe,
   });
 
   final String text,
@@ -37,13 +39,18 @@ class ChatText extends StatelessWidget {
   final Color? textColor, color;
   final bool isUser;
   final double width;
-  final VoidCallback onLeftSwipe;
+  final VoidCallback onLeftSwipe, onRightSwipe;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = PHelperFunctions.isDarkMode(context);
     return SwipeTo(
+      rightSwipeWidget: const Icon(
+        Icons.delete,
+        color: Colors.red,
+      ),
       onLeftSwipe: (details) => onLeftSwipe(),
+      onRightSwipe: (details) => onRightSwipe(),
       child: Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: PSizes.spaceBtwItems,
@@ -52,7 +59,8 @@ class ChatText extends StatelessWidget {
           crossAxisAlignment:
               isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            if (repliedText.isNotEmpty && username.isNotEmpty)
+            if ((repliedText.isNotEmpty && username.isNotEmpty) &&
+                ref.watch(messageReplyProvider) != null)
               MessageReplyContainer(
                 messageType: repliedMessageType,
                 width: width,

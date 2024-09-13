@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medici/features/authentication/screens/login/widgets/login_header.dart';
 
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../common/widgets/signup_login/form_divider.dart';

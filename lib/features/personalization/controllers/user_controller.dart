@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:medici/features/specialists/controllers/specialist_controller.dart';
 import 'package:medici/providers.dart';
-import 'package:medici/router.dart';
 
 import '../../../common/loaders/loaders.dart';
 import '../../../utils/constants/sizes.dart';

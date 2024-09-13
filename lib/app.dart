@@ -2,20 +2,15 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:medici/features/authentication/models/user_model.dart';
 import 'package:medici/features/call/controllers/call_controller.dart';
-import 'package:medici/features/specialists/controllers/specialist_controller.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/router.dart';
 import 'package:medici/utils/constants/image_strings.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import 'features/call/models/call_model.dart';
 import 'features/personalization/controllers/user_controller.dart';
 import 'utils/constants/colors.dart';
-import 'utils/notification/device_notification.dart';
 import 'utils/theme/theme.dart';
 
 class App extends ConsumerWidget {
@@ -52,12 +47,16 @@ class App extends ConsumerWidget {
   void callCheck(WidgetRef ref, UserModel user) {
     ref.watch(callProvider).whenData((data) {
       // debugPrint(data.toString());
-      ref.read(callModelProvider.notifier).state = data;
-      if (data.receiverId == user.id && user.isOnline) {
+      // ref.read(callModelProvider.notifier).state = data;
+      if (data.receiverId == user.id &&
+          user.isOnline &&
+          data.callEnded == false) {
         // context.push(
         //   'incomingCall',
         //   extra: data,
         // );
+        // ref.read(showCallModal.notifier).state = true;
+
         ref.read(notificationProvider).showInstantNotification(
           enableLights: true,
           enableVibration: true,
@@ -80,8 +79,9 @@ class App extends ConsumerWidget {
           ],
         );
         FlutterRingtonePlayer().play(fromAsset: PImages.iphone1, looping: true);
+      } else {
+        // ref.read(showCallModal.notifier).state = false;
       }
-      // else if (data == )
     });
   }
 }

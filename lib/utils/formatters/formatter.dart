@@ -6,6 +6,11 @@ class PFormatter {
     return DateFormat('dd-MMM-yyy').format(date);
   }
 
+  static String formatTime({DateTime? date}) {
+    date ??= DateTime.now();
+    return DateFormat.jm().format(date);
+  }
+
   static String formatCurrency(double amount) {
     return NumberFormat.currency(locale: 'en_Us', symbol: '\$').format(amount);
   }

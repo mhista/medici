@@ -117,7 +117,7 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
                   backgroundColor: PColors.white,
                   height: 50,
                   width: 50,
-                  icon: Iconsax.search_normal,
+                  icon: Iconsax.profile_circle,
                   onPressed: () {},
                 ),
               Consumer(
@@ -136,7 +136,7 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         // if (responsive.screenWidth < 700)
-        //   const MSearchBar(hintText: PTexts.hintText),
+        // const MSearchBar(hintText: PTexts.hintText),
       ],
     );
   }

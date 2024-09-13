@@ -8,9 +8,10 @@ import '../../utils/helpers/helper_functions.dart';
 class PLoaders {
   static hideSnackBar() =>
       ScaffoldMessenger.of(Get.context!).hideCurrentSnackBar();
-  static customToast({required message}) {
-    ScaffoldMessenger.of(Get.context!).showSnackBar(
+  static customToast({required message, required BuildContext context}) {
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        dismissDirection: DismissDirection.up,
         elevation: 0,
         duration: const Duration(seconds: 2),
         backgroundColor: Colors.transparent,
@@ -19,13 +20,13 @@ class PLoaders {
           margin: const EdgeInsets.symmetric(horizontal: 30),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              color: PHelperFunctions.isDarkMode(Get.context!)
+              color: PHelperFunctions.isDarkMode(context)
                   ? PColors.darkerGrey.withOpacity(0.9)
                   : PColors.grey.withOpacity(0.9)),
           child: Center(
             child: Text(
               message,
-              style: Theme.of(Get.context!).textTheme.labelLarge,
+              style: Theme.of(context).textTheme.labelLarge,
             ),
           ),
         ),

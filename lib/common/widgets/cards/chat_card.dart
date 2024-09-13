@@ -41,7 +41,7 @@ class ChatCard extends ConsumerWidget {
                   ProfileImage1(
                     isNetworkImage: isNetworkImage,
                     imageSize: 60,
-                    radius: 60,
+                    radius: 100,
                     image: image,
                   ),
                   Positioned(

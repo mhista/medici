@@ -170,4 +170,71 @@ class ChatRepository {
     }
     await batch.commit();
   }
+
+  // DELETE MESSAGES
+  Future<void> deleteMessage({required MessageModel message}) async {
+    try {
+      // SAVE IN THE SENDERS MESSAGE COLLECTION
+      await db
+          .collection('Users')
+          .doc(message.senderId)
+          .collection('Chats')
+          .doc(message.receiverId)
+          .collection('Messages')
+          .doc(message.messageId)
+          .delete();
+      // SAVE IN THE RECEIVERS MESSAGE COLLECTION
+      await db
+          .collection('Users')
+          .doc(message.receiverId)
+          .collection('Chats')
+          .doc(message.senderId)
+          .collection('Messages')
+          .doc(message.messageId)
+          .delete();
+    } on FirebaseAuthException catch (e) {
+      throw KFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw KFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw const KFormatExceptions();
+    } on PlatformException catch (e) {
+      throw KPlatformException(e.code).message;
+    } catch (e) {
+      throw 'something went wrong, please try again';
+    }
+  }
+
+  // DELETE CHAT CONTACTS
+  Future<void> deleteChatContacts(
+      {required String senderId, required String receiverId}) async {
+    try {
+      // SAVE IN THE SENDERS MESSAGE COLLECTION
+      await db
+          .collection('Users')
+          .doc(senderId)
+          .collection('Messages')
+          .doc(receiverId)
+          .delete();
+
+      // SAVE IN THE RECEIVERS MESSAGE COLLECTION
+
+      await db
+          .collection('Users')
+          .doc(receiverId)
+          .collection('Messages')
+          .doc(senderId)
+          .delete();
+    } on FirebaseAuthException catch (e) {
+      throw KFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw KFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw const KFormatExceptions();
+    } on PlatformException catch (e) {
+      throw KPlatformException(e.code).message;
+    } catch (e) {
+      throw 'something went wrong, please try again';
+    }
+  }
 }

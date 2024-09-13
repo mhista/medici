@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:medici/common/styles/spacing_styles.dart';
 import 'package:medici/common/widgets/appbar/tabbar.dart';
 import 'package:medici/common/widgets/badge/reviewBadge.dart';
 import 'package:medici/common/widgets/chips/filter_chip.dart';
@@ -13,7 +12,6 @@ import 'package:medici/features/hospital/screens/widgets/hospital_card_details.d
 import 'package:medici/features/hospital/screens/widgets/reviews/reviews.dart';
 import 'package:medici/features/hospital/screens/widgets/specialists/specialists.dart';
 import 'package:medici/features/hospital/screens/widgets/treatments/treatments.dart';
-import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:medici/utils/helpers/helper_functions.dart';

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../hospital/screens/widgets/about/about.dart';
 import 'working_hour.dart';
 
 class Doctor {

@@ -8,14 +8,12 @@ import 'package:medici/common/widgets/shimmer/chat_card_shimmer.dart';
 import 'package:medici/features/personalization/controllers/user_controller.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
-import 'package:medici/utils/constants/image_strings.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:medici/utils/constants/text_strings.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../utils/helpers/helper_functions.dart';
 import '../../controllers/chat_controller.dart';
-import '../chat_room/chat_room.dart';
 
 class MessageScreen extends ConsumerWidget {
   const MessageScreen({super.key});
@@ -116,6 +114,7 @@ class MessageScreen extends ConsumerWidget {
                                   .watch(checkOnlineStatus(chat.user2.id))
                                   .value;
                               return ChatCard(
+                                isNetworkImage: true,
                                 isOnline: isOnline ?? false,
                                 unreadMessageCount: count != null && count >= 1
                                     ? count.toString()
@@ -125,7 +124,7 @@ class MessageScreen extends ConsumerWidget {
                                     ? 'Dr ${chat.user2.fullName}'
                                     : chat.user2.fullName,
                                 subTitle: chat.lastMessage,
-                                image: PImages.dp2,
+                                image: chat.user2.profilePicture,
                                 recent: false,
                                 onPressed: () {
                                   ref.watch(chatController).markAsRead(

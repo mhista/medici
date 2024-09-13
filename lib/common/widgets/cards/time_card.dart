@@ -3,6 +3,7 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/sizes.dart';
+import '../../../utils/formatters/formatter.dart';
 import '../../../utils/helpers/helper_functions.dart';
 
 class TimeCard extends StatelessWidget {
@@ -31,12 +32,12 @@ class TimeCard extends StatelessWidget {
             Flexible(
               child: Text.rich(TextSpan(children: [
                 TextSpan(
-                  text: 'Sun, Jan 19, 08:00am',
+                  text: PFormatter.formatDate(DateTime.now()),
                   style: Theme.of(context).textTheme.labelMedium!.apply(
                       color: PColors.white, overflow: TextOverflow.ellipsis),
                 ),
                 TextSpan(
-                  text: ' - 10:00 am',
+                  text: ' - ${PFormatter.formatTime()}',
                   style: Theme.of(context).textTheme.labelMedium!.apply(
                       color: PColors.white, overflow: TextOverflow.ellipsis),
                 ),

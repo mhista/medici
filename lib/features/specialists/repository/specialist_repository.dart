@@ -13,6 +13,16 @@ class SpecialistRepository {
   SpecialistRepository({required Ref ref}) : _ref = ref;
   // CREATE A SPECIALIST
   Future<void> createSpecialist(Doctor specialist) async {
+    // save doctore profile to firestore
+    _ref
+        .read(firestoreProvider)
+        .collection("Specialists")
+        .doc(specialist.id)
+        .set(specialist.toMap());
+  }
+
+  // CREATE A SPECIALIST
+  Future<String> uploadSpecialistImage(Doctor specialist) async {
     final storage = _ref.read(firebaseStorageHandler);
     // get image data from asset bundle
     final file = await storage.getImageDataFromAssets(specialist.profileImage);
@@ -20,13 +30,7 @@ class SpecialistRepository {
     final imageUrl =
         await storage.uploadImageData("Specialists", file, specialist.name);
 
-    specialist.profileImage = imageUrl;
-    // save doctore profile to firestore
-    _ref
-        .read(firestoreProvider)
-        .collection("Specialists")
-        .doc(specialist.id)
-        .set(specialist.toMap());
+    return imageUrl;
   }
 
   // UPDATE A SPECIALIST
@@ -47,7 +51,24 @@ class SpecialistRepository {
       throw 'something went wrong, please try again';
     }
   }
+
   // GET SPECIALIST BY ID
+  Future<Doctor> getDoctorById(String doctorId) async {
+    try {
+      final snapshot = await _ref
+          .read(firestoreProvider)
+          .collection("Specialists")
+          .doc(doctorId)
+          .get();
+      return Doctor.fromSnapshot(snapshot);
+    } on FirebaseException catch (e) {
+      throw KFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw KPlatformException(e.code).message;
+    } catch (e) {
+      throw 'something went wrong, please try again';
+    }
+  }
   // GET ALL SPECIALIST BY NAME
   // GET ALL SPECIALIST BY SPECIALTY
   // GET ALL SPECIALIST BY LOCATION

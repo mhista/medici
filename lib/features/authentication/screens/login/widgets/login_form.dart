@@ -7,7 +7,6 @@ import 'package:medici/router.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/constants/text_strings.dart';
 import '../../../../../utils/validators/validation.dart';
-import '../../signup/signup.dart';
 
 class PLoginForm extends ConsumerWidget {
   const PLoginForm({

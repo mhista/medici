@@ -49,7 +49,7 @@ class DoctorCardDetail extends StatelessWidget {
                 children: [
                   const Icon(
                     Iconsax.star5,
-                    size: 20,
+                    size: 18,
                     color: PColors.primary,
                   ),
                   const SizedBox(
@@ -57,7 +57,10 @@ class DoctorCardDetail extends StatelessWidget {
                   ),
                   Text(
                     rating.toString(),
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .apply(fontSizeDelta: -1),
                   ),
                 ],
               ),
@@ -71,7 +74,7 @@ class DoctorCardDetail extends StatelessWidget {
                 children: [
                   const Icon(
                     Iconsax.location5,
-                    size: 15,
+                    size: 13,
                     color: PColors.grey,
                   ),
                   const SizedBox(

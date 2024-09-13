@@ -1,16 +1,23 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:medici/common/widgets/headings/tab_headings.dart';
 import 'package:medici/common/widgets/texts/read_more_text.dart';
+import 'package:medici/features/specialists/controllers/specialist_controller.dart';
 
 import '../../../../../utils/constants/sizes.dart';
 
-class AboutDetail extends StatelessWidget {
-  const AboutDetail({super.key, this.usePadding = true, this.tabPadding});
+class AboutDetail extends ConsumerWidget {
+  const AboutDetail({
+    super.key,
+    this.usePadding = true,
+    this.tabPadding,
+  });
 
   final bool usePadding;
   final EdgeInsets? tabPadding;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final doctor = ref.watch(specialistProvider);
     return ListView(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -26,11 +33,9 @@ class AboutDetail extends StatelessWidget {
             padding: EdgeInsets.symmetric(
               horizontal: usePadding ? PSizes.md : 0,
             ),
-            child: const Column(children: [
+            child: Column(children: [
               PReadMoreText(
-                  collapsedTextPrefix: 'Read',
-                  text:
-                      "lorem lipsum dolore sicyut uiwh egcuiwchuinc iucuincuincuic uicbucnc cic c79hch7c 8c8wch8chc 9chch8chwc 87ch8hcn8c 8ch89c89h  uihdidcuihdc uihwidkncidc uidhidcnuic uihdneui uiedheuide uiieudejkkdnie eined euidbe ceh ecuincuic  uice cuecbie uuci  ciu ecue euc euc wecuy dcc   wuybeyuee  uydguyegwcywececdf tyfdetydtye etydtyed etyfywetvcuweidcuwe wegf8euc wegc8ece76g "),
+                  collapsedTextPrefix: 'Read', text: doctor.description),
             ]),
           ),
           const SizedBox(
@@ -46,16 +51,19 @@ class AboutDetail extends StatelessWidget {
             padding: EdgeInsets.symmetric(
               horizontal: usePadding ? PSizes.md : 0,
             ),
-            child: const Column(
+            child: Column(
               children: [
-                Divider(),
-                WorkingHour(day: "Monday", startHour: "9:00", endHour: "4:00"),
-                WorkingHour(day: "Tuesday", startHour: "9:00", endHour: "4:00"),
-                WorkingHour(
-                    day: "Wednesday", startHour: "9:00", endHour: "4:00"),
-                WorkingHour(
-                    day: "Thursday", startHour: "9:00", endHour: "4:00"),
-                WorkingHour(day: "Friday", startHour: "9:00", endHour: "4:00"),
+                const Divider(),
+                if (doctor.workingHours != null)
+                  Column(
+                      children: doctor.workingHours!
+                          .map((duration) => WorkingHour(
+                              day: duration.day,
+                              startHour:
+                                  '${duration.startTime.hour}:${duration.startTime.minute}',
+                              endHour:
+                                  "${duration.endTime.hour}:${duration.startTime.minute}"))
+                          .toList()),
               ],
             ),
           )

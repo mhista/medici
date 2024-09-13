@@ -17,7 +17,9 @@ StateProvider<Doctor> specialistProvider =
 class SpecialistController {
   final Ref _ref;
 
-  SpecialistController({required Ref ref}) : _ref = ref;
+  SpecialistController({required Ref ref}) : _ref = ref {
+    fetchAllSpecialists();
+  }
 
   void uploadSpecialistDummy() async {
     // checks for internet
@@ -28,49 +30,65 @@ class SpecialistController {
     }
     // initiate a loader
     // creates a user model using the specialist models
-    List<Doctor> specialistData = SpecialistDummyData.dummyDoctors;
-    debugPrint(specialistData[0].toString());
-    for (var doctor in specialistData) {
-      final firstName = doctor.name.split(' ')[1].toLowerCase();
-      final lastName = doctor.name.split(' ')[2].toLowerCase();
-      debugPrint("$firstName $lastName");
-      // signup user to firebase
-      debugPrint("registeriing ${doctor.name} to firebase");
-      final userCredential = await _ref
-          .read(authenticationProvider)
-          .registerWithEmailAndPassword(doctor.email, "@Diwe1234");
+    // List<Doctor> specialistData = SpecialistDummyData.dummyDoctors;
+    // debugPrint(specialistData[0].toString());
+    // for (var doctor in specialistData) {
+    //   final firstName = doctor.name.split(' ')[1].toLowerCase();
+    //   final lastName = doctor.name.split(' ')[2].toLowerCase();
+    //   debugPrint("$firstName $lastName");
+    //   // signup user to firebase
+    //   debugPrint("registeriing ${doctor.name} to firebase");
+    //   final userCredential = await _ref
+    //       .read(authenticationProvider)
+    //       .registerWithEmailAndPassword(doctor.email, "@Diwe1234");
 
-      // saves the user model to firestore
+    //   // saves the user model to firestore
+    //   await _ref
+    //       .read(specialistRepository)
+    //       .uploadSpecialistImage(doctor)
+    //       .then((img) => doctor.profileImage = img);
 
-      final user = UserModel(
-          id: userCredential.user!.uid,
-          firstName: firstName,
-          lastName: lastName,
-          username: doctor.name,
-          email: doctor.email,
-          phoneNumber: doctor.phoneNumber,
-          profilePicture: doctor.profileImage,
-          isOnline: false,
-          isDoctor: true,
-          onCall: false);
-      debugPrint("saving ${doctor.name} to firebase");
-      await _ref.read(userRepository).saveUser(user);
+    //   final user = UserModel(
+    //       id: userCredential.user!.uid,
+    //       firstName: firstName,
+    //       lastName: lastName,
+    //       username: doctor.name,
+    //       email: doctor.email,
+    //       phoneNumber: doctor.phoneNumber,
+    //       profilePicture: doctor.profileImage,
+    //       isOnline: false,
+    //       isDoctor: true,
+    //       onCall: false);
+    //   debugPrint("saving ${doctor.name} to firebase");
+    //   await _ref.read(userRepository).saveUser(user);
 
-      // upload the specialist model to firestor
-      doctor.id = user.id;
-      debugPrint("registeriing ${doctor.name} to firebase as specialist");
-      _ref.read(specialistRepository).createSpecialist(doctor);
-    }
+    //   // upload the specialist model to firestor
+    //   doctor.id = user.id;
+    //   debugPrint("registeriing ${doctor.name} to firebase as specialist");
+    //   _ref.read(specialistRepository).createSpecialist(doctor);
+    // }
   }
 
   // FETCH ALL USERS
-  Future<List<Doctor>> fetchAllSpecialists() async {
+  fetchAllSpecialists() async {
     try {
       final doctors = await _ref.read(specialistRepository).getAllDoctors();
       return _ref.read(allSpecialists.notifier).update((state) {
         state = doctors;
         return state;
       });
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
+  }
+
+  // FETCH ALL USERS
+  fetchSpecialist(String doctorId) async {
+    try {
+      final doctor =
+          await _ref.read(specialistRepository).getDoctorById(doctorId);
+      return _ref.read(specialistProvider.notifier).state = doctor;
     } catch (e) {
       debugPrint(e.toString());
       return [];

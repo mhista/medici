@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/features/chat/models/message_reply.dart';
-import 'package:medici/features/chat/screens/chat_room/widget/message_reply_preview.dart';
 
 import '../../../../../common/widgets/appbar/searchBar.dart';
 import '../../../../../utils/constants/enums.dart';
@@ -54,7 +53,7 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
                 usePrefixSuffix: true,
                 prefixWidget: IconButton(
                   icon: Consumer(
-                      builder: (_, WidgetRef ref, __) => isShowEmojiContainer
+                      builder: (_, WidgetRef ref, __) => !isShowEmojiContainer
                           ? const Icon(Icons.emoji_emotions_outlined)
                           : const Icon(Icons.keyboard_alt_outlined)),
                   onPressed: () {

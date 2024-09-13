@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:medici/utils/constants/enums.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../utils/helpers/helper_functions.dart';
 import '../containers/rounded_container.dart';
 import '../images/rounded_rect_image.dart';
-import '../rating/rating_star.dart';
-import '../texts/title_subtitle.dart';
 import 'doctor_card_detail.dart';
 
 class DoctorCard extends StatelessWidget {

@@ -1,28 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:medici/features/call/controllers/call_controller.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/helpers/helper_functions.dart';
 
 import '../../../../controller/navigation_controller.dart';
 import '../common/tablet_mobile_navigation.dart';
-
-// class MobileScaffold extends ConsumerWidget {
-//   const MobileScaffold({super.key});
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     // CONTROLLER FOR NAVIGATING MAJOR SCREENS
-//     final controller = ref.watch(navigationController.notifier);
-
-//     final isDark = PHelperFunctions.isDarkMode(context);
-//     return Scaffold(
-//         bottomNavigationBar:
-//             SmallScreenNavigation(isDark: isDark, controller: controller),
-//         body: controller.screens[ref.watch(navigationController)]);
-//   }
-// }
 
 class MobileScaffold extends ConsumerStatefulWidget {
   const MobileScaffold({super.key});

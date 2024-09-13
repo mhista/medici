@@ -15,6 +15,9 @@ import '../../../utils/constants/file_formats.dart';
 import '../../authentication/models/user_model.dart';
 import '../../personalization/controllers/user_controller.dart';
 
+final chatContactMessages =
+    StateProvider<List<ChatContact>>((ref) => <ChatContact>[]);
+
 class ChatController {
   final Ref ref;
   final ChatRepository chatRepository;
@@ -32,7 +35,7 @@ class ChatController {
   final unRepliedMessages =
       StateProvider<List<MessageModel>>((ref) => <MessageModel>[]);
 
-  final showEmojiContainer = StateProvider((ref) => true);
+  final showEmojiContainer = StateProvider((ref) => false);
 
 // UPDATES THE STATE OF THE TEXTPOVIDER WHEN THE STRING CHANGES IN TEXTEDITING CONTROLLER
   checkEmptyText() {
@@ -262,6 +265,7 @@ class ChatController {
                                 : message.text,
         user2: receiver,
         user1: sender,
+        messageId: message.messageId,
       );
       // FOR RECEIVER
       final receiverChatContact = ChatContact(
@@ -280,7 +284,8 @@ class ChatController {
                                   ? "📞 Voice call"
                                   : message.text,
           user2: sender,
-          user1: receiver);
+          user1: receiver,
+          messageId: message.messageId);
       await chatRepository.saveChatContacts(
           sender: senderChatContact, receiver: receiverChatContact);
     } catch (e) {
@@ -309,6 +314,20 @@ class ChatController {
         repliedMessage: repliedMessage,
         repliedMessageType: repliiedMessageType,
         repliedTo: repliedTo);
+  }
+
+  // DELETE A MESSAGE
+  Future<void> deleteMessage({required MessageModel message}) async {
+    await chatRepository.deleteMessage(message: message);
+    // PLoaders.customToast(message: 'message deleted', context: context);
+  }
+
+  // DELETE A MESSAGE
+  void deleteChatContact(
+      {required String receiverId, required String senderId}) async {
+    await chatRepository.deleteChatContacts(
+        senderId: senderId, receiverId: receiverId);
+    // PLoaders.customToast(message: 'message deleted', context: context);
   }
 
   // RETRIEVE ALL USER CURRENT MESSAGES AS STREAM

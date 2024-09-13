@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../common/widgets/containers/rounded_container.dart';
 import '../../../../common/widgets/images/circular_images.dart';
 import '../../../../utils/constants/colors.dart';
-import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
 
 class ServicesWidget extends StatelessWidget {

@@ -6,22 +6,22 @@ class PImages {
   static const onboarding2 = 'assets/animations/onboard2.gif';
   static const onboarding3 = 'assets/animations/onboard3.png';
 
-  //  OFILE AVATERS
+  // //  OFILE AVATERS
   static const String dp1 = 'assets/images/dp/doc1.png';
-  static const String dp2 = 'assets/images/dp/doc2.png';
-  static const String dp3 = 'assets/images/dp/doc3.png';
-  static const String dp4 = 'assets/images/dp/doc4.png';
-  static const String dp5 = 'assets/images/dp/doc5.png';
-  // static const String dp6 = 'assets/images/dp/doc6.png';
-  static const String dp7 = 'assets/images/dp/doc7.png';
-  static const String dp8 = 'assets/images/dp/doc8.png';
-  static const String dp9 = 'assets/images/dp/doc9.png';
-  static const String dp10 = 'assets/images/dp/doc10.png';
-  static const String dp11 = 'assets/images/dp/doc11.png';
-  static const String dp12 = 'assets/images/dp/doc12.png';
-  static const String dp13 = 'assets/images/dp/doc13.png';
-  static const String dp14 = 'assets/images/dp/doc14.png';
-  static const String dp15 = 'assets/images/dp/doc15.png';
+  // static const String dp2 = 'assets/images/dp/doc2.png';
+  // static const String dp3 = 'assets/images/dp/doc3.png';
+  // static const String dp4 = 'assets/images/dp/doc4.png';
+  // static const String dp5 = 'assets/images/dp/doc5.png';
+  // // static const String dp6 = 'assets/images/dp/doc6.png';
+  // static const String dp7 = 'assets/images/dp/doc7.png';
+  // static const String dp8 = 'assets/images/dp/doc8.png';
+  // static const String dp9 = 'assets/images/dp/doc9.png';
+  // static const String dp10 = 'assets/images/dp/doc10.png';
+  // static const String dp11 = 'assets/images/dp/doc11.png';
+  // static const String dp12 = 'assets/images/dp/doc12.png';
+  // static const String dp13 = 'assets/images/dp/doc13.png';
+  // static const String dp14 = 'assets/images/dp/doc14.png';
+  // static const String dp15 = 'assets/images/dp/doc15.png';
 
 //   SOCIAL LOGOS
   static const String google = 'assets/images/social/google-icon.png';

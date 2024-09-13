@@ -1,36 +1,39 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:medici/common/widgets/cards/doctor_card_detail.dart';
 import 'package:medici/common/widgets/containers/rounded_container.dart';
-import 'package:medici/common/widgets/images/circular_images.dart';
 import 'package:medici/common/widgets/images/edge_rounded_images.dart';
+import 'package:medici/features/specialists/controllers/specialist_controller.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/enums.dart';
-import 'package:medici/utils/constants/image_strings.dart';
 
-import '../../../../../common/widgets/chips/filter_chip.dart';
 import '../../../../../router.dart';
 import '../../../../../utils/constants/sizes.dart';
 
-class FliterDoctorsList extends ConsumerWidget {
-  const FliterDoctorsList({
+class FilterDoctorsList extends ConsumerWidget {
+  const FilterDoctorsList({
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(specialistController);
+    final doctors = ref.watch(allSpecialists);
     return SizedBox(
-      height: 220,
+      height: 210,
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
-        itemCount: 20,
+        itemCount: doctors.length,
         itemBuilder: (context, index) {
+          final doctor = doctors[index];
           return GestureDetector(
-            onTap: () => ref.read(goRouterProvider).goNamed("specialist"),
-            child: const TRoundedContainer(
+            onTap: () {
+              ref.read(specialistProvider.notifier).state = doctor;
+              ref.read(goRouterProvider).goNamed("specialist");
+            },
+            child: TRoundedContainer(
               // borderColor: PColors.primary,
               width: 160,
               height: 100,
@@ -40,28 +43,29 @@ class FliterDoctorsList extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: PSizes.xs,
                   ),
                   MRoundedImage(
-                    imageUrl: PImages.dp1,
-                    width: 100,
-                    height: 100,
+                    imageUrl: doctor.profileImage,
+                    width: 90,
+                    height: 90,
                     borderRadius: 100,
                     fit: BoxFit.fill,
+                    isNetworkImage: true,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: PSizes.sm,
                   ),
                   Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: DoctorCardDetail(
-                      title: "Dr Maria Elena",
-                      subTitle: "Psychologist",
-                      rating: 3.0,
+                      title: doctor.name,
+                      subTitle: doctor.specialty,
+                      rating: doctor.rating,
                       useVerifiedText: false,
                       useLongLocation: false,
-                      textSize: TextSizes.large,
+                      textSize: TextSizes.small,
                     ),
                   )
                 ],

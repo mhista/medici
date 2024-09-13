@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/providers.dart';
-import 'package:medici/utils/constants/colors.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-import '../../features/call/controllers/call_controller.dart';
 
 class NotificationService {
   final Ref ref;

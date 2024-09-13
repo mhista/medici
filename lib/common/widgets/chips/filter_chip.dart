@@ -3,8 +3,6 @@ import 'package:medici/common/widgets/icons/circular_icon.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/sizes.dart';
-import '../../../utils/helpers/helper_functions.dart';
-import '../icons/rounded_icons.dart';
 
 class ButtonChip extends StatelessWidget {
   const ButtonChip({

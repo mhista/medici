@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:medici/common/widgets/icons/circular_icon.dart';
 
 import '../../../../../common/styles/borderRadius.dart';
 import '../../../../../utils/constants/colors.dart';

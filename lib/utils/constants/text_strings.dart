@@ -8,7 +8,7 @@ class PTexts {
   static const String appName = "Medici";
   static const String acontinue = "Continue";
 // others
-  static const String hintText = 'Search a doctor or health issue';
+  static const String hintText = 'Search for doctor, medications, articles...';
   static const String chatSearchText = 'Search, eg. Dr';
 
 //   OnBoarding Texts

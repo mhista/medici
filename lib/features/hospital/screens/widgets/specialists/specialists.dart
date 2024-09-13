@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medici/common/widgets/headings/tab_headings.dart';
 import 'package:medici/features/main_app/screens/home/widgets/doc_card_list.dart';
-import 'package:medici/features/main_app/screens/home/widgets/doc_prof_list.dart';
 
 class Specialists extends StatelessWidget {
   const Specialists({super.key});

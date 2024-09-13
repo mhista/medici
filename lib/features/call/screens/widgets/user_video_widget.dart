@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:medici/features/call/controllers/agora_engine_controller.dart';
 
 import '../../../../common/widgets/images/circular_images.dart';
 import '../../../../providers.dart';
@@ -7,6 +8,7 @@ import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../personalization/controllers/user_controller.dart';
+import '../../models/call_model.dart';
 import '../call_screen.dart';
 
 class UserVideoWidget extends ConsumerWidget {
@@ -14,22 +16,24 @@ class UserVideoWidget extends ConsumerWidget {
     super.key,
     required this.widget,
     required this.remoteUid,
+    required this.call,
   });
 
   final CallScreen widget;
-
+  final CallModel call;
   final int? remoteUid;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final spacingMultiple = (remoteUid == null) ? 6 : 1;
+    final spacingMultiple =
+        (remoteUid == null) || ref.watch(remoteUserMuted) ? 6 : 1;
     return Align(
       alignment: Alignment.topCenter,
       child: Column(
         children: [
           SizedBox(height: PSizes.spaceBtwSections * spacingMultiple),
           MCircularImage(
-            imageUrl: PImages.dp2,
-            isNetworkImage: false,
+            imageUrl: call.callerPic,
+            isNetworkImage: true,
             height: (remoteUid == null) ? 100 : 70,
             width: (remoteUid == null) ? 100 : 70,
             backgroundColor: PColors.transparent,

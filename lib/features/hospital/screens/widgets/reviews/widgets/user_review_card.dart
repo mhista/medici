@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:medici/utils/constants/colors.dart';
-import 'package:medici/utils/constants/image_strings.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:medici/utils/helpers/helper_functions.dart';
 

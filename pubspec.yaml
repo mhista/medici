@@ -105,6 +105,7 @@ dependencies:
   # model_bottom_sheet
   # agora_rtc_engine
   # agora_rtm
+  get: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

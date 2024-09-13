@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/features/chat/controllers/recorder_controller.dart';
-import 'package:medici/providers.dart';
 
 import '../../../../authentication/models/user_model.dart';
 import '../../../../personalization/controllers/user_controller.dart';

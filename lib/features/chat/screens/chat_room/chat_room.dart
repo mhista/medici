@@ -6,14 +6,12 @@ import 'package:medici/common/widgets/cards/chat_card.dart';
 import 'package:medici/common/widgets/icons/rounded_icons.dart';
 import 'package:medici/common/widgets/images/rounded_rect_image.dart';
 import 'package:medici/common/widgets/texts/title_subtitle.dart';
-import 'package:medici/features/call/controllers/call_controller.dart';
 import 'package:medici/providers.dart';
-import 'package:medici/utils/constants/image_strings.dart';
+import 'package:medici/router.dart';
 import 'package:medici/utils/constants/sizes.dart';
 
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/helpers/helper_functions.dart';
-import '../../../authentication/models/user_model.dart';
 import '../../../personalization/controllers/user_controller.dart';
 import '../../models/message_reply.dart';
 import 'widget/chat_input_field.dart';
@@ -38,8 +36,7 @@ class ChatRoom extends ConsumerWidget {
     final isOnline = ref.watch(checkOnlineStatus(receiver.id)).value;
     final messageReply = ref.watch(messageReplyProvider);
     final isShowMessageReply = messageReply != null;
-    // _runsAfterBuild(ref);
-    final callEnds = ref.watch(callEnded);
+    _runsAfterBuild(ref);
 
     // return ref.watch(callProvider).when(
     //       // skipError: true,
@@ -52,133 +49,145 @@ class ChatRoom extends ConsumerWidget {
     //                 callEnds == false)) {
     //           return CallScreen(call: data);
     // } else {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        elevation: 2,
-        backgroundColor: isDark
-            ? PColors.dark.withOpacity(0.4)
-            : PColors.light.withOpacity(0.4),
-        leading: IconButton(
-          onPressed: Navigator.of(context).pop,
-          icon: const Icon(Icons.arrow_back_ios_new),
-          color: isDark ? PColors.light : PColors.dark,
-        ),
-        leadingWidth: 25,
-        title: Row(
-          children: [
-            const ProfileImage1(
-              image: PImages.dp3,
-              imageSize: 40,
-              radius: 40,
+    return Stack(
+      children: [
+        Scaffold(
+          resizeToAvoidBottomInset: true,
+          appBar: AppBar(
+            elevation: 2,
+            backgroundColor: isDark
+                ? PColors.dark.withOpacity(0.4)
+                : PColors.light.withOpacity(0.4),
+            leading: IconButton(
+              onPressed: Navigator.of(context).pop,
+              icon: const Icon(Icons.arrow_back_ios_new),
+              color: isDark ? PColors.light : PColors.dark,
             ),
-            const SizedBox(
-              width: PSizes.iconXs,
+            leadingWidth: 25,
+            title: GestureDetector(
+              onTap: () async {
+                if (receiver.isDoctor) {
+                  await ref
+                      .read(specialistController)
+                      .fetchSpecialist(receiver.id);
+                  ref.read(goRouterProvider).pushNamed("specialist");
+                }
+              },
+              child: Row(
+                children: [
+                  ProfileImage1(
+                    image: receiver.profilePicture,
+                    imageSize: 40,
+                    radius: 40,
+                    isNetworkImage: true,
+                  ),
+                  const SizedBox(
+                    width: PSizes.iconXs,
+                  ),
+                  Stack(
+                    children: [
+                      TitleAndSubTitle(
+                          title: receiver.isDoctor
+                              ? 'Dr ${receiver.fullName}'
+                              : receiver.fullName,
+                          subTitle: isOnline ?? false ? 'Online' : 'Offline'),
+                      Positioned(
+                          left: 43,
+                          bottom: 4,
+                          child: OnlineIndicator(
+                            size: 8,
+                            isOnline: isOnline ?? false,
+                          ))
+                    ],
+                  ),
+                ],
+              ),
             ),
-            Stack(
-              children: [
-                TitleAndSubTitle(
-                    title: receiver.isDoctor
-                        ? 'Dr ${receiver.fullName}'
-                        : receiver.fullName,
-                    subTitle: isOnline ?? false ? 'Online' : 'Offline'),
-                Positioned(
-                    left: 43,
-                    bottom: 4,
-                    child: OnlineIndicator(
-                      size: 8,
-                      isOnline: isOnline ?? false,
-                    ))
-              ],
-            ),
-          ],
-        ),
-        actions: [
-          RoundedIcon(
-            marginRight: 0,
-            padding: 0,
-            height: 35,
-            width: 35,
-            radius: 35,
-            isPositioned: false,
-            iconData: Icons.video_call,
-            hasBgColor: true,
-            hasIconColor: true,
-            color: PColors.light,
-            bgColor: PColors.primary,
-            onPressed: () async {
-              await ref.read(callController).makeCall(receiver, context, true);
-              ref.read(chatController).sendCallMessage(
-                  receiver: receiver, messageReply: messageReply, type: true);
-            },
-            size: 18,
-          ),
-          const SizedBox(
-            width: PSizes.iconXs,
-          ),
-          RoundedIcon(
-            marginRight: 0,
-            padding: 0,
-            height: 35,
-            width: 35,
-            radius: 35,
-            size: 18,
-            isPositioned: false,
-            iconData: Iconsax.call,
-            hasBgColor: true,
-            hasIconColor: true,
-            color: PColors.light,
-            bgColor: PColors.primary,
-            onPressed: () async {
-              await ref.read(callController).makeCall(receiver, context, false);
-              ref.read(chatController).sendCallMessage(
-                  receiver: receiver, messageReply: messageReply, type: false);
-            },
-          ),
-          const SizedBox(
-            width: PSizes.iconXs,
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // DAILY TIME
-          Expanded(
-              child: Stack(
-            children: [
-              ChatList(receiver: receiver),
+            actions: [
+              RoundedIcon(
+                marginRight: 0,
+                padding: 0,
+                height: 35,
+                width: 35,
+                radius: 35,
+                isPositioned: false,
+                iconData: Icons.video_call,
+                hasBgColor: true,
+                hasIconColor: true,
+                color: PColors.light,
+                bgColor: PColors.primary,
+                onPressed: () async {
+                  ref.read(chatController).sendCallMessage(
+                      receiver: receiver,
+                      messageReply: messageReply,
+                      type: true);
+                  ref.read(callController).makeCall(
+                      receiver: receiver, context: context, isVideo: true);
+                },
+                size: 18,
+              ),
+              const SizedBox(
+                width: PSizes.iconXs,
+              ),
+              RoundedIcon(
+                marginRight: 0,
+                padding: 0,
+                height: 35,
+                width: 35,
+                radius: 35,
+                size: 18,
+                isPositioned: false,
+                iconData: Iconsax.call,
+                hasBgColor: true,
+                hasIconColor: true,
+                color: PColors.light,
+                bgColor: PColors.primary,
+                onPressed: () async {
+                  ref.read(chatController).sendCallMessage(
+                      receiver: receiver,
+                      messageReply: messageReply,
+                      type: false);
+                  ref.read(callController).makeCall(
+                      receiver: receiver, context: context, isVideo: false);
+                },
+              ),
+              const SizedBox(
+                width: PSizes.iconXs,
+              ),
             ],
-          )),
-
-          isShowMessageReply
-              ? MessageReplyPreview(
-                  messageReply: messageReply,
-                  messageOwner: 'Dr ${receiver.fullName}')
-              : const SizedBox(),
-          ChatInputField(
-            controller: controller,
-            receiver: receiver,
-            messageReply: messageReply,
           ),
-          EmojiPickerr(controller: controller)
-        ],
-      ),
+          body: Column(
+            children: [
+              // DAILY TIME
+              Expanded(
+                  child: Stack(
+                children: [
+                  ChatList(receiver: receiver),
+                ],
+              )),
+
+              isShowMessageReply
+                  ? MessageReplyPreview(
+                      messageReply: messageReply,
+                      messageOwner: 'Dr ${receiver.fullName}')
+                  : const SizedBox(),
+
+              ChatInputField(
+                controller: controller,
+                receiver: receiver,
+                messageReply: messageReply,
+              ),
+              EmojiPickerr(controller: controller)
+            ],
+          ),
+        ),
+      ],
     );
   }
+
+  _runsAfterBuild(WidgetRef ref) async {
+    await Future(() {
+      ref.read(loadingCompleteProvider.notifier).state = true;
+    });
+  }
 }
-          // error: (error, __) => PLoaders.errorSnackBar(
-        //       title: 'Call failed',
-        //       message: "unable to place call to ${receiver.fullName}"),
-        //   loading: () =>
-        //       PLoaders.customToast(message: "calling ${receiver.fullName}"),
-        // );
-  
-
-  // _runsAfterBuild(WidgetRef ref) async {
-  //   await Future(() {});
-  //   ref.watch(callProvider).whenData((callModel) {
-  //     ref.read(callModelProvider.notifier).state = callModel;
-  //     ref.read(loadingCompleteProvider.notifier).state = true;
-  //   });
-  // }
-

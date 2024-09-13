@@ -7,7 +7,6 @@ import 'package:responsive_framework/responsive_framework.dart';
 import '../../../../../common/widgets/cards/time_card.dart';
 import '../../../../../common/widgets/containers/container_tile.dart';
 import '../../../../../common/widgets/containers/update_container.dart';
-import '../../../../../common/widgets/icons/rounded_icons.dart';
 import '../../../../../utils/constants/image_strings.dart';
 import '../../../../../utils/constants/sizes.dart';
 
@@ -38,7 +37,7 @@ class ScheduleCard extends StatelessWidget {
             ),
             title: 'Dr. Haley Lawrence',
             subTitle: 'Dermatologist',
-            image: PImages.dp3,
+            image: PImages.dp1,
           ),
           const SizedBox(
             height: PSizes.spaceBtwSections,

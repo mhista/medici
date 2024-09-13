@@ -4,14 +4,10 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:medici/data/services/firebase_services/firebase_storage_services.dart';
 import 'package:medici/features/authentication/authentication_repository/authentication_repository.dart';
 import 'package:medici/features/authentication/controllers/login_controller.dart';
-import 'package:medici/features/call/agora_events/agora_egine_events.dart';
-import 'package:medici/features/call/controllers/agora_engine_controller.dart';
-import 'package:medici/features/chat/controllers/recorder_controller.dart';
 import 'package:medici/features/chat/repositories/chat_repository.dart';
 import 'package:medici/features/checkout/controllers/card_controller.dart';
 import 'package:medici/features/checkout/controllers/checkout_controller.dart';
@@ -23,11 +19,9 @@ import 'package:medici/utils/helpers/network_manager.dart';
 import 'package:medici/utils/notification/device_notification.dart';
 
 import 'features/authentication/controllers/signup_controller.dart';
-import 'features/authentication/models/user_model.dart';
 import 'features/call/controllers/call_controller.dart';
 import 'features/call/repositories/call_repository.dart';
 import 'features/chat/controllers/chat_controller.dart';
-import 'router.dart';
 
 // GOROUTER PROVIDER
 // final goRouterProvider = Provider<GoRouter>((ref) {

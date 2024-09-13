@@ -1,11 +1,9 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:medici/config/agora/agora_config.dart';
 import 'package:medici/features/call/controllers/agora_engine_controller.dart';
+import 'package:medici/features/chat/screens/chat_room/chat_room.dart';
 
 import '../../../../common/widgets/containers/rounded_container.dart';
 import '../../../../common/widgets/icons/circular_icon.dart';
@@ -56,11 +54,16 @@ class CallButtons extends ConsumerWidget {
             PCircularIcon(
                 backgroundColor: PColors.transparent,
                 icon: Icons.videocam,
-                color: PColors.light,
+                color: call.isVideo
+                    ? PColors.light
+                    : PColors.light.withOpacity(0.4),
                 secondIcon: Icons.videocam_off_rounded,
-                isChanged: ref.watch(muteVideo),
+                isChanged: ref.watch(videoMuted),
                 onPressed: () {
-                  AgoraEngineController.muteUnmuteVideo(engine, ref);
+                  if (call.isVideo) {
+                    ref.read(videoMuted.notifier).state = !ref.read(videoMuted);
+                    AgoraEngineController.muteUnmuteVideo(engine, ref);
+                  }
                 }),
             PCircularIcon(
                 width: 50,
@@ -69,15 +72,17 @@ class CallButtons extends ConsumerWidget {
                 icon: Iconsax.call5,
                 color: PColors.light,
                 onPressed: () async {
+                  ref.read(loadingCompleteProvider.notifier).state = false;
                   await AgoraEngineController.endCall(engine, ref, call);
                 }),
             PCircularIcon(
                 backgroundColor: PColors.transparent,
-                isChanged: ref.watch(muteAudio),
-                icon: Iconsax.microphone5,
-                secondIcon: Iconsax.microphone_slash5,
+                isChanged: ref.watch(audioMuted),
+                icon: Iconsax.microphone_slash5,
+                secondIcon: Iconsax.microphone5,
                 color: PColors.light,
                 onPressed: () {
+                  ref.read(audioMuted.notifier).state = !ref.read(audioMuted);
                   AgoraEngineController.muteUnmuteAudio(engine, ref);
                 }),
             PCircularIcon(

@@ -2,11 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/common/widgets/button/bottom_button.dart';
-import 'package:medici/features/authentication/screens/signup/signup.dart';
+import 'package:medici/features/checkout/controllers/checkout_controller.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/sizes.dart';
 
-import '../../../utils/constants/text_strings.dart';
 import '../../../utils/validators/validation.dart';
 
 class PatientDetailForm extends ConsumerWidget {
@@ -146,8 +145,11 @@ class PatientDetailForm extends ConsumerWidget {
         bottomNavigationBar: BottomButton(
           text: "Continue",
           onTap: () => ref.read(checkoutController).init().then(
-                (v) => ref.read(checkoutController).selectPaymentModel(context),
-              ),
+            (v) {
+              ref.read(canPopAfterSelect.notifier).state = true;
+              return ref.read(checkoutController).selectPaymentModel(context);
+            },
+          ),
         ));
   }
 }

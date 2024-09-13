@@ -42,9 +42,9 @@ class _AudioPlayerWidgetState extends ConsumerState<AudioPlayerWidget> {
 
   Future<void> _prepPlayer() async {
     await _audioPlayer!.setSourceUrl(widget.path);
-    setState(() {
-      _waveformData = List.generate(1000, (index) => index % 10);
-    });
+    // setState(() {
+    _waveformData = List.generate(1000, (index) => index % 10);
+    // });s
     // await playerController!.preparePlayer(path: widget.path);
   }
 

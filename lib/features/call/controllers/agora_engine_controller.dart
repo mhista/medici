@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:medici/providers.dart';
-
 import '../../../config/agora/agora_config.dart';
-import '../../chat/screens/chat_room/chat_room.dart';
 import '../models/call_model.dart';
 
 final localUserJoinedProvider = StateProvider<bool>((ref) => false);
 final remoteUserJoinedProvider = StateProvider<bool>((ref) => false);
-final muteVideo = StateProvider<bool>((ref) => true);
-final muteAudio = StateProvider<bool>((ref) => true);
+final videoMuted = StateProvider<bool>((ref) => true);
+final audioMuted = StateProvider<bool>((ref) => true);
 final frontCameraEnabled = StateProvider<bool>((ref) => true);
 final cameraEnabled = StateProvider<bool>((ref) => false);
+final remoteUserId = StateProvider<int>((ref) => 0);
+final remoteUserMuted = StateProvider<bool>((ref) => false);
 
 class AgoraEngineController {
 // initialize the enine and other dependencies
@@ -29,8 +29,8 @@ class AgoraEngineController {
         .then((v) {
       debugPrint("Initializing");
     });
-    ref.read(muteVideo.notifier).state = false;
-    // ref.read(muteAudio.notifier).state = false;
+    ref.read(videoMuted.notifier).state = false;
+    ref.read(audioMuted.notifier).state = false;
     ref.read(cameraEnabled.notifier).state = false;
   }
 
@@ -45,50 +45,35 @@ class AgoraEngineController {
   }
 
 // renew token
-  static Future<void> renewToken(String token, RtcEngine engine) async {
+  static Future<void> renewToken(
+    String token,
+    RtcEngine engine,
+  ) async {
     await engine.renewToken(token);
   }
 
-  static Future<void> enableDisableVideo(RtcEngine engine) async {
-    await engine.enableVideo();
+  static Future<void> enableDisableVideo(
+      RtcEngine engine, WidgetRef ref) async {
+    if (ref.watch(cameraEnabled)) {
+      await engine.enableVideo();
+      ref.read(videoMuted.notifier).state = !ref.read(videoMuted);
+    }
   }
 
 // mute/unmute local video
   static Future<void> muteUnmuteVideo(RtcEngine engine, WidgetRef ref) async {
-    bool muteVid = ref.read(muteVideo.notifier).state = !ref.read(muteVideo);
-    debugPrint(muteVid.toString());
-
-    await engine.muteLocalVideoStream(muteVid);
-    ref.read(cameraEnabled.notifier).state = muteVid;
-
+    bool muteVid = ref.read(videoMuted);
     // debugPrint(muteVid.toString());
-    // if (!muteVid) {
-    //   ref.read(cameraEnabled.notifier).state = true;c
-    //   ref.read(enableVideo.notifier).state = true;
-    //   await engine.muteLocalVideoStream(muteVid);
-    // } else {
-    //   ref.read(cameraEnabled.notifier).state = false;
-
-    //   ref.read(enableVideo.notifier).state = false;
-    //   await engine.disableVideo();
-    // }
+    debugPrint(ref.read(remoteUserId).toString());
+    engine.enableLocalVideo(muteVid);
+    ref.read(cameraEnabled.notifier).state = muteVid;
   }
 
 // mute/unmute local audio
   static Future<void> muteUnmuteAudio(RtcEngine engine, WidgetRef ref) async {
-    bool muteAud = ref.read(muteAudio.notifier).state = !ref.read(muteAudio);
+    bool muteAud = ref.read(audioMuted);
     debugPrint(muteAud.toString());
     await engine.muteLocalAudioStream(muteAud);
-    // debugPrint(enableAud.toString());
-
-    // if (!enableAud) {
-    //   ref.read(enableAudio.notifier).state = true;
-    //   await engine.enableAudio();
-    // } else {
-    //   ref.read(enableAudio.notifier).state = false;
-    //   await engine.disableAudio();
-    //   debugPrint('audio disable');
-    // }
   }
 
 // switch camera
@@ -116,7 +101,7 @@ class AgoraEngineController {
   static Future<void> endCall(
       RtcEngine engine, WidgetRef ref, CallModel call) async {
     // end the call
-    ref.read(callController).endCall(call.callerId, call.receiverId, false);
+    ref.read(callController).endCall(call.callerId, call.receiverId);
 
     await engine.leaveChannel();
     await engine.release();

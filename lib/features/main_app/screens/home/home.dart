@@ -6,19 +6,17 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/common/widgets/appbar/kAppBar.dart';
-import 'package:medici/common/widgets/containers/rounded_container.dart';
 import 'package:medici/common/widgets/icons/circular_icon.dart';
-import 'package:medici/common/widgets/images/circular_images.dart';
-import 'package:medici/common/widgets/images/edge_rounded_images.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../../../../common/widgets/appbar/searchBar.dart';
 import '../../../../common/widgets/headings/section_heading.dart';
 import '../../../../utils/constants/image_strings.dart';
+import '../../../../utils/constants/text_strings.dart';
 import '../../../hospital/screens/widgets/services.dart';
 import 'responsive/desktop/desktop_health_update.dart';
-import 'widgets/doc_card_list.dart';
 import 'widgets/doc_prof_list.dart';
 import '../../../hospital/screens/widgets/hospital_card.dart';
 import 'widgets/schedule_card.dart';
@@ -47,6 +45,23 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(
                         height: PSizes.spaceBtwItems,
                       ),
+                      MSearchBar(
+                        radius: 50,
+                        hasColor: true,
+                        color: PColors.light,
+                        useBorder: false,
+                        hintText: PTexts.hintText,
+                        prefixWidget: PCircularIcon(
+                          backgroundColor: PColors.light,
+                          height: 50,
+                          width: 50,
+                          icon: Iconsax.search_normal,
+                          onPressed: () {},
+                        ),
+                      ),
+                      const SizedBox(
+                        height: PSizes.spaceBtwItems,
+                      ),
                       // SECTION HEADER,
                       // const SectionHeading(
                       //   title: 'Services for your health',
@@ -71,13 +86,7 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(
                         height: PSizes.spaceBtwItems,
                       ),
-                      const SectionHeading(
-                        title: 'Upcoming Schedule',
-                        buttonTitle: 'See All',
-                      ),
-                      const SizedBox(
-                        height: PSizes.spaceBtwItems / 2,
-                      ),
+
                       // SCHEDULE CARD
                       if (responsive.screenWidth < 700)
                         const Padding(
@@ -125,7 +134,7 @@ class HomeScreen extends StatelessWidget {
                       ),
 
                       // FILTERING DOCTORS CHIP LIST
-                      FliterDoctorsList()
+                      FilterDoctorsList()
                     ],
                   ),
                   const SizedBox(
@@ -152,7 +161,7 @@ class HomeScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return const HospitalCard(
                           isFullWidth: false,
-                          width: 250,
+                          width: 220,
                           reviewWidth: 60,
                         );
                       },

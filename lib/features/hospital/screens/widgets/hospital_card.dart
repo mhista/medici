@@ -1,11 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:medici/providers.dart';
 
 import '../../../../common/widgets/badge/reviewBadge.dart';
 import '../../../../common/widgets/containers/rounded_container.dart';
-import '../../../../common/widgets/icons/circular_icon.dart';
 import '../../../../common/widgets/icons/positioned_icon.dart';
 import '../../../../common/widgets/images/edge_rounded_images.dart';
 import '../../../../router.dart';

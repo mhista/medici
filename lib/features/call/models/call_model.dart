@@ -48,6 +48,7 @@ class CallModel {
     result.addAll({'receiverName': receiverName});
     result.addAll({'callId': callId});
     result.addAll({'hasDialled': hasDialled});
+    result.addAll({'isVideo': isVideo});
     result.addAll({'uniqueId': uniqueId});
 
     return result;
