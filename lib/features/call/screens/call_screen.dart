@@ -47,7 +47,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
       required String role,
       required String tokenType,
       required String uid}) async {
-    String baseUrl = "https://ultra-van.pipeops.app";
+    String baseUrl = "https://busy-camera.pipeops.app";
     final response = await http
         .get(Uri.parse('$baseUrl/rtc/$channelName/$role/$tokenType/$uid'));
     if (response.statusCode == 200) {
