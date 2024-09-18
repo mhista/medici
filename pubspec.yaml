@@ -38,11 +38,11 @@ dependencies:
   flutter_riverpod: ^2.4.10
   dio: ^5.4.0
   animations: ^2.0.11
-  firebase_core: ^2.25.4
-  firebase_helpers: ^0.6.1
-  firebase_storage: ^11.6.7
-  cloud_firestore: ^4.15.6
-  firebase_auth: ^4.17.6
+  firebase_core: ^3.4.1
+  firebase_helpers: ^0.7.0
+  firebase_storage: ^12.3.0
+  cloud_firestore: ^5.4.1
+  firebase_auth: ^5.2.1
 
   google_sign_in: ^6.2.1
   uuid: ^4.4.2
@@ -79,7 +79,6 @@ dependencies:
   cached_video_player_plus: ^3.0.2
   # emoji_picker_flutter: ^2.2.0
   permission_handler: ^11.0.0
-  flutter_sound: ^9.2.13
   path_provider: ^2.1.3
   path: ^1.9.0
   http: any
@@ -87,12 +86,12 @@ dependencies:
   audioplayers: ^6.0.0
   flutter_audio_waveforms: ^1.2.1+8
   swipe_to: ^1.0.6
-  agora_rtm: ^1.5.9
+  # agora_rtm: ^1.5.9
   agora_rtc_engine: ^6.3.2
   flutter_ringtone_player: ^4.0.0+3
   flutter_local_notifications: ^17.2.1+2
   timezone: ^0.9.4
-  emoji_picker_flutter: ^2.2.0
+  emoji_picker_flutter: ^3.0.0
   flutter_datetime_picker_plus: ^2.2.0
   flutter_credit_card: ^4.0.1
   u_credit_card: ^1.3.1
@@ -106,6 +105,7 @@ dependencies:
   # agora_rtc_engine
   # agora_rtm
   get: any
+  flutter_launcher_icons: ^0.13.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -116,24 +116,17 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.2
+  flutter_lints: ^4.0.0
 
 flutter:
 
 
   uses-material-design: true
   assets:
-    - assets/images/logo/
-    - assets/images/dp/
-    - assets/images/social/ 
-    - assets/lottie/
-    - assets/animations/
-    - assets/images/icons/
-    - assets/images/hospital/
-    - assets/images/icons/payment_methods/
+    - assets/images/
+  
 
 
-    - assets/tones/
 
 
     

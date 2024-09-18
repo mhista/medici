@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.googlemapsapp">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.googlemapsapp" xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -19,9 +19,11 @@
 <!-- include only if app benefits from precise location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <application
+    <application 
+        tools:replace="android:icon, android:label, android:extractNativeLibs"
         android:label="medici"
         android:name="${applicationName}"
+        android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyARJSC5LCdCY6KU41XJGnf-4ct6iQyYGGw" />

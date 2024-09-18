@@ -64,7 +64,7 @@ class UserController {
   }
 
   // FETCH USER RECORD
-  Future<void> fetchAUserRecord(String uid) async {
+  Future<void> fetchADoctorRecord(String uid) async {
     try {
       // profileLoading.value = true;
 

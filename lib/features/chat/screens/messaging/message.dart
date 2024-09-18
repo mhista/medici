@@ -13,6 +13,7 @@ import 'package:medici/utils/constants/text_strings.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../utils/helpers/helper_functions.dart';
+import '../../../authentication/models/user_model.dart';
 import '../../controllers/chat_controller.dart';
 
 class MessageScreen extends ConsumerWidget {
@@ -22,6 +23,7 @@ class MessageScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = PHelperFunctions.isDarkMode(context);
     final responseive = ResponsiveBreakpoints.of(context);
+    final user = ref.watch(userProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -101,17 +103,22 @@ class MessageScreen extends ConsumerWidget {
                               final chat = data[index];
                               // RETURNS THE COUNT OF UNREPLIED MESSAGES AND DISPLAYS IT ON THE CHAT CARD
                               final unreadMessages = ref
-                                  .watch(
-                                      unrepliedMessagesProvider(chat.user2.id))
+                                  .watch(unrepliedMessagesProvider(
+                                      user.id == chat.user2.id
+                                          ? chat.user1.id
+                                          : chat.user1.id))
                                   .value
                                   ?.where((e) {
-                                return e.receiverId == chat.user1.id;
+                                return e.receiverId == (user.id);
                               }).toList();
                               final count = unreadMessages?.length;
 
                               // CHECKS IF THE USDER IS ONLINE
                               final isOnline = ref
-                                  .watch(checkOnlineStatus(chat.user2.id))
+                                  .watch(checkOnlineStatus(
+                                      user.id == chat.user2.id
+                                          ? chat.user1.id
+                                          : chat.user2.id))
                                   .value;
                               return ChatCard(
                                 isNetworkImage: true,
@@ -120,18 +127,29 @@ class MessageScreen extends ConsumerWidget {
                                     ? count.toString()
                                     : '',
                                 color: isDark ? PColors.dark : PColors.light,
-                                title: chat.user2.isDoctor
-                                    ? 'Dr ${chat.user2.fullName}'
-                                    : chat.user2.fullName,
+                                title: user.id == chat.user2.id
+                                    ? chat.user1.isDoctor
+                                        ? 'Dr ${chat.user1.fullName}'
+                                        : chat.user1.fullName
+                                    : chat.user2.isDoctor
+                                        ? 'Dr ${chat.user2.fullName}'
+                                        : chat.user2.fullName,
                                 subTitle: chat.lastMessage,
-                                image: chat.user2.profilePicture,
+                                image: user.id == chat.user2.id
+                                    ? chat.user1.profilePicture
+                                    : chat.user2.profilePicture,
                                 recent: false,
                                 onPressed: () {
                                   ref.watch(chatController).markAsRead(
-                                      unreadMessages!, chat.user2.id);
+                                      unreadMessages!,
+                                      user.id == chat.user2.id
+                                          ? chat.user1.id
+                                          : chat.user2.id);
                                   // assign the user to a provider to be used accros the chats
                                   ref.read(userChatProvider.notifier).state =
-                                      chat.user2;
+                                      user.id == chat.user2.id
+                                          ? chat.user1
+                                          : chat.user2;
                                   context.goNamed('chatHolder');
                                   // ref
                                   // .read(loadingCompleteProvider.notifier)

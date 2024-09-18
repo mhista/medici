@@ -22,18 +22,21 @@ class SpecialistHeading extends StatelessWidget {
         children: [
           Stack(
             children: [
-              MRoundedImage(
-                height: 90,
-                width: 90,
-                borderRadius: 100,
-                fit: BoxFit.fill,
-                imageUrl: doctor.profileImage,
-                backgroundColor: PColors.light,
-                isNetworkImage: true,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MRoundedImage(
+                  height: 90,
+                  width: 90,
+                  borderRadius: 100,
+                  fit: BoxFit.fill,
+                  imageUrl: doctor.profileImage,
+                  backgroundColor: PColors.light,
+                  isNetworkImage: true,
+                ),
               ),
               const Positioned(
-                bottom: 6,
-                right: -3,
+                bottom: 7,
+                right: 8,
                 child: Icon(
                   Iconsax.verify5,
                   color: PColors.white,
@@ -41,8 +44,8 @@ class SpecialistHeading extends StatelessWidget {
                 ),
               ),
               const Positioned(
-                bottom: 10,
-                right: 0,
+                bottom: 11,
+                right: 11,
                 child: Icon(
                   Iconsax.verify5,
                   color: PColors.primary,

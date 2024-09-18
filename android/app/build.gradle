@@ -63,6 +63,24 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    
+    // ...
+    packagingOptions {
+      // Exclude AI denoise extension for the armeabi-v7a architecture
+      exclude 'lib/armeabi-v7a/libagora_ai_denoise_extension.so'
+      // Exclude AI denoise extension for the arm64-v8a architecture
+      exclude 'lib/arm64-v8a/libagora_ai_denoise_extension.so'
+      // Exclude spatial audio extension for the armeabi-v7a architecture
+      exclude 'lib/armeabi-v7a/libagora_spatial_audio_extension.so'
+      // Exclude spatial audio extension for the arm64-v8a architecture
+      exclude 'lib/arm64-v8a/libagora_spatial_audio_extension.so'
+    // exclude sccreenshot for the arm64-v8a architecture
+      exclude 'libagora_content_inspect_extensio.so'
+    //  exclude face capture for the arm64-v8a architecture
+      exclude 'libagora_face_capture_extension.so'
+}
+
 }
 
 flutter {

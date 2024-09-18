@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:medici/data/services/firebase_services/firebase_storage_services.dart';
@@ -91,11 +92,6 @@ final chatController =
 // USER ONLINE/ OFFLINE STATE
 final userOnlineState = StateProvider((ref) => false);
 
-// RECORDER CONTROLLER
-// final recorderController = Provider<RecordingController>((ref) {
-//   return RecordingController(ref: ref);
-// });
-
 // CALL
 final callRepository = Provider((ref) {
   final db = ref.watch(firestoreProvider);
@@ -124,3 +120,5 @@ final cardController = Provider((ref) {
 // });
 final specialistController = Provider((ref) => SpecialistController(ref: ref));
 final specialistRepository = Provider((ref) => SpecialistRepository(ref: ref));
+// flutter ringtone
+final ringtone = Provider((ref) => FlutterRingtonePlayer());

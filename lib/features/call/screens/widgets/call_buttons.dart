@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:medici/features/call/controllers/agora_engine_controller.dart';
 import 'package:medici/features/chat/screens/chat_room/chat_room.dart';
 
+import '../../../../common/loaders/loaders.dart';
 import '../../../../common/widgets/containers/rounded_container.dart';
 import '../../../../common/widgets/icons/circular_icon.dart';
 import '../../../../utils/constants/colors.dart';
@@ -58,11 +59,21 @@ class CallButtons extends ConsumerWidget {
                     ? PColors.light
                     : PColors.light.withOpacity(0.4),
                 secondIcon: Icons.videocam_off_rounded,
-                isChanged: ref.watch(videoMuted),
+                isChanged: ref.watch(videoNotMuted),
                 onPressed: () {
                   if (call.isVideo) {
-                    ref.read(videoMuted.notifier).state = !ref.read(videoMuted);
+                    final muted = ref.read(videoNotMuted.notifier).state =
+                        !ref.read(videoNotMuted);
                     AgoraEngineController.muteUnmuteVideo(engine, ref);
+                    // if (muted) {
+                    //    PLoaders.customToast(
+                    //     context: context, message: 'User disabled camera');
+                    // } else {
+                    //    PLoaders.customToast(
+                    //     context: context, message: 'User enabled camera');
+                    // }
+
+                    debugPrint(ref.read(videoNotMuted).toString());
                   }
                 }),
             PCircularIcon(

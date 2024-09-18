@@ -39,7 +39,6 @@ class FilterDoctorsList extends ConsumerWidget {
               height: 100,
               showBorder: true,
               borderWidth: 0.7,
-              borderColor: PColors.light,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

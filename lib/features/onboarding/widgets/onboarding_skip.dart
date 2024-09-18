@@ -17,7 +17,10 @@ class OnBoardingSkip extends ConsumerWidget {
       right: PSizes.defaultSpace,
       child: TextButton(
         onPressed: () => ref.read(onboardingController.notifier).skipPage(),
-        child: const Text('Skip'),
+        child: const Text(
+          'Skip',
+          style: TextStyle(fontSize: 19),
+        ),
       ),
     );
   }

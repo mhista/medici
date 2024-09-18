@@ -10,6 +10,7 @@ import '../../../../router.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../../../utils/helpers/helper_functions.dart';
 import 'hospital_card_details.dart';
 
 class HospitalCard extends ConsumerWidget {
@@ -24,6 +25,8 @@ class HospitalCard extends ConsumerWidget {
   final bool isFullWidth;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = PHelperFunctions.isDarkMode(context);
+
     return GestureDetector(
       onTap: () => ref.read(goRouterProvider).goNamed('hospital'),
       child: Padding(
@@ -32,9 +35,9 @@ class HospitalCard extends ConsumerWidget {
             width: width,
             height: height,
             // backgroundColor: PColors.primary,
-            shadow: const [
+            shadow: [
               BoxShadow(
-                color: PColors.lightGrey,
+                color: isDark ? PColors.transparent : PColors.lightGrey,
                 blurRadius: 2,
                 spreadRadius: 2,
               ),
@@ -50,6 +53,11 @@ class HospitalCard extends ConsumerWidget {
                       fit: BoxFit.cover,
                     ),
                     StackIcon(
+                      backgroundColor: isDark
+                          ? PColors.darkerGrey.withOpacity(0.7)
+                          : PColors.lightGrey,
+                      color:
+                          isDark ? PColors.dark.withOpacity(0.9) : PColors.dark,
                       usePositioned: true,
                       icon: Iconsax.heart,
                       onPressed: () {},
@@ -60,7 +68,11 @@ class HospitalCard extends ConsumerWidget {
                       bottom: 10,
                       right: 10,
                       child: ReviewBadge(
-                          reviewWidth: reviewWidth, isFullWidth: isFullWidth),
+                          color: isDark
+                              ? PColors.darkerGrey.withOpacity(0.7)
+                              : PColors.light,
+                          reviewWidth: reviewWidth,
+                          isFullWidth: isFullWidth),
                     )
                   ],
                 ),

@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/providers.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-
 class NotificationService {
   final Ref ref;
   NotificationService({required this.ref}) {
@@ -65,6 +64,9 @@ class NotificationService {
     debugPrint(response.actionId);
     if (id == '1') {
       ref.read(callController).goToCallScreen(response);
+    }
+    if (id == '2') {
+      ref.read(chatController).goToChat(response);
     }
   }
 

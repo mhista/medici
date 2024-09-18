@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:medici/utils/constants/sizes.dart';
 
 import '../../../../utils/constants/colors.dart';
+import '../../../utils/helpers/helper_functions.dart';
 
 class TRoundedContainer extends StatelessWidget {
   const TRoundedContainer({
@@ -9,8 +10,8 @@ class TRoundedContainer extends StatelessWidget {
     this.width,
     this.height,
     this.radius = PSizes.cardRadiusLg,
-    this.backgroundColor = PColors.white,
-    this.borderColor = PColors.borderPrimary,
+    this.backgroundColor,
+    this.borderColor,
     this.child,
     this.margin,
     this.padding,
@@ -21,7 +22,8 @@ class TRoundedContainer extends StatelessWidget {
   });
   final double? width, height;
   final double radius, borderWidth;
-  final Color backgroundColor, borderColor;
+  final Color? backgroundColor, borderColor;
+
   final Widget? child;
   final EdgeInsetsGeometry? margin, padding;
   final bool showBorder;
@@ -30,6 +32,8 @@ class TRoundedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = PHelperFunctions.isDarkMode(context);
+
     return Container(
       width: width,
       height: height,
@@ -38,9 +42,15 @@ class TRoundedContainer extends StatelessWidget {
       decoration: BoxDecoration(
           gradient: gradient,
           borderRadius: BorderRadius.circular(radius),
-          color: backgroundColor,
+          color: backgroundColor ??
+              (isDark ? PColors.darkerGrey.withOpacity(0.3) : PColors.light),
           border: showBorder
-              ? Border.all(color: borderColor, width: borderWidth)
+              ? Border.all(
+                  color: borderColor ??
+                      (isDark
+                          ? PColors.darkerGrey.withOpacity(0.4)
+                          : PColors.light),
+                  width: borderWidth)
               : null,
           boxShadow: shadow),
       child: child,

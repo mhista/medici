@@ -19,12 +19,15 @@ class OnBoardingPage extends StatelessWidget {
         children: [
           Image(
             width: PHelperFunctions.screenWidth(context) * 0.8,
-            height: PHelperFunctions.screenHeight(context) * 0.6,
+            height: PHelperFunctions.screenHeight(context) * 0.5,
             image: AssetImage(image),
           ),
           Text(
             title,
-            style: Theme.of(context).textTheme.headlineMedium,
+            style: Theme.of(context)
+                .textTheme
+                .headlineLarge!
+                .apply(fontSizeDelta: -4),
             textAlign: TextAlign.center,
           ),
           const SizedBox(

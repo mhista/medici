@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore: unused_import
 import 'package:get/get.dart';
@@ -11,12 +14,16 @@ import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/enums.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../router.dart';
 import '../../../utils/constants/file_formats.dart';
+import '../../../utils/constants/image_strings.dart';
 import '../../authentication/models/user_model.dart';
 import '../../personalization/controllers/user_controller.dart';
 
 final chatContactMessages =
     StateProvider<List<ChatContact>>((ref) => <ChatContact>[]);
+final chatContactMessage =
+    StateProvider<ChatContact>((ref) => ChatContact.empty());
 
 class ChatController {
   final Ref ref;
@@ -230,7 +237,7 @@ class ChatController {
 
       await chatRepository.sendMessage(message: message);
       // SAVE CHAT CONTACTS
-      saveChatContacts(
+      await saveChatContacts(
           timeSent: timeSent,
           receiver: receiver,
           sender: user,
@@ -267,27 +274,11 @@ class ChatController {
         user1: sender,
         messageId: message.messageId,
       );
-      // FOR RECEIVER
-      final receiverChatContact = ChatContact(
-          timeSent: timeSent,
-          lastMessage: message.type == MessageType.image.name
-              ? '📷 Photo'
-              : message.type == MessageType.video.name
-                  ? '🎥 Video'
-                  : message.type == MessageType.audio.name
-                      ? '🔉 Audio'
-                      : message.type == MessageType.gif.name
-                          ? 'GIF'
-                          : message.type == MessageType.videoCall.name
-                              ? "📹 Video call"
-                              : message.type == MessageType.voiceCall.name
-                                  ? "📞 Voice call"
-                                  : message.text,
-          user2: sender,
-          user1: receiver,
-          messageId: message.messageId);
+
       await chatRepository.saveChatContacts(
-          sender: senderChatContact, receiver: receiverChatContact);
+          sender: senderChatContact,
+          senderId: ref.watch(userProvider).id,
+          receiverId: ref.watch(userChatProvider).id);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -314,6 +305,24 @@ class ChatController {
         repliedMessage: repliedMessage,
         repliedMessageType: repliiedMessageType,
         repliedTo: repliedTo);
+  }
+
+  // GO TO CHAT
+  void goToChat(NotificationResponse response) {
+    final data = jsonDecode(response.payload!);
+    ChatContact chat = ChatContact.fromMap(data);
+    final user = ref.read(userProvider);
+    if (response.actionId == 'reply') {
+      ref.read(userChatProvider.notifier).state =
+          user == chat.user2 ? chat.user1 : chat.user2;
+
+      // markAsRead(unreadMessages!,
+      //     user.id == chat.user2.id ? chat.user1.id : chat.user2.id);
+      ref.read(goRouterProvider).goNamed('chatHolder');
+    }
+    ref.read(userChatProvider.notifier).state =
+        ref.read(userProvider) == chat.user2 ? chat.user1 : chat.user2;
+    ref.read(goRouterProvider).goNamed('chatHolder');
   }
 
   // DELETE A MESSAGE

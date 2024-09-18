@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import "package:http/http.dart" as http;
@@ -71,8 +72,11 @@ class CallController {
       await callRepository.makeCall(senderCallData, receiverCallData).then((v) {
         ref.read(callerId.notifier).state = senderCallData.callerId;
         if (senderCallData.callerId == ref.read(userProvider).id) {
-          FlutterRingtonePlayer()
-              .play(fromAsset: PImages.iphone1, looping: true);
+          ref.read(ringtone).play(
+              fromAsset: PImages.iphone1,
+              looping: true,
+              volume: 1,
+              asAlarm: true);
 
           // ref.read(goRouterProvider).pushNamed(
           //       'video',
@@ -105,8 +109,9 @@ class CallController {
     return num;
   }
 
+  // takes user to the call screen after click accept on the notificatio
   void goToCallScreen(NotificationResponse response) async {
-    FlutterRingtonePlayer().stop();
+    ref.read(ringtone).stop();
 
     final isConnected = await ref.watch(networkService.notifier).isConnected();
     if (!isConnected) {
@@ -133,8 +138,9 @@ class CallController {
     }
   }
 
+// picks the call from the model display
   void pickModelCall(CallModel data) async {
-    FlutterRingtonePlayer().stop();
+    ref.read(ringtone).stop();
 
     final isConnected = await ref.watch(networkService.notifier).isConnected();
     if (!isConnected) {
@@ -148,14 +154,19 @@ class CallController {
     }
   }
 
+// ends the call
   void endCall(
     String callerId,
     String receiverId,
   ) async {
-    FlutterRingtonePlayer().stop();
+    ref.read(ringtone).stop();
 
     await callRepository.deleteCall(callerId, receiverId);
     ref.read(receiverPicked.notifier).state = false;
+  }
+
+  autoRedirectTimer(VoidCallback callback) {
+    Timer(const Duration(seconds: 30), () => callback);
   }
 }
 

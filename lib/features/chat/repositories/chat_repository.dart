@@ -55,24 +55,26 @@ class ChatRepository {
 
 // SAVE CHAT CONTACTS AND DISPLAY ON SCREEN
   Future<void> saveChatContacts(
-      {required ChatContact sender, required ChatContact receiver}) async {
+      {required ChatContact sender,
+      required String senderId,
+      required String receiverId}) async {
     try {
       // SAVE IN THE SENDERS MESSAGE COLLECTION
       await db
           .collection('Users')
-          .doc(sender.user1.id)
+          .doc(senderId)
           .collection('Messages')
-          .doc(sender.user2.id)
+          .doc(receiverId)
           .set(sender.toMap());
 
       // SAVE IN THE RECEIVERS MESSAGE COLLECTION
 
       await db
           .collection('Users')
-          .doc(receiver.user1.id)
+          .doc(receiverId)
           .collection('Messages')
-          .doc(receiver.user2.id)
-          .set(receiver.toMap());
+          .doc(senderId)
+          .set(sender.toMap());
     } on FirebaseAuthException catch (e) {
       throw KFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {

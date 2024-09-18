@@ -5,6 +5,7 @@ import 'package:medici/common/widgets/containers/rounded_container.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/enums.dart';
 import '../../../utils/constants/sizes.dart';
+import '../../../utils/helpers/helper_functions.dart';
 import '../texts/title_subtitle.dart';
 
 class DoctorCardDetail extends StatelessWidget {
@@ -26,6 +27,8 @@ class DoctorCardDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = PHelperFunctions.isDarkMode(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -43,7 +46,8 @@ class DoctorCardDetail extends StatelessWidget {
             TRoundedContainer(
               height: 30,
               width: 60,
-              backgroundColor: PColors.light,
+              backgroundColor:
+                  isDark ? PColors.darkerGrey.withOpacity(0.4) : PColors.light,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

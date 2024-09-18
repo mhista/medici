@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/features/call/controllers/agora_engine_controller.dart';
 import 'package:medici/features/call/models/call_model.dart';
 import 'package:medici/features/call/screens/call_sender_screen.dart';
+import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -31,8 +31,8 @@ class CallScreen extends ConsumerStatefulWidget {
 
 class _CallScreenState extends ConsumerState<CallScreen> {
   late RtcEngine _engine;
-  AgoraRtmClient? _client;
-  AgoraRtmChannel? _channel;
+  // AgoraRtmClient? _client;
+  // AgoraRtmChannel? _channel;
   int? _remoteUid;
   bool _localUserJoined = false;
   // String baseUrl = 'https://momentous-rings.pipeops.app';
@@ -101,6 +101,8 @@ class _CallScreenState extends ConsumerState<CallScreen> {
           // show a popup message
           debugPrint('joined successfully');
           // ref.read(localUserJoinedProvider.notifier).state = true;
+          ref.read(callController).autoRedirectTimer(
+              () => AgoraEngineController.endCall(_engine, ref, widget.call));
           setState(() {
             _localUserJoined = true;
           });
@@ -114,7 +116,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
           setState(() {
             if (remoteUid > 0) _remoteUid = remoteUid;
             debugPrint('remote user with uid $remoteUid joined successfully');
-            FlutterRingtonePlayer().stop();
+            ref.read(ringtone).stop();
           });
         },
         onTokenPrivilegeWillExpire: (connection, token) {
@@ -156,27 +158,27 @@ class _CallScreenState extends ConsumerState<CallScreen> {
     );
 
     // SETUP CALLBACKS FOR RTM CLIENT
-    _client?.onMessageReceived = (RtmMessage message, String peerId) {
-      debugPrint("Private message from $peerId: ${message.text}");
-    };
+    //   _client?.onMessageReceived = (RtmMessage message, String peerId) {
+    //     debugPrint("Private message from $peerId: ${message.text}");
+    //   };
 
-    _client?.onConnectionStateChanged2 =
-        (RtmConnectionState state, RtmConnectionChangeReason reason) {
-      debugPrint("Connection state changed: ${state.name} at ${reason.name}");
-      if (state == RtmConnectionState.aborted) {
-        _channel?.leave();
-        _client?.logout();
-        _client?.release();
-      }
-    };
+    //   _client?.onConnectionStateChanged2 =
+    //       (RtmConnectionState state, RtmConnectionChangeReason reason) {
+    //     debugPrint("Connection state changed: ${state.name} at ${reason.name}");
+    //     if (state == RtmConnectionState.aborted) {
+    //       _channel?.leave();
+    //       _client?.logout();
+    //       _client?.release();
+    //     }
+    //   };
 
-    // SETUP CALLBACKS FOR RTM CHANNEL
-    _channel?.onMemberJoined = (RtmChannelMember member) {};
-    _channel?.onMemberLeft = (RtmChannelMember member) {};
-    _channel?.onMessageReceived =
-        (RtmMessage message, RtmChannelMember member) {
-      debugPrint("Public Channel message from $member: ${message.text}");
-    };
+    //   // SETUP CALLBACKS FOR RTM CHANNEL
+    //   _channel?.onMemberJoined = (RtmChannelMember member) {};
+    //   _channel?.onMemberLeft = (RtmChannelMember member) {};
+    //   _channel?.onMessageReceived =
+    //       (RtmMessage message, RtmChannelMember member) {
+    //     debugPrint("Public Channel message from $member: ${message.text}");
+    //   };
   }
 
   @override
@@ -186,9 +188,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
       onPopInvokedWithResult: (canPop, smth) {
         debugPrint('tried popping');
 
-        ref.read(loadingCompleteProvider.notifier).state = false;
-
-        _dispose();
+        // ref.read(loadingCompleteProvider.notifier).state = false;
       },
       child: Scaffold(
         backgroundColor: PColors.transparent,
@@ -200,7 +200,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
                 child: _remoteVideo(),
               ),
             ),
-            if (_remoteUid != null)
+            if (_remoteUid != null && widget.call.isVideo)
               Padding(
                 padding: PSpacingStyle.videoePadding,
                 child: Align(
@@ -219,8 +219,10 @@ class _CallScreenState extends ConsumerState<CallScreen> {
                                   engine: _engine,
                                   remoteUid: _remoteUid,
                                   widget: widget))
-                          : const CircularProgressIndicator(
-                              strokeWidth: 2,
+                          : const Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
                             )),
                 ),
               ),
@@ -252,17 +254,25 @@ class _CallScreenState extends ConsumerState<CallScreen> {
     );
   }
 
-  // @override
-  // void deactivate() {
-  //   _dispose();
-  // }
+  @override
+  void deactivate() {
+    _dispose();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   Future<void> _dispose() async {
     await AgoraEngineController.endCall(_engine, ref, widget.call);
   }
 
   Widget _remoteVideo() {
-    if (_remoteUid != null && !ref.watch(remoteUserMuted)) {
+    if (_remoteUid != null &&
+        !ref.watch(remoteUserMuted) &&
+        widget.call.isVideo) {
       return AgoraVideoView(
         controller: VideoViewController.remote(
             rtcEngine: _engine,
@@ -270,7 +280,9 @@ class _CallScreenState extends ConsumerState<CallScreen> {
             connection: RtcConnection(channelId: widget.call.callId)),
       );
     } else {
-      return !_localUserJoined || ref.watch(remoteUserMuted)
+      return !_localUserJoined ||
+              ref.watch(remoteUserMuted) ||
+              !widget.call.isVideo
           ? TRoundedContainer(
               backgroundColor: PColors.dark,
               gradient: PColors.videoGradient,

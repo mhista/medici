@@ -15,6 +15,7 @@ import '../../../../common/widgets/appbar/searchBar.dart';
 import '../../../../common/widgets/headings/section_heading.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/text_strings.dart';
+import '../../../../utils/helpers/helper_functions.dart';
 import '../../../hospital/screens/widgets/services.dart';
 import 'responsive/desktop/desktop_health_update.dart';
 import 'widgets/doc_prof_list.dart';
@@ -26,7 +27,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final isDark = PHelperFunctions.isDarkMode(context);
+    final isDark = PHelperFunctions.isDarkMode(context);
     final responsive = ResponsiveBreakpoints.of(context);
 
     return Scaffold(
@@ -48,11 +49,14 @@ class HomeScreen extends StatelessWidget {
                       MSearchBar(
                         radius: 50,
                         hasColor: true,
-                        color: PColors.light,
+                        color: isDark
+                            ? PColors.darkerGrey.withOpacity(0.4)
+                            : PColors.light,
                         useBorder: false,
                         hintText: PTexts.hintText,
                         prefixWidget: PCircularIcon(
-                          backgroundColor: PColors.light,
+                          backgroundColor:
+                              isDark ? PColors.transparent : PColors.light,
                           height: 50,
                           width: 50,
                           icon: Iconsax.search_normal,

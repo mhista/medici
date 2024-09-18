@@ -13,6 +13,7 @@ import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/constants/text_strings.dart';
 import '../../../../utils/helpers/helper_functions.dart';
+import '../../../personalization/controllers/user_controller.dart';
 
 class AllDoctors extends StatelessWidget {
   const AllDoctors({super.key});
@@ -101,13 +102,14 @@ class AllDoctors extends StatelessWidget {
                                       debugPrint(doctor.id);
                                       await ref
                                           .read(userController)
-                                          .fetchAUserRecord(doctor.id)
-                                          .then((onValue) {
-                                        ref.read(goRouterProvider).goNamed(
+                                          .fetchADoctorRecord(doctor.id);
+                                      ref
+                                              .read(userChatProvider.notifier)
+                                              .state =
+                                          ref.read(specialistUserModelProvider);
+                                      ref.read(goRouterProvider).goNamed(
                                             'chatHolder',
-                                            extra: ref.read(
-                                                specialistUserModelProvider));
-                                      });
+                                          );
                                     });
                               },
                               separatorBuilder: (_, __) => const SizedBox(

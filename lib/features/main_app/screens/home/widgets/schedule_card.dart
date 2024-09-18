@@ -9,6 +9,7 @@ import '../../../../../common/widgets/containers/container_tile.dart';
 import '../../../../../common/widgets/containers/update_container.dart';
 import '../../../../../utils/constants/image_strings.dart';
 import '../../../../../utils/constants/sizes.dart';
+import '../../../../../utils/helpers/helper_functions.dart';
 
 class ScheduleCard extends StatelessWidget {
   const ScheduleCard({super.key});
@@ -16,9 +17,10 @@ class ScheduleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
+    final isDark = PHelperFunctions.isDarkMode(context);
 
     return UpdateContainer(
-      color: PColors.light,
+      color: isDark ? PColors.darkerGrey.withOpacity(0.4) : PColors.light,
       width: responsive.screenWidth < 700 ? double.maxFinite : 300,
       child: Column(
         children: [
@@ -33,7 +35,7 @@ class ScheduleCard extends StatelessWidget {
               icon: Iconsax.call5,
               onPressed: () {},
               color: PColors.primary,
-              backgroundColor: PColors.white,
+              backgroundColor: isDark ? PColors.dark : PColors.white,
             ),
             title: 'Dr. Haley Lawrence',
             subTitle: 'Dermatologist',

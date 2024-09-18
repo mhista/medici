@@ -25,20 +25,24 @@ class UserVideoWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spacingMultiple =
-        (remoteUid == null) || ref.watch(remoteUserMuted) ? 6 : 1;
+        (remoteUid == null) || ref.watch(remoteUserMuted) || !call.isVideo
+            ? 6
+            : 1;
     return Align(
       alignment: Alignment.topCenter,
       child: Column(
         children: [
           SizedBox(height: PSizes.spaceBtwSections * spacingMultiple),
           MCircularImage(
-            imageUrl: call.callerPic,
+            imageUrl: ref.read(userProvider).id == call.callerId
+                ? ref.watch(userChatProvider).profilePicture
+                : call.callerPic,
             isNetworkImage: true,
             height: (remoteUid == null) ? 100 : 70,
             width: (remoteUid == null) ? 100 : 70,
             backgroundColor: PColors.transparent,
           ),
-          if (remoteUid == null)
+          if (remoteUid == null || !call.isVideo)
             Column(
               children: [
                 const SizedBox(height: PSizes.spaceBtwItems),

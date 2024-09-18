@@ -14,12 +14,14 @@ class StackIcon extends StatelessWidget {
     required this.onPressed,
     this.usePositioned = false,
     this.backgroundColor = PColors.white,
+    this.color,
   });
   final double? left, right, top, bottom;
   final IconData icon;
   final VoidCallback onPressed;
   final bool usePositioned;
   final Color backgroundColor;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class StackIcon extends StatelessWidget {
                 height: 50,
                 width: 50,
                 icon: icon,
+                color: color,
                 backgroundColor: backgroundColor),
           )
         : PCircularIcon(
@@ -42,6 +45,7 @@ class StackIcon extends StatelessWidget {
             width: 50,
             icon: icon,
             backgroundColor: backgroundColor,
+            color: color,
           );
   }
 }

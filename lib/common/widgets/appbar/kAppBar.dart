@@ -10,6 +10,7 @@ import 'package:medici/utils/device/device_utility.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../features/personalization/controllers/user_controller.dart';
+import '../../../utils/helpers/helper_functions.dart';
 import '../icons/rounded_icons.dart';
 import 'searchBar.dart';
 
@@ -21,6 +22,7 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
+    final isDark = PHelperFunctions.isDarkMode(context);
 
     return Column(
       children: [
@@ -114,7 +116,9 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
               // SHOW ONLY A NOTIFICATION ICON ON SMALL SCREEN
               if (responsive.screenWidth < 700)
                 PCircularIcon(
-                  backgroundColor: PColors.white,
+                  backgroundColor: isDark
+                      ? PColors.dark.withOpacity(0.9)
+                      : PColors.white.withOpacity(0.9),
                   height: 50,
                   width: 50,
                   icon: Iconsax.profile_circle,
@@ -123,12 +127,13 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
               Consumer(
                 builder: (_, WidgetRef ref, __) {
                   return PCircularIcon(
-                    backgroundColor: PColors.white,
+                    backgroundColor: isDark
+                        ? PColors.dark.withOpacity(0.9)
+                        : PColors.white.withOpacity(0.9),
                     height: 50,
                     width: 50,
                     icon: Iconsax.notification,
-                    onPressed: () =>
-                        ref.read(specialistController).uploadSpecialistDummy(),
+                    onPressed: () => ref.read(userController).signOut(),
                   );
                 },
               )

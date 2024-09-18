@@ -6,9 +6,9 @@ import 'package:medici/providers.dart';
 import '../../../config/agora/agora_config.dart';
 import '../models/call_model.dart';
 
-final localUserJoinedProvider = StateProvider<bool>((ref) => false);
-final remoteUserJoinedProvider = StateProvider<bool>((ref) => false);
-final videoMuted = StateProvider<bool>((ref) => true);
+// final localUserJoinedProvider = StateProvider<bool>((ref) => false);
+// final remoteUserJoinedProvider = StateProvider<bool>((ref) => false);
+final videoNotMuted = StateProvider<bool>((ref) => true);
 final audioMuted = StateProvider<bool>((ref) => true);
 final frontCameraEnabled = StateProvider<bool>((ref) => true);
 final cameraEnabled = StateProvider<bool>((ref) => false);
@@ -29,9 +29,10 @@ class AgoraEngineController {
         .then((v) {
       debugPrint("Initializing");
     });
-    ref.read(videoMuted.notifier).state = false;
+    ref.read(videoNotMuted.notifier).state = false;
     ref.read(audioMuted.notifier).state = false;
     ref.read(cameraEnabled.notifier).state = false;
+    ref.read(remoteUserMuted.notifier).state = false;
   }
 
 // join a channel
@@ -56,13 +57,16 @@ class AgoraEngineController {
       RtcEngine engine, WidgetRef ref) async {
     if (ref.watch(cameraEnabled)) {
       await engine.enableVideo();
-      ref.read(videoMuted.notifier).state = !ref.read(videoMuted);
+      ref.read(videoNotMuted.notifier).state = true;
+    } else {
+      await engine.disableVideo();
+      ref.read(videoNotMuted.notifier).state = false;
     }
   }
 
 // mute/unmute local video
   static Future<void> muteUnmuteVideo(RtcEngine engine, WidgetRef ref) async {
-    bool muteVid = ref.read(videoMuted);
+    bool muteVid = ref.read(videoNotMuted);
     // debugPrint(muteVid.toString());
     debugPrint(ref.read(remoteUserId).toString());
     engine.enableLocalVideo(muteVid);
@@ -82,8 +86,8 @@ class AgoraEngineController {
     if (enabled) {
       ref.read(frontCameraEnabled.notifier).state =
           !ref.read(frontCameraEnabled);
-
       await engine.switchCamera();
+
       // await engine.setupRemoteVideo(canvas)
     }
   }
@@ -100,11 +104,18 @@ class AgoraEngineController {
 
   static Future<void> endCall(
       RtcEngine engine, WidgetRef ref, CallModel call) async {
-    // end the call
-    ref.read(callController).endCall(call.callerId, call.receiverId);
+    // ref.read(remoteUserMuted.notifier).state = false;
 
-    await engine.leaveChannel();
-    await engine.release();
+    debugPrint(call.toString());
+    // end the call
+    if (call.callId.isEmpty) {
+      await engine.leaveChannel();
+      await engine.release();
+    } else {
+      ref.read(callController).endCall(call.callerId, call.receiverId);
+      await engine.leaveChannel();
+      await engine.release();
+    }
   }
 
 // callbacks for engine

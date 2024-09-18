@@ -93,6 +93,7 @@ class _ChatListState extends ConsumerState<ChatList> {
                             : 0,
                     repliedText: message.repliedMessage,
                     repliedMessageType: message.repliedMessageType,
+                    // DELETE A MESSAGE ON RIGHT SWIPE
                     onRightSwipe: () async {
                       // checks if this message was swiped for reply and deletes it
                       if (ref.watch(messageReplyProvider)?.message ==
@@ -143,9 +144,9 @@ class _ChatListState extends ConsumerState<ChatList> {
                           ref.read(chatController).deleteChatContact(
                               receiverId: widget.receiver.id,
                               senderId: ref.read(userProvider).id);
-                          ref
-                              .read(chatController)
-                              .deleteMessage(message: message);
+                          // ref
+                          //     .read(chatController)
+                          //     .deleteMessage(message: message);
                         }
                       } else {
                         ref

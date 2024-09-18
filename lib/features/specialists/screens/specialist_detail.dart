@@ -14,6 +14,7 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
 import '../../../common/widgets/button/bottom_button.dart';
 import '../../../common/widgets/chips/filter_chip.dart';
 import '../../../router.dart';
+import '../../../utils/helpers/helper_functions.dart';
 import 'widgets/specialist_heading.dart';
 
 class SpecialistDetail extends ConsumerWidget {
@@ -21,6 +22,8 @@ class SpecialistDetail extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = PHelperFunctions.isDarkMode(context);
+
     final doctor = ref.watch(specialistProvider);
     return Scaffold(
       appBar: AppBar(
@@ -29,6 +32,7 @@ class SpecialistDetail extends ConsumerWidget {
           backgroundColor: PColors.transparent,
           height: 40,
           width: 50,
+          color: isDark ? PColors.light : PColors.dark,
           icon: Icons.arrow_back,
           onPressed: ref.read(goRouterProvider).pop,
         ),
@@ -126,7 +130,7 @@ class SpecialistDetail extends ConsumerWidget {
               size: PSizes.lg + 4,
               color: PColors.primary,
               onPressed: () async {
-                await ref.read(userController).fetchAUserRecord(doctor.id);
+                await ref.read(userController).fetchADoctorRecord(doctor.id);
                 ref.read(userChatProvider.notifier).state =
                     ref.read(specialistUserModelProvider);
                 ref.read(goRouterProvider).goNamed('chatHolder');
@@ -137,6 +141,7 @@ class SpecialistDetail extends ConsumerWidget {
                 text: "Book Appointment",
                 onTap: () => picker.DatePicker.showDateTimePicker(context,
                     theme: picker.DatePickerTheme(
+                      backgroundColor: isDark ? PColors.black : PColors.light,
                       containerHeight: 250,
                       itemHeight: 40,
                       itemStyle: Theme.of(context).textTheme.labelLarge!,
