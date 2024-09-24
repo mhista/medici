@@ -28,7 +28,7 @@ class DoctorCard extends StatelessWidget {
       radius: 10,
       showBorder: true,
       backgroundColor: isDark ? PColors.dark : PColors.white,
-      borderColor: PColors.light,
+      borderColor: isDark ? PColors.white.withOpacity(0.1) : PColors.white,
       borderWidth: 1.5,
       margin: const EdgeInsets.symmetric(horizontal: PSizes.sm),
       child: Padding(

@@ -3,12 +3,15 @@ import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
 
 import '../../../../../common/widgets/headings/tab_headings.dart';
+import '../../../../../utils/helpers/helper_functions.dart';
 
 class Treatments extends StatelessWidget {
   const Treatments({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = PHelperFunctions.isDarkMode(context);
+
     return ListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -29,7 +32,7 @@ class Treatments extends StatelessWidget {
                 child: ListTile(
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  tileColor: PColors.light,
+                  tileColor: isDark ? PColors.dark : PColors.white,
                   splashColor: PColors.primary.withOpacity(0.1),
                   hoverColor: PColors.primary.withOpacity(0.1),
                   focusColor: PColors.primary.withOpacity(0.1),

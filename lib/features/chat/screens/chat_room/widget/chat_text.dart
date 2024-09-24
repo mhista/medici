@@ -59,8 +59,7 @@ class ChatText extends ConsumerWidget {
           crossAxisAlignment:
               isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            if ((repliedText.isNotEmpty && username.isNotEmpty) &&
-                ref.watch(messageReplyProvider) != null)
+            if ((repliedText.isNotEmpty && username.isNotEmpty))
               MessageReplyContainer(
                 messageType: repliedMessageType,
                 width: width,

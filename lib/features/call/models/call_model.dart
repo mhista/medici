@@ -12,6 +12,7 @@ class CallModel {
   final bool hasDialled;
   final bool isVideo;
   final bool callEnded;
+  final bool callOngoing;
   final int uniqueId;
 
   CallModel(
@@ -24,6 +25,7 @@ class CallModel {
       required this.hasDialled,
       required this.isVideo,
       required this.callEnded,
+      required this.callOngoing,
       required this.uniqueId});
 
   static CallModel empty() => CallModel(
@@ -36,6 +38,7 @@ class CallModel {
       hasDialled: false,
       callEnded: true,
       isVideo: false,
+      callOngoing: false,
       uniqueId: 0);
 
   Map<String, dynamic> toMap() {
@@ -47,6 +50,8 @@ class CallModel {
     result.addAll({'receiverId': receiverId});
     result.addAll({'receiverName': receiverName});
     result.addAll({'callId': callId});
+    result.addAll({'callOngoing': callOngoing});
+
     result.addAll({'hasDialled': hasDialled});
     result.addAll({'isVideo': isVideo});
     result.addAll({'uniqueId': uniqueId});
@@ -64,6 +69,7 @@ class CallModel {
       callId: map['callId'] ?? '',
       hasDialled: map['hasDialled'] ?? false,
       callEnded: map['callEnded'] ?? false,
+      callOngoing: map['callOngoing'] ?? false,
       isVideo: map['isVideo'] ?? false,
       uniqueId: map['uniqueId']?.toInt() ?? 0,
     );
@@ -81,6 +87,7 @@ class CallModel {
         receiverName: map['receiverName'] ?? '',
         callId: map['callId'] ?? '',
         hasDialled: map['hasDialled'] ?? false,
+        callOngoing: map['callOngoing'] ?? false,
         callEnded: map['callEnded'] ?? false,
         isVideo: map['isVideo'] ?? false,
         uniqueId: map['uniqueId']?.toInt() ?? 0,
@@ -97,6 +104,6 @@ class CallModel {
 
   @override
   String toString() {
-    return 'CallModel(callerId: $callerId, callerName: $callerName, callerPic: $callerPic, receiverId: $receiverId, receiverName: $receiverName, callId: $callId, hasDialled: $hasDialled, isVideo: $isVideo, callEnded: $callEnded, uniqueId: $uniqueId)';
+    return 'CallModel(callerId: $callerId, callerName: $callerName, callerPic: $callerPic, receiverId: $receiverId, receiverName: $receiverName, callId: $callId, hasDialled: $hasDialled, isVideo: $isVideo, callEnded: $callEnded, callOngoing: $callOngoing, uniqueId: $uniqueId)';
   }
 }

@@ -4,7 +4,6 @@ import 'dart:convert';
 import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,6 +21,10 @@ final listProvider = StateProvider<List<int>>((ref) => []);
 // checks to know when the call has ended in the receivers end
 final showCallModal = StateProvider<bool>((ref) => false);
 final receiverPicked = StateProvider<bool>((ref) => false);
+final isCallOngoing = StateProvider<bool>((ref) => false);
+final callScreenPopped = StateProvider<bool>((ref) => false);
+final switchToButton = StateProvider<bool>((ref) => false);
+
 final callerId = StateProvider<String>((ref) => '');
 
 class CallController {
@@ -57,6 +60,7 @@ class CallController {
           hasDialled: true,
           isVideo: isVideo,
           uniqueId: 0,
+          callOngoing: true,
           callEnded: false);
       final receiverCallData = CallModel(
           callerId: user.id,
@@ -68,6 +72,7 @@ class CallController {
           hasDialled: false,
           isVideo: isVideo,
           uniqueId: 0,
+          callOngoing: true,
           callEnded: false);
       await callRepository.makeCall(senderCallData, receiverCallData).then((v) {
         ref.read(callerId.notifier).state = senderCallData.callerId;
@@ -111,13 +116,15 @@ class CallController {
 
   // takes user to the call screen after click accept on the notificatio
   void goToCallScreen(NotificationResponse response) async {
-    ref.read(ringtone).stop();
+    ref.watch(ringtone).stop();
 
     final isConnected = await ref.watch(networkService.notifier).isConnected();
     if (!isConnected) {
       return;
     }
     if (response.actionId == "pick") {
+      ref.read(notificationProvider).flutterLocalNotificationsPlugin.cancel(1);
+
       final call = jsonDecode(response.payload!);
       CallModel data = CallModel.fromMap(call);
       debugPrint(data.toString());
@@ -128,6 +135,9 @@ class CallController {
           ref.read(userChatProvider.notifier).state = user;
         }
         ref.read(receiverPicked.notifier).state = true;
+        ref.read(switchToButton.notifier).state = false;
+        // ref.read(inChatRoom.notifier).state = true;
+
         ref.read(goRouterProvider).pushNamed('chatHolder');
       }
     }
@@ -140,7 +150,7 @@ class CallController {
 
 // picks the call from the model display
   void pickModelCall(CallModel data) async {
-    ref.read(ringtone).stop();
+    ref.watch(ringtone).stop();
 
     final isConnected = await ref.watch(networkService.notifier).isConnected();
     if (!isConnected) {
@@ -150,6 +160,10 @@ class CallController {
     if (data.receiverId == ref.read(userProvider).id) {
       ref.read(notificationProvider).flutterLocalNotificationsPlugin.cancel(1);
       ref.read(receiverPicked.notifier).state = true;
+      // ref.read(inChatRoom.notifier).state = true;
+
+      ref.read(switchToButton.notifier).state = false;
+
       // ref.read(goRouterProvider).pushNamed('chatHolder');
     }
   }
@@ -165,8 +179,8 @@ class CallController {
     ref.read(receiverPicked.notifier).state = false;
   }
 
-  autoRedirectTimer(VoidCallback callback) {
-    Timer(const Duration(seconds: 30), () => callback);
+  autoRedirectTimer(VoidCallback callback, int duration) {
+    Timer(Duration(seconds: duration), () => callback);
   }
 }
 
@@ -186,7 +200,7 @@ Future<String> getRtcToken(
   }
 }
 
-final callProvider = StreamProvider((ref) {
+final callProvider = StreamProvider.autoDispose((ref) {
   final callControl = ref.watch(callController);
   return callControl.callStream;
 });

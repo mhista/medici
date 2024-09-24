@@ -1,7 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:medici/features/call/controllers/call_controller.dart';
 import 'package:medici/utils/constants/colors.dart';
 
+import '../../../features/personalization/controllers/user_controller.dart';
 import '../../../utils/constants/sizes.dart';
 import '../images/rounded_rect_image.dart';
 import '../texts/title_subtitle.dart';
@@ -18,10 +21,11 @@ class ChatCard extends ConsumerWidget {
       this.isNetworkImage = false,
       required this.onPressed,
       this.isOnline = true,
+      this.onCall = false,
       this.unreadMessageCount = ''});
   final String title, subTitle, image, time, unreadMessageCount;
   final Color? color;
-  final bool recent, isOnline, isNetworkImage;
+  final bool recent, isOnline, isNetworkImage, onCall;
   final Function() onPressed;
 
   @override
@@ -58,10 +62,14 @@ class ChatCard extends ConsumerWidget {
               ),
               // TITLE
               Expanded(
-                child: TitleAndSubTitle(
-                  recent: recent,
-                  title: title,
-                  subTitle: subTitle,
+                child: Consumer(
+                  builder: (_, WidgetRef ref, __) {
+                    return TitleAndSubTitle(
+                      recent: recent,
+                      title: title,
+                      subTitle: onCall ? 'call ongoing' : subTitle,
+                    );
+                  },
                 ),
               ),
               // const Spacer(),
@@ -76,16 +84,21 @@ class ChatCard extends ConsumerWidget {
                   const SizedBox(
                     height: PSizes.spaceBtwItems / 3,
                   ),
-                  Badge(
-                    textColor: PColors.light,
-                    backgroundColor: unreadMessageCount != ''
-                        ? PColors.primary
-                        : Colors.transparent,
-                    label: unreadMessageCount != ''
-                        ? Text(unreadMessageCount)
-                        : null,
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                  )
+                  onCall
+                      ? const Icon(
+                          Iconsax.microphone,
+                          color: Colors.green,
+                        )
+                      : Badge(
+                          textColor: PColors.light,
+                          backgroundColor: unreadMessageCount != ''
+                              ? PColors.primary
+                              : Colors.transparent,
+                          label: unreadMessageCount != ''
+                              ? Text(unreadMessageCount)
+                              : null,
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                        )
                 ],
               )
             ],

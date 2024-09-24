@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/helpers/helper_functions.dart';
 
+import '../../../../../call/controllers/agora_engine_controller.dart';
 import '../../../../controller/navigation_controller.dart';
 import '../common/tablet_mobile_navigation.dart';
 
@@ -33,6 +34,11 @@ class _MobileScaffoldState extends ConsumerState<MobileScaffold>
       case AppLifecycleState.detached:
       case AppLifecycleState.inactive:
       case AppLifecycleState.hidden:
+        // if (ref.read(engineInitialized)) {
+        //   AgoraEngineController.release(ref.read(agoraEngine));
+        //   ref.read(engineInitialized.notifier).state = false;
+        // }
+
         ref.read(userController).setUserState(false);
         break;
     }
@@ -48,6 +54,21 @@ class _MobileScaffoldState extends ConsumerState<MobileScaffold>
         bottomNavigationBar:
             SmallScreenNavigation(isDark: isDark, controller: controller),
         body: controller.screens[ref.watch(navigationController)]);
+  }
+
+  void _dispose() async {
+    if (ref.read(engineInitialized)) {
+      ref.read(engineInitialized.notifier).state = false;
+
+      await AgoraEngineController.release(ref.read(agoraEngine));
+    }
+  }
+
+  @override
+  void deactivate() {
+    _dispose();
+    // dispose of any resources, etc.
+    super.deactivate();
   }
 
   @override

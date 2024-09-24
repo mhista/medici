@@ -27,6 +27,8 @@ class HospitalDetail extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = PHelperFunctions.isDarkMode(context);
+
     return DefaultTabController(
       length: 5,
       child: Scaffold(
@@ -40,6 +42,7 @@ class HospitalDetail extends ConsumerWidget {
                 collapsedHeight: 217,
                 floating: true,
                 flexibleSpace: TRoundedContainer(
+                  backgroundColor: isDark ? PColors.dark : PColors.white,
                   height: PHelperFunctions.screenHeight(context),
                   // width: PHelperFunctions.screenWidth(context),
                   radius: 0,
@@ -49,7 +52,8 @@ class HospitalDetail extends ConsumerWidget {
                       MCurvedEdgesWidget(
                         child: TRoundedContainer(
                           height: 250,
-                          backgroundColor: PColors.light.withOpacity(0.5),
+                          backgroundColor:
+                              isDark ? PColors.dark : PColors.white,
                           child: Stack(
                             children: [
                               MRoundedImage(
@@ -76,6 +80,9 @@ class HospitalDetail extends ConsumerWidget {
                                               ref.read(goRouterProvider).pop(),
                                           top: 10,
                                           left: -10,
+                                          backgroundColor: isDark
+                                              ? PColors.dark
+                                              : PColors.white,
                                         ),
                                         // const Spacer(),
                                         Row(
@@ -85,6 +92,9 @@ class HospitalDetail extends ConsumerWidget {
                                               onPressed: () {},
                                               top: 10,
                                               right: -15,
+                                              backgroundColor: isDark
+                                                  ? PColors.dark
+                                                  : PColors.white,
                                             ),
                                             const SizedBox(
                                               width: PSizes.spaceBtwItems / 2,
@@ -94,6 +104,9 @@ class HospitalDetail extends ConsumerWidget {
                                               onPressed: () {},
                                               top: 10,
                                               right: -10,
+                                              backgroundColor: isDark
+                                                  ? PColors.dark
+                                                  : PColors.white,
                                             ),
                                           ],
                                         ),
@@ -112,47 +125,51 @@ class HospitalDetail extends ConsumerWidget {
                         top: 250,
                         right: 0,
                         left: 0,
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: PSizes.spaceBtwItems / 2,
-                                horizontal: PSizes.spaceBtwItems),
-                            child: Column(
-                              children: [
-                                const HospitalCardDetails(
-                                  increaseBy: 3,
-                                ),
-                                const SizedBox(
-                                  height: PSizes.spaceBtwItems,
-                                ),
-                                // contact buttons
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    HospitalDetailButton(
-                                        iconData: Iconsax.global5,
-                                        onPressed: () {},
-                                        text: 'Website'),
-                                    HospitalDetailButton(
-                                        iconData: Iconsax.message5,
-                                        onPressed: () {},
-                                        text: 'Message'),
-                                    HospitalDetailButton(
-                                        iconData: Iconsax.call5,
-                                        onPressed: () {},
-                                        text: 'Call'),
-                                    HospitalDetailButton(
-                                        iconData: Iconsax.map_15,
-                                        onPressed: () {},
-                                        text: 'Direction'),
-                                    HospitalDetailButton(
-                                        iconData: Iconsax.send_21,
-                                        onPressed: () {},
-                                        text: 'Share'),
-                                  ],
-                                )
-                              ],
+                        child: TRoundedContainer(
+                          backgroundColor:
+                              isDark ? PColors.dark : PColors.white,
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0,
+                                  horizontal: PSizes.spaceBtwItems),
+                              child: Column(
+                                children: [
+                                  const HospitalCardDetails(
+                                    increaseBy: 3,
+                                  ),
+                                  const SizedBox(
+                                    height: PSizes.spaceBtwItems,
+                                  ),
+                                  // contact buttons
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      HospitalDetailButton(
+                                          iconData: Iconsax.global5,
+                                          onPressed: () {},
+                                          text: 'Website'),
+                                      HospitalDetailButton(
+                                          iconData: Iconsax.message5,
+                                          onPressed: () {},
+                                          text: 'Message'),
+                                      HospitalDetailButton(
+                                          iconData: Iconsax.call5,
+                                          onPressed: () {},
+                                          text: 'Call'),
+                                      HospitalDetailButton(
+                                          iconData: Iconsax.map_15,
+                                          onPressed: () {},
+                                          text: 'Direction'),
+                                      HospitalDetailButton(
+                                          iconData: Iconsax.send_21,
+                                          onPressed: () {},
+                                          text: 'Share'),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),

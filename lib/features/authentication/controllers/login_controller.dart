@@ -79,9 +79,9 @@ class LoginController {
         // PFullScreenLoader.stopLoading();
         return;
       }
-      debugPrint('signing');
+      // debugPrint('signing');
       final userCredentials = await authenticationRepository.signInWithGoogle();
-      debugPrint(userCredentials.user.toString());
+      // debugPrint(userCredentials.user.toString());
       await ref.read(userController).saveUserRecord(userCredentials);
       // remove loader
       // PFullScreenLoader.stopLoading();

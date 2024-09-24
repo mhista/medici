@@ -85,7 +85,7 @@ class UserController {
       debugPrint(userCredential?.user.toString());
       await fetchUserRecord();
 
-      final user = _ref.watch(userProvider);
+      final user = _ref.read(userProvider);
       if (user.id.isEmpty) {
         // CONVERT THE DISPLAY NAME TO FIRST AND LAST NAME
         if (userCredential != null) {

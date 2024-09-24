@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/features/call/controllers/agora_engine_controller.dart';
+import 'package:medici/features/call/controllers/call_controller.dart';
 import 'package:medici/features/chat/screens/chat_room/chat_room.dart';
 
 import '../../../../common/loaders/loaders.dart';
@@ -14,14 +15,13 @@ import '../../models/call_model.dart';
 
 class CallButtons extends ConsumerWidget {
   const CallButtons({
-    required this.engine,
     required this.call,
     super.key,
   });
-  final RtcEngine engine;
   final CallModel call;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final engine = ref.watch(agoraEngine);
     return Align(
       alignment: Alignment.bottomCenter,
       child: TRoundedContainer(
@@ -84,6 +84,9 @@ class CallButtons extends ConsumerWidget {
                 color: PColors.light,
                 onPressed: () async {
                   ref.read(loadingCompleteProvider.notifier).state = false;
+                  ref.read(callScreenPopped.notifier).state = true;
+                  ref.read(switchToButton.notifier).state = true;
+
                   await AgoraEngineController.endCall(engine, ref, call);
                 }),
             PCircularIcon(
@@ -98,9 +101,12 @@ class CallButtons extends ConsumerWidget {
                 }),
             PCircularIcon(
                 backgroundColor: PColors.transparent,
-                icon: Iconsax.message5,
+                icon: Icons.flip_to_back_outlined,
                 color: PColors.light,
                 onPressed: () {
+                  ref.read(callScreenPopped.notifier).state = true;
+                  ref.read(switchToButton.notifier).state = true;
+
                   // FlutterRingtonePlayer().playRingtone();
                 }),
           ],

@@ -16,7 +16,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../../router.dart';
 import '../../../utils/constants/file_formats.dart';
-import '../../../utils/constants/image_strings.dart';
 import '../../authentication/models/user_model.dart';
 import '../../personalization/controllers/user_controller.dart';
 
@@ -24,6 +23,12 @@ final chatContactMessages =
     StateProvider<List<ChatContact>>((ref) => <ChatContact>[]);
 final chatContactMessage =
     StateProvider<ChatContact>((ref) => ChatContact.empty());
+final isShowMessageReply = StateProvider<bool>((ref) {
+  return ref.watch(messageReplyProvider) != null;
+});
+final inChatRoom = StateProvider<bool>((ref) {
+  return false;
+});
 
 class ChatController {
   final Ref ref;
@@ -301,7 +306,11 @@ class ChatController {
         type: type,
         timeSent: timeSent,
         messageId: messageID,
-        isSeen: false,
+        isSeen: ref.watch(inChatRoom)
+            ? ref.watch(userChatProvider).id == receiverId
+                ? true
+                : false
+            : false,
         repliedMessage: repliedMessage,
         repliedMessageType: repliiedMessageType,
         repliedTo: repliedTo);
@@ -377,14 +386,14 @@ final chatContactProvider = StreamProvider.autoDispose((ref) {
 
 //  stream provider to get all user messages
 final chatMessagesProvider =
-    StreamProvider.autoDispose.family((ref, String id) {
+    StreamProvider.family.autoDispose((ref, String id) {
   final chatControllerr = ref.watch(chatController);
   return chatControllerr.getAllUserMessages(id);
 });
 
 // stream provider to get all uneplied messages
 final unrepliedMessagesProvider =
-    StreamProvider.autoDispose.family((ref, String id) {
+    StreamProvider.family.autoDispose((ref, String id) {
   final chatControllerr = ref.watch(chatController);
   return chatControllerr.unrepliedMessages(id);
 });

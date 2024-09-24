@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/common/widgets/icons/circular_icon.dart';
+import 'package:medici/features/call/controllers/call_controller.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
@@ -10,19 +11,21 @@ import 'package:medici/utils/device/device_utility.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../features/personalization/controllers/user_controller.dart';
+import '../../../router.dart';
 import '../../../utils/helpers/helper_functions.dart';
 import '../icons/rounded_icons.dart';
 import 'searchBar.dart';
 
-class KAppBar extends StatelessWidget implements PreferredSizeWidget {
+class KAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const KAppBar({super.key});
 
   // to add the background color to tabs, wrap with material widget.
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final responsive = ResponsiveBreakpoints.of(context);
     final isDark = PHelperFunctions.isDarkMode(context);
+    final data = ref.watch(callModelProvider);
 
     return Column(
       children: [
@@ -114,6 +117,26 @@ class KAppBar extends StatelessWidget implements PreferredSizeWidget {
 
             actions: [
               // SHOW ONLY A NOTIFICATION ICON ON SMALL SCREEN
+              Consumer(
+                builder: (_, WidgetRef ref, __) {
+                  return ref.watch(isCallOngoing)
+                      ? PCircularIcon(
+                          backgroundColor: Colors.green,
+                          height: 40,
+                          width: 40,
+                          icon: Iconsax.call,
+                          color: Colors.white,
+                          onPressed: () async {
+                            debugPrint(data.toString());
+                            // ref.read(callController).pickModelCall(data);
+                            ref.read(switchToButton.notifier).state = false;
+                            ref.read(callScreenPopped.notifier).state = false;
+                            ref.read(goRouterProvider).goNamed('chatHolder');
+                          },
+                        )
+                      : const SizedBox();
+                },
+              ),
               if (responsive.screenWidth < 700)
                 PCircularIcon(
                   backgroundColor: isDark

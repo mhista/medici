@@ -8,6 +8,7 @@ import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/sizes.dart';
 
 import '../../../utils/constants/colors.dart';
+import '../../../utils/helpers/helper_functions.dart';
 
 class CallPickupScreen extends ConsumerWidget {
   const CallPickupScreen({super.key, required this.data});
@@ -15,8 +16,10 @@ class CallPickupScreen extends ConsumerWidget {
   final CallModel data;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = PHelperFunctions.isDarkMode(context);
+
     return Scaffold(
-      backgroundColor: PColors.dark.withOpacity(0.95),
+      backgroundColor: PColors.transparent.withOpacity(0.7),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -24,7 +27,10 @@ class CallPickupScreen extends ConsumerWidget {
           children: [
             TRoundedContainer(
               child: TRoundedContainer(
-                backgroundColor: PColors.light,
+                // backgroundColor: PColors.light,
+                backgroundColor: isDark
+                    ? PColors.darkerGrey.withOpacity(0.9)
+                    : PColors.light.withOpacity(0.8),
                 height: 260,
                 width: 200,
                 padding: const EdgeInsets.symmetric(
@@ -45,9 +51,13 @@ class CallPickupScreen extends ConsumerWidget {
                     const SizedBox(
                       height: PSizes.spaceBtwItems * 1.3,
                     ),
-                    Text(
-                      data.callerName,
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        data.callerName,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
                     ),
                     Consumer(
                       builder: (_, WidgetRef ref, __) {
@@ -61,39 +71,42 @@ class CallPickupScreen extends ConsumerWidget {
                     const SizedBox(
                       height: PSizes.spaceBtwItems,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        RoundedIcon(
-                            hasBgColor: true,
-                            color: PColors.white,
-                            hasIconColor: true,
-                            bgColor: Colors.redAccent,
-                            isPositioned: false,
-                            iconData: Icons.call_end_outlined,
-                            onPressed: () {
-                              ref
-                                  .read(notificationProvider)
-                                  .flutterLocalNotificationsPlugin
-                                  .cancel(1);
+                    Padding(
+                      padding: const EdgeInsets.only(left: 14.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RoundedIcon(
+                              hasBgColor: true,
+                              color: PColors.white,
+                              hasIconColor: true,
+                              bgColor: Colors.redAccent,
+                              isPositioned: false,
+                              iconData: Icons.call_end_outlined,
+                              onPressed: () {
+                                ref
+                                    .read(notificationProvider)
+                                    .flutterLocalNotificationsPlugin
+                                    .cancel(1);
 
-                              ref
-                                  .read(callController)
-                                  .endCall(data.callerId, data.receiverId);
-                            }),
-                        const SizedBox(
-                          width: PSizes.spaceBtwItems,
-                        ),
-                        RoundedIcon(
-                            color: PColors.white,
-                            hasIconColor: true,
-                            hasBgColor: true,
-                            bgColor: Colors.green,
-                            isPositioned: false,
-                            iconData: Icons.call_outlined,
-                            onPressed: () =>
-                                ref.read(callController).pickModelCall(data))
-                      ],
+                                ref
+                                    .read(callController)
+                                    .endCall(data.callerId, data.receiverId);
+                              }),
+                          const SizedBox(
+                            width: PSizes.spaceBtwItems,
+                          ),
+                          RoundedIcon(
+                              color: PColors.white,
+                              hasIconColor: true,
+                              hasBgColor: true,
+                              bgColor: Colors.green,
+                              isPositioned: false,
+                              iconData: Icons.call_outlined,
+                              onPressed: () =>
+                                  ref.read(callController).pickModelCall(data))
+                        ],
+                      ),
                     )
                   ],
                 ),

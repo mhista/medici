@@ -37,7 +37,6 @@ final firestoreProvider = Provider((ref) => FirebaseFirestore.instance);
 final firebaseStorageProvider = Provider((ref) => FirebaseStorage.instance);
 final firebaseStorageHandler = Provider((ref) => PFirebaseStorageServices(
     firebaseStorage: ref.watch(firebaseStorageProvider)));
-final agoraEngine = Provider((ref) => createAgoraRtcEngine());
 // AUTHENTICATION REPOSITORY
 final authenticationProvider = Provider(
     (ref) => AuthenticationRepository(auth: ref.read(firebaseAuthProvider)));

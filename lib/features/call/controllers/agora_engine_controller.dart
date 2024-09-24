@@ -4,17 +4,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:medici/providers.dart';
 import '../../../config/agora/agora_config.dart';
+import '../agora_events/agora_egine_events.dart';
 import '../models/call_model.dart';
+import 'call_controller.dart';
+
+final agoraEngine = Provider((ref) => createAgoraRtcEngine());
+final engineInitialized = StateProvider<bool>((ref) => false);
 
 // final localUserJoinedProvider = StateProvider<bool>((ref) => false);
-// final remoteUserJoinedProvider = StateProvider<bool>((ref) => false);
+final channelLeft = StateProvider<bool>((ref) => false);
 final videoNotMuted = StateProvider<bool>((ref) => true);
 final audioMuted = StateProvider<bool>((ref) => true);
 final frontCameraEnabled = StateProvider<bool>((ref) => true);
 final cameraEnabled = StateProvider<bool>((ref) => false);
-final remoteUserId = StateProvider<int>((ref) => 0);
+// final remoteUserId = StateProvider<int>((ref) => 0);
 final remoteUserMuted = StateProvider<bool>((ref) => false);
 
+// SINGLETON CLASS TO CONTROL AGORA ENGINE
 class AgoraEngineController {
 // initialize the enine and other dependencies
 
@@ -33,6 +39,8 @@ class AgoraEngineController {
     ref.read(audioMuted.notifier).state = false;
     ref.read(cameraEnabled.notifier).state = false;
     ref.read(remoteUserMuted.notifier).state = false;
+    ref.read(channelLeft.notifier).state = false;
+    ref.read(receiverPicked.notifier).state = true;
   }
 
 // join a channel
@@ -68,7 +76,7 @@ class AgoraEngineController {
   static Future<void> muteUnmuteVideo(RtcEngine engine, WidgetRef ref) async {
     bool muteVid = ref.read(videoNotMuted);
     // debugPrint(muteVid.toString());
-    debugPrint(ref.read(remoteUserId).toString());
+    // debugPrint(ref.read(remoteUserId).toString());
     engine.enableLocalVideo(muteVid);
     ref.read(cameraEnabled.notifier).state = muteVid;
   }
@@ -106,20 +114,44 @@ class AgoraEngineController {
       RtcEngine engine, WidgetRef ref, CallModel call) async {
     // ref.read(remoteUserMuted.notifier).state = false;
 
-    debugPrint(call.toString());
+    debugPrint('call ending');
     // end the call
     if (call.callId.isEmpty) {
+      ref.read(isCallOngoing.notifier).state = false;
+
+      ref.read(localUserJoinedProvider.notifier).state = false;
+      ref.read(callScreenPopped.notifier).state = false;
+      ref.read(channelLeft.notifier).state = true;
+      ref.read(switchToButton.notifier).state = true;
+      ref.read(remoteUserId.notifier).state = null;
+
       await engine.leaveChannel();
-      await engine.release();
+
+      debugPrint('call ending for init');
     } else {
+      ref.read(isCallOngoing.notifier).state = false;
+
+      ref.read(localUserJoinedProvider.notifier).state = false;
+      ref.read(callScreenPopped.notifier).state = false;
+      ref.read(channelLeft.notifier).state = true;
+      ref.read(switchToButton.notifier).state = true;
+      ref.read(remoteUserId.notifier).state = null;
+
       ref.read(callController).endCall(call.callerId, call.receiverId);
       await engine.leaveChannel();
-      await engine.release();
+      debugPrint('call ending for exit');
+
+      // await engine.;
     }
   }
 
-// callbacks for engine
-  void registerEventHandler(RtcEngine engine) {
-    engine.registerEventHandler(const RtcEngineEventHandler());
+  static Future<void> release(RtcEngine engine) async {
+    await engine.release();
+    debugPrint('engine destroyed');
   }
+
+// // callbacks for engine
+//   static Future<void> onPopInvoked(WidgetRef ref) async {
+
+//   }
 }

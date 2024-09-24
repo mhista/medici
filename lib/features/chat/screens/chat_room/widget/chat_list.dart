@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/common/loaders/loaders.dart';
+import 'package:medici/features/chat/models/message_model.dart';
 import 'package:medici/features/chat/models/message_reply.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
@@ -95,11 +96,15 @@ class _ChatListState extends ConsumerState<ChatList> {
                     repliedMessageType: message.repliedMessageType,
                     // DELETE A MESSAGE ON RIGHT SWIPE
                     onRightSwipe: () async {
+                      debugPrint(message.toString());
                       // checks if this message was swiped for reply and deletes it
-                      if (ref.watch(messageReplyProvider)?.message ==
+                      if (ref.read(messageReplyProvider)?.message ==
                           message.text) {
-                        ref.read(messageReplyProvider.notifier).state = null;
+                        ref
+                            .read(messageReplyProvider.notifier)
+                            .update((state) => null);
                       }
+
                       // ref.read(chatController).deleteMessage(message: message);
                       // checks if this message is the one shown in the list of messages in the chat view
                       final isLastChat = ref
@@ -107,6 +112,7 @@ class _ChatListState extends ConsumerState<ChatList> {
                           .value
                           ?.where((chat) => chat.messageId == message.messageId)
                           .firstOrNull;
+
                       // if it is the last message, deletes the message from the user chats, and updates the currently shown chat message with the last message sent
                       if (isLastChat != null) {
                         debugPrint(isLastChat.toString());
@@ -115,7 +121,7 @@ class _ChatListState extends ConsumerState<ChatList> {
                             .read(chatController)
                             .deleteMessage(message: message);
 
-                        // gets the last message sent by the user to update the chat view with the last message
+                        // gets the current last message sent by any of the users to update the chat view with the last message
                         final lastMessage = ref
                             .watch(chatMessagesProvider(widget.receiver.id))
                             .value
@@ -136,23 +142,25 @@ class _ChatListState extends ConsumerState<ChatList> {
                                   ? ref.read(userProvider)
                                   : ref.read(userChatProvider),
                               message: lastMessage);
+                          return;
                         } else {
                           // if there is no current message, proceeds to delete the chat contact
-                          ref
-                              .read(chatController)
-                              .deleteMessage(message: message);
-                          ref.read(chatController).deleteChatContact(
-                              receiverId: widget.receiver.id,
-                              senderId: ref.read(userProvider).id);
                           // ref
                           //     .read(chatController)
                           //     .deleteMessage(message: message);
+                          ref.read(chatController).deleteChatContact(
+                              receiverId: widget.receiver.id,
+                              senderId: ref.read(userProvider).id);
+                          return;
                         }
                       } else {
+                        // deletes just the message since it is not the in the chat contact
                         ref
                             .read(chatController)
                             .deleteMessage(message: message);
                       }
+                      ref.refresh(chatMessagesProvider(widget.receiver.id));
+                      // ref.read(chatController).deleteMessage(message: message);
                     },
                     onLeftSwipe: () => onMessageSwipe(
                         message.text,
