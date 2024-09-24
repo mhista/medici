@@ -6,16 +6,14 @@ import 'package:medici/common/widgets/appbar/searchBar.dart';
 import 'package:medici/common/widgets/cards/chat_card.dart';
 import 'package:medici/common/widgets/shimmer/chat_card_shimmer.dart';
 import 'package:medici/features/personalization/controllers/user_controller.dart';
-import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:medici/utils/constants/text_strings.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../utils/helpers/helper_functions.dart';
-import '../../../authentication/models/user_model.dart';
-import '../../../call/controllers/call_controller.dart';
 import '../../controllers/chat_controller.dart';
+import '../../models/message_model.dart';
 
 class MessageScreen extends ConsumerWidget {
   const MessageScreen({super.key});
@@ -104,11 +102,15 @@ class MessageScreen extends ConsumerWidget {
                                   user.id == chat.user2.id
                                       ? chat.user1.id
                                       : chat.user1.id))
-                              .value
+                              .value;
+                          // updateUnreadMessages(unreadMessages, ref);
+
+                          final count = unreadMessages
                               ?.where((e) {
-                            return e.receiverId == (user.id);
-                          }).toList();
-                          final count = unreadMessages?.length;
+                                return e.receiverId == (user.id);
+                              })
+                              .toList()
+                              .length;
 
                           // CHECKS IF THE USDER IS ONLINE
                           final isOnline = ref
@@ -125,25 +127,17 @@ class MessageScreen extends ConsumerWidget {
                             color: isDark ? PColors.dark : PColors.light,
                             title: user.id == chat.user2.id
                                 ? chat.user1.isDoctor
-                                    ? 'Dr ${chat.user1.fullName}'
-                                    : chat.user1.fullName
+                                    ? 'Dr ${chat.user1.lastName}'
+                                    : chat.user1.lastName
                                 : chat.user2.isDoctor
-                                    ? 'Dr ${chat.user2.fullName}'
-                                    : chat.user2.fullName,
+                                    ? 'Dr ${chat.user2.lastName}'
+                                    : chat.user2.lastName,
                             subTitle: chat.lastMessage,
                             image: user.id == chat.user2.id
                                 ? chat.user1.profilePicture
                                 : chat.user2.profilePicture,
                             recent: false,
-                            onCall: ref.watch(isCallOngoing) &&
-                                    (ref.watch(callModelProvider).callerId ==
-                                        (user.id == chat.user2.id
-                                            ? chat.user1.id
-                                            : chat.user2.id)) ||
-                                (ref.watch(callModelProvider).receiverId ==
-                                    (user.id == chat.user2.id
-                                        ? chat.user1.id
-                                        : chat.user2.id)),
+                            onCall: false,
                             onPressed: () {
                               ref.read(inChatRoom.notifier).state = true;
 
@@ -157,7 +151,7 @@ class MessageScreen extends ConsumerWidget {
                                   user.id == chat.user2.id
                                       ? chat.user1
                                       : chat.user2;
-                              context.goNamed('chatHolder');
+                              context.goNamed('chat');
                               // ref
                               // .read(loadingCompleteProvider.notifier)
                               // .state = false;
@@ -194,4 +188,14 @@ class MessageScreen extends ConsumerWidget {
             ),
     );
   }
+
+  // updateUnreadMessages(List<MessageModel>? messages, WidgetRef ref) {
+  //   //  Update unread messages whenever a new message is received
+  //   Future(() {
+
+  //     if (messages != null && messages.isNotEmpty) {
+  //       return ref.read(unreadMessageCount.notifier).state = messages.length;
+  //     }
+  //   });
+  // }
 }

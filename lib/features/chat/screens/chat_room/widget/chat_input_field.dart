@@ -123,7 +123,7 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
                     ref
                         .read(messageReplyProvider.notifier)
                         .update((state) => null);
-                    focusNode.unfocus();
+                    // focusNode.unfocus();
                   },
                   icon: const Icon(Iconsax.send_1))
               : RecorderButton(

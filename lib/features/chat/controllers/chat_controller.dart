@@ -30,6 +30,10 @@ final inChatRoom = StateProvider<bool>((ref) {
   return false;
 });
 
+final unreadMessageCount = StateProvider<int?>((ref) {
+  return null;
+});
+
 class ChatController {
   final Ref ref;
   final ChatRepository chatRepository;
@@ -306,11 +310,7 @@ class ChatController {
         type: type,
         timeSent: timeSent,
         messageId: messageID,
-        isSeen: ref.watch(inChatRoom)
-            ? ref.watch(userChatProvider).id == receiverId
-                ? true
-                : false
-            : false,
+        isSeen: false,
         repliedMessage: repliedMessage,
         repliedMessageType: repliiedMessageType,
         repliedTo: repliedTo);
@@ -385,8 +385,7 @@ final chatContactProvider = StreamProvider.autoDispose((ref) {
 });
 
 //  stream provider to get all user messages
-final chatMessagesProvider =
-    StreamProvider.family.autoDispose((ref, String id) {
+final chatMessagesProvider = StreamProvider.family((ref, String id) {
   final chatControllerr = ref.watch(chatController);
   return chatControllerr.getAllUserMessages(id);
 });

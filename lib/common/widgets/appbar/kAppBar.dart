@@ -129,9 +129,8 @@ class KAppBar extends ConsumerWidget implements PreferredSizeWidget {
                           onPressed: () async {
                             debugPrint(data.toString());
                             // ref.read(callController).pickModelCall(data);
-                            ref.read(switchToButton.notifier).state = false;
-                            ref.read(callScreenPopped.notifier).state = false;
-                            ref.read(goRouterProvider).goNamed('chatHolder');
+                            ref.read(goRouterProvider).goNamed('call',
+                                extra: ref.read(callModelProvider));
                           },
                         )
                       : const SizedBox();

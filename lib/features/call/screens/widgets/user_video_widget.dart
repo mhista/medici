@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:medici/features/call/controllers/agora_engine_controller.dart';
 
 import '../../../../common/widgets/images/circular_images.dart';
-import '../../../../providers.dart';
 import '../../../../utils/constants/colors.dart';
-import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../personalization/controllers/user_controller.dart';
 import '../../models/call_model.dart';

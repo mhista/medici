@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:medici/features/authentication/screens/signup/signup.dart';
 import 'package:medici/features/main_app/screens/map/map.dart';
 
 import '../screens/home/home.dart';

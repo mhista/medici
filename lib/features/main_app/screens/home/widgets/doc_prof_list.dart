@@ -5,7 +5,6 @@ import 'package:medici/common/widgets/containers/rounded_container.dart';
 import 'package:medici/common/widgets/images/edge_rounded_images.dart';
 import 'package:medici/features/specialists/controllers/specialist_controller.dart';
 import 'package:medici/providers.dart';
-import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/enums.dart';
 
 import '../../../../../router.dart';

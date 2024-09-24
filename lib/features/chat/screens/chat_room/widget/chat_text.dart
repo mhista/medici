@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:medici/features/chat/models/message_reply.dart';
 import 'package:medici/features/chat/screens/chat_room/widget/record_widget.dart';
 import 'package:medici/utils/constants/enums.dart';
 import 'package:swipe_to/swipe_to.dart';

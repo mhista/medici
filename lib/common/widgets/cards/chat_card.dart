@@ -1,10 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:medici/features/call/controllers/call_controller.dart';
 import 'package:medici/utils/constants/colors.dart';
 
-import '../../../features/personalization/controllers/user_controller.dart';
 import '../../../utils/constants/sizes.dart';
 import '../images/rounded_rect_image.dart';
 import '../texts/title_subtitle.dart';

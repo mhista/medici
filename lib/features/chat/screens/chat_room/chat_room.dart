@@ -15,8 +15,6 @@ import 'package:medici/utils/constants/sizes.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/helpers/helper_functions.dart';
 import '../../../call/controllers/agora_engine_controller.dart';
-import '../../../call/models/call_model.dart';
-import '../../../call/screens/call_pickup_screen.dart';
 import '../../../personalization/controllers/user_controller.dart';
 import '../../models/message_reply.dart';
 import 'widget/chat_input_field.dart';
@@ -42,209 +40,218 @@ class ChatRoom extends ConsumerWidget {
     final messageReply = ref.watch(messageReplyProvider);
     // final ref.watch(isCallOngoing) = ref.watch(isref.watch(isCallOngoing));
     _runsAfterBuild(ref);
-
-    // return ref.watch(callProvider).when(
-    //       // skipError: true,
-    //       skipLoadingOnRefresh: true,
-    //       skipLoadingOnReload: true,
-    //       data: (data) {
-    //         if (data.callId.isNotEmpty &&
-    //             ref.read(userProvider).isOnline &&
-    //             (data.callerId == ref.read(userProvider).id ||
-    //                 callEnds == false)) {
-    //           return CallScreen(call: data);
-    // } else {
-    return Stack(
-      children: [
-        Scaffold(
-          resizeToAvoidBottomInset: true,
-          appBar: AppBar(
-            elevation: 2,
-            backgroundColor: isDark
-                ? PColors.dark.withOpacity(0.4)
-                : PColors.light.withOpacity(0.4),
-            leading: IconButton(
-              onPressed: Navigator.of(context).pop,
-              icon: const Icon(Icons.arrow_back_ios_new),
-              color: isDark ? PColors.light : PColors.dark,
-            ),
-            leadingWidth: 25,
-            title: GestureDetector(
-              onTap: () async {
-                if (receiver.isDoctor) {
-                  await ref
-                      .read(specialistController)
-                      .fetchSpecialist(receiver.id);
-                  ref.read(goRouterProvider).pushNamed("specialist");
-                }
-              },
-              child: Row(
-                children: [
-                  ProfileImage1(
-                    image: receiver.profilePicture,
-                    imageSize: 40,
-                    radius: 40,
-                    isNetworkImage: true,
-                  ),
-                  const SizedBox(
-                    width: PSizes.iconXs,
-                  ),
-                  Stack(
-                    children: [
-                      TitleAndSubTitle(
-                          title: receiver.isDoctor
-                              ? 'Dr ${receiver.lastName}'
-                              : receiver.lastName,
-                          subTitle: ref.watch(isCallOngoing)
-                              ? "Call ongoing..."
-                              : isOnline ?? false
-                                  ? 'Online'
-                                  : 'Offline'),
-                      if (!ref.watch(isCallOngoing))
-                        Positioned(
-                            left: 43,
-                            bottom: 4,
-                            child: OnlineIndicator(
-                              size: 8,
-                              isOnline: isOnline ?? false,
-                            ))
-                    ],
-                  ),
-                ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (FocusNode().hasFocus) {
+          FocusNode().unfocus();
+          return;
+        }
+        ref.read(inChatRoom.notifier).update((state) => state = false);
+        ref.read(goRouterProvider).pop();
+      },
+      child: Stack(
+        children: [
+          Scaffold(
+            resizeToAvoidBottomInset: true,
+            appBar: AppBar(
+              elevation: 2,
+              backgroundColor: isDark
+                  ? PColors.dark.withOpacity(0.4)
+                  : PColors.light.withOpacity(0.4),
+              leading: IconButton(
+                onPressed: Navigator.of(context).pop,
+                icon: const Icon(Icons.arrow_back_ios_new),
+                color: isDark ? PColors.light : PColors.dark,
               ),
-            ),
-            actions: [
-              Consumer(
-                builder: (_, WidgetRef ref, __) {
-                  return RoundedIcon(
-                    marginRight: 0,
-                    padding: 0,
-                    height: 35,
-                    width: 35,
-                    radius: 35,
-                    isPositioned: false,
-                    iconData: ref.watch(isCallOngoing) ||
-                            (!ref.watch(receiverPicked) &&
-                                !ref.watch(callModelProvider).callEnded &&
-                                ref.watch(callModelProvider).receiverId ==
-                                    ref.watch(userProvider).id)
-                        ? Icons.call_end
-                        : Icons.video_call,
-                    hasBgColor: true,
-                    hasIconColor: true,
-                    color: PColors.light,
-                    bgColor: ref.watch(isCallOngoing) ||
-                            (!ref.watch(receiverPicked) &&
-                                !ref.watch(callModelProvider).callEnded &&
-                                ref.watch(callModelProvider).receiverId ==
-                                    ref.watch(userProvider).id)
-                        ? Colors.red
-                        : PColors.primary,
-                    onPressed: ref.watch(isCallOngoing)
-                        ? () async {
-                            final data = ref.read(callModelProvider);
-                            ref
-                                .read(notificationProvider)
-                                .flutterLocalNotificationsPlugin
-                                .cancel(1);
-
-                            ref
-                                .read(callController)
-                                .endCall(data.callerId, data.receiverId);
-                          }
-                        : () async {
-                            ref.read(chatController).sendCallMessage(
-                                receiver: receiver,
-                                messageReply: messageReply,
-                                type: true);
-                            ref.read(callController).makeCall(
-                                receiver: receiver,
-                                context: context,
-                                isVideo: true);
-                          },
-                    size: 18,
-                  );
+              leadingWidth: 25,
+              title: GestureDetector(
+                onTap: () async {
+                  if (receiver.isDoctor) {
+                    await ref
+                        .read(specialistController)
+                        .fetchSpecialist(receiver.id);
+                    ref.read(goRouterProvider).pushNamed("specialist");
+                  }
                 },
-              ),
-              const SizedBox(
-                width: PSizes.iconXs,
-              ),
-              Consumer(
-                builder: (_, WidgetRef ref, __) {
-                  return RoundedIcon(
-                    marginRight: 0,
-                    padding: 0,
-                    height: 35,
-                    width: 35,
-                    radius: 35,
-                    isPositioned: false,
-                    iconData: Iconsax.call,
-                    hasBgColor: true,
-                    hasIconColor: true,
-                    color: PColors.light,
-                    bgColor: ref.watch(isCallOngoing) ||
+                child: Row(
+                  children: [
+                    ProfileImage1(
+                      image: receiver.profilePicture,
+                      imageSize: 40,
+                      radius: 40,
+                      isNetworkImage: true,
+                    ),
+                    const SizedBox(
+                      width: PSizes.iconXs,
+                    ),
+                    Stack(
+                      children: [
+                        TitleAndSubTitle(
+                            title: receiver.isDoctor
+                                ? 'Dr ${receiver.lastName}'
+                                : receiver.lastName,
+                            subTitle: ref.watch(isCallOngoing)
+                                ? "Call ongoing..."
+                                : (!ref.watch(receiverPicked) &&
+                                        ref
+                                                .watch(callModelProvider)
+                                                .receiverId ==
+                                            ref.read(userProvider).id)
+                                    ? 'Incoming call'
+                                    : isOnline ?? false
+                                        ? 'Online'
+                                        : 'Offline'),
+                        if (!ref.watch(isCallOngoing) ||
                             (!ref.watch(receiverPicked) &&
-                                !ref.watch(callModelProvider).callEnded &&
                                 ref.watch(callModelProvider).receiverId ==
-                                    ref.watch(userProvider).id)
-                        ? Colors.green
-                        : PColors.primary,
-                    onPressed: ref.watch(isCallOngoing)
-                        ? () async {
-                            final data = ref.read(callModelProvider);
+                                    ref.read(userProvider).id))
+                          Positioned(
+                              left: 43,
+                              bottom: 4,
+                              child: OnlineIndicator(
+                                size: 8,
+                                isOnline: isOnline ?? false,
+                              ))
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Consumer(
+                  builder: (_, WidgetRef ref, __) {
+                    return RoundedIcon(
+                      marginRight: 0,
+                      padding: 0,
+                      height: 35,
+                      width: 35,
+                      radius: 35,
+                      isPositioned: false,
+                      iconData: ref.watch(isCallOngoing) ||
+                              (!ref.watch(receiverPicked) &&
+                                  ref.watch(callModelProvider).receiverId ==
+                                      ref.read(userProvider).id)
+                          ? Icons.call_end
+                          : Icons.video_call,
+                      hasBgColor: true,
+                      hasIconColor: true,
+                      color: PColors.light,
+                      bgColor: ref.watch(isCallOngoing) ||
+                              (!ref.watch(receiverPicked) &&
+                                  ref.watch(callModelProvider).receiverId ==
+                                      ref.read(userProvider).id)
+                          ? Colors.red
+                          : PColors.primary,
+                      onPressed: ref.watch(isCallOngoing) ||
+                              (!ref.watch(receiverPicked) &&
+                                  ref.watch(callModelProvider).receiverId ==
+                                      ref.read(userProvider).id)
+                          ? () async {
+                              final data = ref.read(callModelProvider);
+                              ref
+                                  .read(notificationProvider)
+                                  .flutterLocalNotificationsPlugin
+                                  .cancel(1);
 
-                            ref.read(callController).pickModelCall(data);
-                            ref.read(switchToButton.notifier).state = false;
-                            ref.read(callScreenPopped.notifier).state = false;
-                          }
-                        : () async {
-                            ref.read(chatController).sendCallMessage(
-                                receiver: receiver,
-                                messageReply: messageReply,
-                                type: false);
-                            ref.read(callController).makeCall(
-                                receiver: receiver,
-                                context: context,
-                                isVideo: false);
-                          },
-                    size: 18,
-                  );
-                },
-              ),
-              const SizedBox(
-                width: PSizes.iconXs,
-              ),
-            ],
+                              ref
+                                  .read(callController)
+                                  .endCall(data.callerId, data.receiverId);
+                            }
+                          : () async {
+                              ref.read(chatController).sendCallMessage(
+                                  receiver: receiver,
+                                  messageReply: messageReply,
+                                  type: true);
+                              ref.read(callController).makeCall(
+                                  receiver: receiver,
+                                  context: context,
+                                  isVideo: true);
+                            },
+                      size: 18,
+                    );
+                  },
+                ),
+                const SizedBox(
+                  width: PSizes.iconXs,
+                ),
+                Consumer(
+                  builder: (_, WidgetRef ref, __) {
+                    return RoundedIcon(
+                      marginRight: 0,
+                      padding: 0,
+                      height: 35,
+                      width: 35,
+                      radius: 35,
+                      isPositioned: false,
+                      iconData: Iconsax.call,
+                      hasBgColor: true,
+                      hasIconColor: true,
+                      color: PColors.light,
+                      bgColor: ref.watch(isCallOngoing) ||
+                              (!ref.watch(receiverPicked) &&
+                                  ref.watch(callModelProvider).receiverId ==
+                                      ref.read(userProvider).id)
+                          ? Colors.green
+                          : PColors.primary,
+                      onPressed: ref.watch(isCallOngoing) ||
+                              (!ref.watch(receiverPicked) &&
+                                  ref.watch(callModelProvider).receiverId ==
+                                      ref.read(userProvider).id)
+                          ? () async {
+                              final data = ref.watch(callModelProvider);
+
+                              ref.read(callController).pickModelCall(data);
+                            }
+                          : () async {
+                              ref.read(chatController).sendCallMessage(
+                                  receiver: receiver,
+                                  messageReply: messageReply,
+                                  type: false);
+                              ref.read(callController).makeCall(
+                                  receiver: receiver,
+                                  context: context,
+                                  isVideo: false);
+                            },
+                      size: 18,
+                    );
+                  },
+                ),
+                const SizedBox(
+                  width: PSizes.iconXs,
+                ),
+              ],
+            ),
+            body: Column(
+              children: [
+                // DAILY TIME
+                Expanded(
+                    child: Stack(
+                  children: [
+                    ChatList(receiver: receiver),
+                  ],
+                )),
+
+                ref.watch(isShowMessageReply)
+                    ? MessageReplyPreview(
+                        messageReply: messageReply!,
+                        messageOwner: receiver.isDoctor
+                            ? 'Dr ${receiver.fullName}'
+                            : receiver.fullName)
+                    : const SizedBox(),
+
+                ChatInputField(
+                  controller: controller,
+                  receiver: receiver,
+                  messageReply: messageReply,
+                ),
+                EmojiPickerr(controller: controller)
+              ],
+            ),
           ),
-          body: Column(
-            children: [
-              // DAILY TIME
-              Expanded(
-                  child: Stack(
-                children: [
-                  ChatList(receiver: receiver),
-                ],
-              )),
-
-              ref.watch(isShowMessageReply)
-                  ? MessageReplyPreview(
-                      messageReply: messageReply!,
-                      messageOwner: receiver.isDoctor
-                          ? 'Dr ${receiver.fullName}'
-                          : receiver.fullName)
-                  : const SizedBox(),
-
-              ChatInputField(
-                controller: controller,
-                receiver: receiver,
-                messageReply: messageReply,
-              ),
-              EmojiPickerr(controller: controller)
-            ],
-          ),
-        ),
-        // CallPickupScreen(data: CallModel.empty())
-      ],
+          // CallPickupScreen(data: CallModel.empty())
+        ],
+      ),
     );
   }
 
@@ -256,6 +263,7 @@ class ChatRoom extends ConsumerWidget {
             !ref.read(channelLeft) &&
             ref.read(isCallOngoing)) {
           await AgoraEngineController.endCall(ref.read(agoraEngine), ref, data);
+          debugPrint('ended call');
           ref.read(callController).autoRedirectTimer(() {
             ref.read(engineInitialized.notifier).state = false;
             AgoraEngineController.release(ref.read(
@@ -268,15 +276,17 @@ class ChatRoom extends ConsumerWidget {
       });
       // checks for a new message and marks it as read
       ref.watch(chatContactProvider).whenData((data) {
-        final messages = ref
-            .watch(unrepliedMessagesProvider(ref.watch(userChatProvider).id))
-            .value
-            ?.where((e) {
-          return e.receiverId == (ref.read(userProvider).id);
-        }).toList();
-        ref
-            .read(chatController)
-            .markAsRead(messages!, ref.watch(userChatProvider).id);
+        if (ref.read(inChatRoom)) {
+          final messages = ref
+              .watch(unrepliedMessagesProvider(ref.watch(userChatProvider).id))
+              .value
+              ?.where((e) {
+            return e.receiverId == (ref.read(userProvider).id);
+          }).toList();
+          ref
+              .read(chatController)
+              .markAsRead(messages!, ref.watch(userChatProvider).id);
+        }
       });
       ref.read(loadingCompleteProvider.notifier).state = true;
     });

@@ -120,29 +120,31 @@ class AgoraEngineController {
       ref.read(isCallOngoing.notifier).state = false;
 
       ref.read(localUserJoinedProvider.notifier).state = false;
-      ref.read(callScreenPopped.notifier).state = false;
+      // ref.read(callScreenPopped.notifier).state = false;
       ref.read(channelLeft.notifier).state = true;
-      ref.read(switchToButton.notifier).state = true;
+      // ref.read(switchToButton.notifier).state = true;
       ref.read(remoteUserId.notifier).state = null;
 
       await engine.leaveChannel();
 
       debugPrint('call ending for init');
     } else {
-      ref.read(isCallOngoing.notifier).state = false;
-
-      ref.read(localUserJoinedProvider.notifier).state = false;
-      ref.read(callScreenPopped.notifier).state = false;
-      ref.read(channelLeft.notifier).state = true;
-      ref.read(switchToButton.notifier).state = true;
-      ref.read(remoteUserId.notifier).state = null;
-
       ref.read(callController).endCall(call.callerId, call.receiverId);
-      await engine.leaveChannel();
-      debugPrint('call ending for exit');
-
-      // await engine.;
     }
+    // else {
+    //   ref.read(isCallOngoing.notifier).state = false;
+
+    //   ref.read(localUserJoinedProvider.notifier).state = false;
+    //   ref.read(callScreenPopped.notifier).state = false;
+    //   ref.read(channelLeft.notifier).state = true;
+    //   ref.read(switchToButton.notifier).state = true;
+    //   ref.read(remoteUserId.notifier).state = null;
+
+    //   await engine.leaveChannel();
+    //   debugPrint('call ending for exit');
+
+    //   // await engine.;
+    // }
   }
 
   static Future<void> release(RtcEngine engine) async {

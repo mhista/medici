@@ -83,10 +83,10 @@ class CallController {
               volume: 1,
               asAlarm: true);
 
-          // ref.read(goRouterProvider).pushNamed(
-          //       'video',
-          //       extra: senderCallData,
-          //     );
+          ref.read(goRouterProvider).goNamed(
+                'call',
+                extra: senderCallData,
+              );
         }
       });
     } catch (e) {
@@ -116,7 +116,7 @@ class CallController {
 
   // takes user to the call screen after click accept on the notificatio
   void goToCallScreen(NotificationResponse response) async {
-    ref.watch(ringtone).stop();
+    ref.read(ringtone).stop();
 
     final isConnected = await ref.watch(networkService.notifier).isConnected();
     if (!isConnected) {
@@ -138,7 +138,10 @@ class CallController {
         ref.read(switchToButton.notifier).state = false;
         // ref.read(inChatRoom.notifier).state = true;
 
-        ref.read(goRouterProvider).pushNamed('chatHolder');
+        ref.read(goRouterProvider).goNamed(
+              'call',
+              extra: data,
+            );
       }
     }
     if (response.actionId == "decline") {
@@ -150,7 +153,7 @@ class CallController {
 
 // picks the call from the model display
   void pickModelCall(CallModel data) async {
-    ref.watch(ringtone).stop();
+    ref.read(ringtone).stop();
 
     final isConnected = await ref.watch(networkService.notifier).isConnected();
     if (!isConnected) {
@@ -163,6 +166,10 @@ class CallController {
       // ref.read(inChatRoom.notifier).state = true;
 
       ref.read(switchToButton.notifier).state = false;
+      ref.read(goRouterProvider).goNamed(
+            'call',
+            extra: data,
+          );
 
       // ref.read(goRouterProvider).pushNamed('chatHolder');
     }

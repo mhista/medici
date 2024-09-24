@@ -1,14 +1,12 @@
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/features/call/controllers/agora_engine_controller.dart';
-import 'package:medici/features/call/controllers/call_controller.dart';
 import 'package:medici/features/chat/screens/chat_room/chat_room.dart';
 
-import '../../../../common/loaders/loaders.dart';
 import '../../../../common/widgets/containers/rounded_container.dart';
 import '../../../../common/widgets/icons/circular_icon.dart';
+import '../../../../router.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../models/call_model.dart';
@@ -84,8 +82,6 @@ class CallButtons extends ConsumerWidget {
                 color: PColors.light,
                 onPressed: () async {
                   ref.read(loadingCompleteProvider.notifier).state = false;
-                  ref.read(callScreenPopped.notifier).state = true;
-                  ref.read(switchToButton.notifier).state = true;
 
                   await AgoraEngineController.endCall(engine, ref, call);
                 }),
@@ -104,8 +100,7 @@ class CallButtons extends ConsumerWidget {
                 icon: Icons.flip_to_back_outlined,
                 color: PColors.light,
                 onPressed: () {
-                  ref.read(callScreenPopped.notifier).state = true;
-                  ref.read(switchToButton.notifier).state = true;
+                  ref.read(goRouterProvider).goNamed('chat');
 
                   // FlutterRingtonePlayer().playRingtone();
                 }),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../../../utils/constants/colors.dart';
-import '../../../../../call/controllers/call_controller.dart';
+import '../../../../../chat/controllers/chat_controller.dart';
 import '../../../../controller/navigation_controller.dart';
 
 class SmallScreenNavigation extends ConsumerWidget {
@@ -28,20 +28,21 @@ class SmallScreenNavigation extends ConsumerWidget {
         elevation: 0,
         selectedIndex: controller.index,
         onDestinationSelected: (index) => controller.updateState(index),
-        destinations: [
-          const NavigationDestination(icon: Icon(Iconsax.home), label: 'Home'),
+        destinations: const [
+          NavigationDestination(icon: Icon(Iconsax.home), label: 'Home'),
           NavigationDestination(
-              icon: Consumer(
-                builder: (_, WidgetRef ref, __) {
-                  return ref.watch(isCallOngoing)
-                      ? const Icon(Iconsax.call5, color: Colors.green)
-                      : const Icon(Iconsax.message);
-                },
-              ),
+              // Badge(
+              //     backgroundColor: PColors.primary,
+              //     isLabelVisible:
+              //         ref.watch(unreadMessageCount) != null ? true : false,
+              //     label: ref.watch(unreadMessageCount) != null
+              //         ? Text(ref.watch(unreadMessageCount).toString())
+              //         : null,
+              //     child:
+              icon: Icon(Iconsax.message),
               label: 'Chat'),
-          const NavigationDestination(
-              icon: Icon(Iconsax.location), label: 'Find'),
-          const NavigationDestination(
+          NavigationDestination(icon: Icon(Iconsax.location), label: 'Find'),
+          NavigationDestination(
               icon: Icon(Iconsax.calendar), label: 'Schedule'),
         ]);
   }

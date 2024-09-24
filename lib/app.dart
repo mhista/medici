@@ -1,19 +1,14 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:medici/features/authentication/models/user_model.dart';
-import 'package:medici/features/call/controllers/agora_engine_controller.dart';
 import 'package:medici/features/call/controllers/call_controller.dart';
 import 'package:medici/features/chat/controllers/chat_controller.dart';
-import 'package:medici/features/chat/models/chat_contact.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/router.dart';
 import 'package:medici/utils/constants/image_strings.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import 'features/call/models/call_model.dart';
-import 'features/chat/screens/chat_room/chat_room.dart';
 import 'features/personalization/controllers/user_controller.dart';
 import 'utils/constants/colors.dart';
 import 'utils/theme/theme.dart';
@@ -29,7 +24,7 @@ class App extends ConsumerWidget {
     // the user provider
     final user = ref.watch(userProvider);
     // final chatMessage = ref.watch(chatContactMessage);
-    messageNotification(ref, user);
+    // messageNotification(ref, user);
     // listens for when a call is made
     callCheck(ref, user);
     // checks to know when one of the  user ended the call
@@ -57,71 +52,62 @@ class App extends ConsumerWidget {
     );
   }
 
-  void messageNotification(WidgetRef ref, UserModel user) {
-    ref.watch(chatContactProvider).whenData((data) {
-      final userMessage = data
-          .where(
-            (chat) => chat.user2.id == user.id,
-          )
-          .toList()
-          .first;
-      debugPrint(userMessage.toString());
-      if (ref.watch(inChatRoom)) {
-        ref
-            .read(notificationProvider)
-            .flutterLocalNotificationsPlugin
-            .cancel(2);
-        return;
-      }
+  // void messageNotification(WidgetRef ref, UserModel user) {
+  //  ref.watch(chatContactProvider).whenData((data) {
+  //         final userMessage = data
+  //             .where(
+  //               (chat) => chat.user2.id == user.id,
+  //             )
+  //             .toList()
+  //             .first;
+  //         debugPrint(userMessage.toString());
+  //         if (ref.watch(inChatRoom)) {
+  //           ref
+  //               .read(notificationProvider)
+  //               .flutterLocalNotificationsPlugin
+  //               .cancel(2);
+  //           return;
+  //         }
 
-      if (userMessage.lastMessage == "📹 Video call" ||
-          userMessage.lastMessage == "📞 Voice call") {
-        ref
-            .read(notificationProvider)
-            .flutterLocalNotificationsPlugin
-            .cancel(2);
-        return;
-      }
-      if (userMessage.user2 == user && user.isOnline) {
-        ref.read(notificationProvider).showInstantNotification(
-          enableLights: true,
-          enableVibration: true,
-          notificationId: 2,
-          timeOutAfter: 5000,
-          title: userMessage.user1.fullName,
-          body: userMessage.lastMessage,
-          ongoing: true,
-          actionId: '1',
-          payload: data.last.toJson(),
-          notificationActions: [
-            const AndroidNotificationAction('reply', 'Reply',
-                titleColor: PColors.primary, showsUserInterface: true),
-          ],
-        );
-        // Future(()=>ref.read(chatContactMessage.notifier).state = userMessage);
-      }
-    });
-  }
+  //         if (userMessage.lastMessage == "📹 Video call" ||
+  //             userMessage.lastMessage == "📞 Voice call") {
+  //           ref
+  //               .read(notificationProvider)
+  //               .flutterLocalNotificationsPlugin
+  //               .cancel(2);
+  //           return;
+  //         }
+  //         if (userMessage.user2 == user && user.isOnline) {
+  //           ref.read(notificationProvider).showInstantNotification(
+  //             enableLights: true,
+  //             enableVibration: true,
+  //             notificationId: 2,
+  //             timeOutAfter: 5000,
+  //             title: userMessage.user1.fullName,
+  //             body: userMessage.lastMessage,
+  //             ongoing: true,
+  //             actionId: '1',
+  //             payload: data.last.toJson(),
+  //             notificationActions: [
+  //               const AndroidNotificationAction('reply', 'Reply',
+  //                   titleColor: PColors.primary, showsUserInterface: true),
+  //             ],
+  //           );
+  //           // Future(()=>ref.read(chatContactMessage.notifier).state = userMessage);
+  //         }
+  //       });
+  // }
 
   void callCheck(WidgetRef ref, UserModel user) {
     ref.watch(callProvider).whenData((data) {
       // debugPrint(data.toString());
       // ref.read(callModelProvider.notifier).state = data;
       if (ref.watch(inChatRoom)) {
-        ref
-            .read(notificationProvider)
-            .flutterLocalNotificationsPlugin
-            .cancel(1);
         return;
       }
       if (data.receiverId == user.id &&
           user.isOnline &&
           data.callEnded == false) {
-        // context.push(
-        //   'incomingCall',
-        //   extra: data,
-        // );
-        // ref.read(showCallModal.notifier).state = true;
         ref.read(notificationProvider).showInstantNotification(
           enableLights: true,
           enableVibration: true,

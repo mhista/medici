@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/common/loaders/loaders.dart';
-import 'package:medici/features/chat/models/message_model.dart';
 import 'package:medici/features/chat/models/message_reply.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';

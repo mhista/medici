@@ -2,14 +2,12 @@ import 'dart:convert';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/features/call/agora_events/agora_egine_events.dart';
 import 'package:medici/features/call/controllers/agora_engine_controller.dart';
 import 'package:medici/features/call/controllers/call_controller.dart';
 import 'package:medici/features/call/models/call_model.dart';
 import 'package:medici/features/call/screens/call_sender_screen.dart';
-import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,7 +16,6 @@ import "package:http/http.dart" as http;
 import '../../../common/styles/spacing_styles.dart';
 import '../../../common/widgets/containers/rounded_container.dart';
 import '../../../router.dart';
-import '../../chat/screens/chat_room/chat_room.dart';
 import 'widgets/call_buttons.dart';
 import 'widgets/user_video_widget.dart';
 
@@ -111,7 +108,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
   Widget build(BuildContext context) {
     final remoteUid = ref.watch(remoteUserId);
     final localUserJoined = ref.watch(localUserJoinedProvider);
-
+    _runsAfterBuild(ref);
     return Scaffold(
       backgroundColor: PColors.transparent,
       body: Stack(
@@ -173,22 +170,6 @@ class _CallScreenState extends ConsumerState<CallScreen> {
     );
   }
 
-  @override
-  void deactivate() {
-    super.deactivate();
-  }
-
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
-
-  // Future<void> _dispose() async {
-  //   await AgoraEngineController.onPopInvoked(ref);
-
-  //   debugPrint('tried popping');
-  // }
-
   Widget _remoteVideo() {
     if (ref.watch(remoteUserId) != null &&
         !ref.watch(remoteUserMuted) &&
@@ -217,5 +198,18 @@ class _CallScreenState extends ConsumerState<CallScreen> {
               remoteUid: ref.watch(remoteUserId),
               widget: widget);
     }
+  }
+
+  _runsAfterBuild(WidgetRef ref) async {
+    await Future(() {
+      // debugPrint(ref.read(inChatRoom).toString());
+      ref.watch(callProvider).whenData((data) {
+        if (data.callEnded == true &&
+            !ref.read(channelLeft) &&
+            ref.read(isCallOngoing)) {
+          ref.read(goRouterProvider).goNamed('chat');
+        }
+      });
+    });
   }
 }

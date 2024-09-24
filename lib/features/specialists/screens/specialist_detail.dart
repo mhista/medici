@@ -133,7 +133,7 @@ class SpecialistDetail extends ConsumerWidget {
                 await ref.read(userController).fetchADoctorRecord(doctor.id);
                 ref.read(userChatProvider.notifier).state =
                     ref.read(specialistUserModelProvider);
-                ref.read(goRouterProvider).goNamed('chatHolder');
+                ref.read(goRouterProvider).goNamed('chat');
               },
             ),
             Expanded(

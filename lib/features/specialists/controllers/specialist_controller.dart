@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medici/common/loaders/loaders.dart';
-import 'package:medici/data/specialist_data.dart';
 import 'package:medici/features/authentication/models/user_model.dart';
 import 'package:medici/features/specialists/models/specialist_model.dart';
 import 'package:medici/providers.dart';
