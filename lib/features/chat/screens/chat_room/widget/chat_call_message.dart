@@ -69,25 +69,21 @@ class ChatCallContainer extends ConsumerWidget {
                     // textWidthBasis: TextWidthBasis.longestLine,
                     softWrap: true,
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Consumer(
-                    builder: (_, WidgetRef ref, __) {
-                      return Text(
-                        text,
-                        style: Theme.of(context).textTheme.bodyMedium!.apply(
-                              color: isUser
-                                  ? PColors.white.withOpacity(0.9)
-                                  : isDark
-                                      ? PColors.light
-                                      : PColors.dark,
-                            ),
-                        // textWidthBasis: TextWidthBasis.longestLine,
-                        softWrap: true,
-                      );
-                    },
-                  ),
+                  // const SizedBox(
+                  //   height: 5,
+                  // ),
+                  // Text(
+                  //   text,
+                  //   style: Theme.of(context).textTheme.bodyMedium!.apply(
+                  //         color: isUser
+                  //             ? PColors.white.withOpacity(0.9)
+                  //             : isDark
+                  //                 ? PColors.light
+                  //                 : PColors.dark,
+                  //       ),
+                  //   // textWidthBasis: TextWidthBasis.longestLine,
+                  //   softWrap: true,
+                  // ),
                 ],
               ),
             ],

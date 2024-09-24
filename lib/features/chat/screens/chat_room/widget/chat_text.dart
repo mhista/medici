@@ -44,7 +44,12 @@ class ChatText extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = PHelperFunctions.isDarkMode(context);
     return SwipeTo(
+      iconSize: 28,
       rightSwipeWidget: const Icon(
+        Icons.reply,
+        color: PColors.primary,
+      ),
+      leftSwipeWidget: const Icon(
         Icons.delete,
         color: Colors.red,
       ),
