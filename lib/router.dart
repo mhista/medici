@@ -16,6 +16,7 @@ import 'package:medici/features/onboarding/onboarding.dart';
 import 'package:medici/features/specialists/screens/patient_detail.dart';
 
 import 'features/call/screens/call_screen.dart';
+import 'features/chat/screens/AI_chat/ai_chat_room.dart';
 import 'features/main_app/screens/alert_screens/success_screen.dart';
 import 'features/personalization/controllers/user_controller.dart';
 import 'features/specialists/screens/specialist_detail.dart';
@@ -68,6 +69,7 @@ GoRoute _buildHomeRoute() {
     builder: (context, state) => const HomeView(),
     routes: [
       _buildRoute(name: 'chat', path: 'chat', screen: const ChatRoom()),
+      _buildRoute(name: 'aiChat', path: 'aiChat', screen: const AIChatRoom()),
       GoRoute(
         name: 'call',
         path: 'call',

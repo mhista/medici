@@ -33,6 +33,12 @@ final inChatRoom = StateProvider<bool>((ref) {
 final unreadMessageCount = StateProvider<int?>((ref) {
   return null;
 });
+// show chatbot prompt
+final showBotPrompt = StateProvider<bool>((ref) {
+  return false;
+});
+final textProvider = StateProvider<bool>((ref) => false);
+final chatScrollControl = StateProvider<bool>((ref) => false);
 
 class ChatController {
   final Ref ref;
@@ -44,7 +50,6 @@ class ChatController {
 
   final text = TextEditingController();
   // UPDATES ACCORDING TO THE STATE OF THE TEXT EDITING CONTROLLER
-  final textProvider = StateProvider<bool>((ref) => false);
 
   GlobalKey<FormState> chatFormKey = GlobalKey<FormState>();
 

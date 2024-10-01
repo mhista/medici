@@ -20,7 +20,9 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
       this.onChanged,
       this.prefixWidget,
       this.focusNode,
-      this.onTap});
+      this.onTap,
+      this.minLines,
+      this.maxLines});
 
   // to add the background color to tabs, wrap with material widget.
   final Color? color;
@@ -31,6 +33,7 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
   final TextEditingController? textController;
   final Function(String)? onChanged;
   final Function()? onTap;
+  final int? minLines, maxLines;
 
   final FocusNode? focusNode;
   @override
@@ -40,6 +43,8 @@ class MSearchBar extends StatelessWidget implements PreferredSizeWidget {
       padding:
           const EdgeInsets.symmetric(horizontal: PSizes.spaceBtwInputFields),
       child: TextField(
+        minLines: minLines,
+        maxLines: maxLines,
         onTap: onTap,
         focusNode: focusNode,
         onChanged: onChanged,

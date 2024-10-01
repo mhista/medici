@@ -106,6 +106,9 @@ dependencies:
   # agora_rtm
   get: any
   flutter_launcher_icons: ^0.13.1
+  flutter_gemini: ^2.0.5
+  google_generative_ai: ^0.4.6
+  flutter_markdown: ^0.7.3+2
 dev_dependencies:
   flutter_test:
     sdk: flutter

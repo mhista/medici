@@ -48,7 +48,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
       required String role,
       required String tokenType,
       required String uid}) async {
-    String baseUrl = "https://busy-camera.pipeops.app";
+    String baseUrl = "https://rigid-produce.pipeops.app";
     final response = await http
         .get(Uri.parse('$baseUrl/rtc/$channelName/$role/$tokenType/$uid'));
     if (response.statusCode == 200) {
@@ -109,63 +109,69 @@ class _CallScreenState extends ConsumerState<CallScreen> {
     final remoteUid = ref.watch(remoteUserId);
     final localUserJoined = ref.watch(localUserJoinedProvider);
     _runsAfterBuild(ref);
-    return Scaffold(
-      backgroundColor: PColors.transparent,
-      body: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Center(
-              child: _remoteVideo(),
-            ),
-          ),
-          if (remoteUid != null && widget.call.isVideo)
-            Padding(
-              padding: PSpacingStyle.videoePadding,
-              child: Align(
-                alignment: Alignment.topRight,
-                child: TRoundedContainer(
-                    borderColor: PColors.primary,
-                    backgroundColor: PColors.transparent,
-                    showBorder: true,
-                    height: 200,
-                    width: 130,
-                    child: localUserJoined && widget.call.isVideo
-                        ? ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(PSizes.cardRadiusLg),
-                            child: LocalUserVideoView(
-                                engine: _engine,
-                                remoteUid: remoteUid,
-                                widget: widget))
-                        : const Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
-                          )),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) =>
+          ref.read(goRouterProvider).goNamed('chat'),
+      child: Scaffold(
+        backgroundColor: PColors.transparent,
+        body: Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Center(
+                child: _remoteVideo(),
               ),
             ),
-          localUserJoined
-              ? CallButtons(
-                  call: widget.call,
-                )
-              : Align(
-                  alignment: Alignment.bottomCenter,
+            if (remoteUid != null && widget.call.isVideo)
+              Padding(
+                padding: PSpacingStyle.videoePadding,
+                child: Align(
+                  alignment: Alignment.topRight,
                   child: TRoundedContainer(
-                    margin: const EdgeInsets.only(bottom: PSizes.spaceBtwItems),
-                    shadow: [
-                      BoxShadow(
-                          color: PColors.dark.withOpacity(0.7),
-                          blurRadius: 15,
-                          spreadRadius: 2)
-                    ],
-                    backgroundColor: PColors.transparent.withOpacity(0.2),
-                    height: 70,
-                    width: 300,
-                    radius: 50,
-                  ),
+                      borderColor: PColors.primary,
+                      backgroundColor: PColors.transparent,
+                      showBorder: true,
+                      height: 200,
+                      width: 130,
+                      child: localUserJoined && widget.call.isVideo
+                          ? ClipRRect(
+                              borderRadius:
+                                  BorderRadius.circular(PSizes.cardRadiusLg),
+                              child: LocalUserVideoView(
+                                  engine: _engine,
+                                  remoteUid: remoteUid,
+                                  widget: widget))
+                          : const Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )),
                 ),
-        ],
+              ),
+            localUserJoined
+                ? CallButtons(
+                    call: widget.call,
+                  )
+                : Align(
+                    alignment: Alignment.bottomCenter,
+                    child: TRoundedContainer(
+                      margin:
+                          const EdgeInsets.only(bottom: PSizes.spaceBtwItems),
+                      shadow: [
+                        BoxShadow(
+                            color: PColors.dark.withOpacity(0.7),
+                            blurRadius: 15,
+                            spreadRadius: 2)
+                      ],
+                      backgroundColor: PColors.transparent.withOpacity(0.2),
+                      height: 70,
+                      width: 300,
+                      radius: 50,
+                    ),
+                  ),
+          ],
+        ),
       ),
     );
   }

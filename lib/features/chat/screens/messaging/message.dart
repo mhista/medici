@@ -4,14 +4,18 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:medici/common/widgets/appbar/searchBar.dart';
 import 'package:medici/common/widgets/cards/chat_card.dart';
+import 'package:medici/common/widgets/containers/rounded_container.dart';
 import 'package:medici/common/widgets/shimmer/chat_card_shimmer.dart';
 import 'package:medici/features/personalization/controllers/user_controller.dart';
+import 'package:medici/router.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/sizes.dart';
 import 'package:medici/utils/constants/text_strings.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../../../../common/widgets/cards/ai_chat_card.dart';
 import '../../../../utils/helpers/helper_functions.dart';
+import '../../controllers/ai_chat_controller.dart';
 import '../../controllers/chat_controller.dart';
 import '../../models/message_model.dart';
 
@@ -25,6 +29,8 @@ class MessageScreen extends ConsumerWidget {
     final responseive = ResponsiveBreakpoints.of(context);
     final user = ref.watch(userProvider);
     final chat = ref.watch(chatContactProvider);
+    final messages = ref.watch(aiMessagesProvider);
+
     debugPrint(ref.read(inChatRoom).toString());
 
     return Scaffold(
@@ -49,6 +55,57 @@ class MessageScreen extends ConsumerWidget {
           const SizedBox(
             height: PSizes.spaceBtwItems,
           ),
+          // if (!ref.watch(messagedAi))
+          //   Padding(
+          //     padding: const EdgeInsets.fromLTRB(PSizes.spaceBtwItems,
+          //         PSizes.spaceBtwItems, PSizes.spaceBtwItems, 5),
+          //     child: AIChatCard(
+          //         color: isDark ? PColors.black : PColors.light,
+          //         subTitle: 'Chat with medini, our AI assistant',
+          //         onPressed: () =>
+          //             ref.read(goRouterProvider).goNamed('aiChat')),
+          //   ),
+          // if (ref.watch(messagedAi))
+          messages.when(
+              data: (data) {
+                if (data.isEmpty) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(PSizes.spaceBtwItems,
+                            PSizes.spaceBtwItems, PSizes.spaceBtwItems, 5),
+                        child: AIChatCard(
+                            color: isDark ? PColors.black : PColors.light,
+                            subTitle: 'Chat with medini, our AI assistant',
+                            onPressed: () =>
+                                ref.read(goRouterProvider).goNamed('aiChat')),
+                      ),
+                    ],
+                  );
+                }
+                final message = data.last;
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(PSizes.spaceBtwItems,
+                          PSizes.spaceBtwItems, PSizes.spaceBtwItems, 5),
+                      child: AIChatCard(
+                          color: isDark ? PColors.dark : PColors.light,
+                          subTitle: message.text,
+                          onPressed: () =>
+                              ref.read(goRouterProvider).goNamed('aiChat')),
+                    ),
+                  ],
+                );
+              },
+              error: (error, __) => const SizedBox.shrink(),
+              loading: () => const ChatCardShimmer()),
+          // const SizedBox(
+          //   height: PSizes.spaceBtwItems,
+          // ),
+
           chat.when(
               data: (data) {
                 if (data.isEmpty) {
@@ -87,7 +144,8 @@ class MessageScreen extends ConsumerWidget {
                 }
                 // DISPLAY THE LIST OF USER MESSAGES
                 return Padding(
-                  padding: const EdgeInsets.all(PSizes.spaceBtwItems),
+                  padding: const EdgeInsets.fromLTRB(PSizes.spaceBtwItems, 0,
+                      PSizes.spaceBtwItems, PSizes.spaceBtwItems),
                   child: Column(
                     children: [
                       ListView.separated(

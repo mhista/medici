@@ -160,19 +160,17 @@ class CallController {
       return;
     }
 
-    if (data.receiverId == ref.read(userProvider).id) {
-      ref.read(notificationProvider).flutterLocalNotificationsPlugin.cancel(1);
-      ref.read(receiverPicked.notifier).state = true;
-      // ref.read(inChatRoom.notifier).state = true;
+    ref.read(notificationProvider).flutterLocalNotificationsPlugin.cancel(1);
+    ref.read(receiverPicked.notifier).state = true;
+    // ref.read(inChatRoom.notifier).state = true;
 
-      ref.read(switchToButton.notifier).state = false;
-      ref.read(goRouterProvider).goNamed(
-            'call',
-            extra: data,
-          );
+    ref.read(switchToButton.notifier).state = false;
+    ref.read(goRouterProvider).goNamed(
+          'call',
+          extra: data,
+        );
 
-      // ref.read(goRouterProvider).pushNamed('chatHolder');
-    }
+    // ref.read(goRouterProvider).pushNamed('chatHolder');
   }
 
 // ends the call

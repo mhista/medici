@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:medici/features/authentication/models/user_model.dart';
 import 'package:medici/features/call/controllers/call_controller.dart';
+import 'package:medici/features/chat/controllers/ai_chat_controller.dart';
 import 'package:medici/features/chat/controllers/chat_controller.dart';
 import 'package:medici/providers.dart';
 import 'package:medici/router.dart';
@@ -18,6 +19,7 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(aiModel);
     ref.read(ringtone).stop();
     // the notification provider to check when there is a noification
     ref.watch(notificationProvider);
@@ -34,6 +36,7 @@ class App extends ConsumerWidget {
 
     // the router provider
     final goRoute = ref.watch(goRouterProvider);
+
     return MaterialApp.router(
       routerConfig: goRoute,
       builder: (context, child) =>
@@ -164,3 +167,8 @@ class App extends ConsumerWidget {
   //   });
   // }
 }
+
+
+// fix the back buton issue
+// fix the video issue
+// fix the voice not issue

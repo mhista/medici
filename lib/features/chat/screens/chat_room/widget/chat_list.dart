@@ -7,7 +7,9 @@ import 'package:medici/providers.dart';
 import 'package:medici/utils/constants/colors.dart';
 import 'package:medici/utils/constants/enums.dart';
 
+import '../../../../../common/widgets/button/scroll_button.dart';
 import '../../../../../common/widgets/cards/time_card.dart';
+import '../../../../../common/widgets/icons/rounded_icons.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/helpers/helper_functions.dart';
 import '../../../../authentication/models/user_model.dart';
@@ -28,11 +30,22 @@ class ChatList extends ConsumerStatefulWidget {
 }
 
 class _ChatListState extends ConsumerState<ChatList> {
-  final ScrollController messageController = ScrollController();
+  final ScrollController _messageController = ScrollController();
 
   void onMessageSwipe(String message, bool isMe, String messageEnum) {
     ref.read(messageReplyProvider.notifier).update((state) =>
         MessageReply(message: message, isMe: isMe, messageEnum: messageEnum));
+  }
+
+  void _scrollToBottom() {
+    // Use SchedulerBinding to schedule the scrolling action
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _messageController.animateTo(
+        _messageController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.linear,
+      );
+    });
   }
 
   @override
@@ -40,162 +53,175 @@ class _ChatListState extends ConsumerState<ChatList> {
     final screenWidth = PHelperFunctions.screenWidth(context);
     final messages = ref.watch(chatMessagesProvider(widget.receiver.id));
 
-    return ListView(shrinkWrap: true, controller: messageController, children: [
-      const Center(
-        child: Padding(
-          padding: EdgeInsets.all(PSizes.iconXs),
-          child: TimeCard(
-            elevation: 0,
+    return Stack(
+      children: [
+        ListView(shrinkWrap: true, controller: _messageController, children: [
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(PSizes.iconXs),
+              child: TimeCard(
+                elevation: 0,
+              ),
+            ),
           ),
-        ),
-      ),
-      messages.when(
-          data: (data) {
-            // CONTROLLER TO CONTROL THE CHAT SCROLL
-            SchedulerBinding.instance.addPostFrameCallback((_) {
-              messageController.animateTo(
-                  messageController.position.maxScrollExtent,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.linear);
-              // ref.read(loadingCompleteProvider.notifier).state = true;
-              // debugPrint(ref.read(loadingCompleteProvider).toString());
-            });
-            // SchedulerBinding.instance.
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                final message = data[index];
-                return GestureDetector(
-                  onTap: () {
-                    debugPrint('delete ');
-                    PLoaders.customToast(
-                        context: context,
-                        message: 'swipe left to reply, or right to delete');
+          messages.when(
+              data: (data) {
+                // CONTROLLER TO CONTROL THE CHAT SCROLL
+                SchedulerBinding.instance.addPostFrameCallback((_) {
+                  _messageController.animateTo(
+                      _messageController.position.maxScrollExtent,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.linear);
+                  // ref.read(loadingCompleteProvider.notifier).state = true;
+                  // debugPrint(ref.read(loadingCompleteProvider).toString());
+                });
+                // SchedulerBinding.instance.
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    final message = data[index];
+                    return GestureDetector(
+                      onTap: () {
+                        debugPrint('delete ');
+                        PLoaders.customToast(
+                            context: context,
+                            message: 'swipe left to reply, or right to delete');
+                      },
+                      child: ChatText(
+                        messageType: message.type,
+                        text: message.text,
+                        time:
+                            PHelperFunctions.getFormattedTime(message.timeSent),
+                        // checks if the current user is the same as the message recepient
+                        // TODO : message.senderId == ref.watch(userProvider).id ? true :false
+                        isUser: message.receiverId == widget.receiver.id
+                            ? true
+                            : false,
+                        width: message.type == MessageType.text.name
+                            ? message.text.length < 10
+                                ? screenWidth / 3
+                                : message.text.length < 30
+                                    ? screenWidth / 1.7
+                                    : screenWidth / 1.5
+                            : message.type == MessageType.text.name
+                                ? screenWidth / 4
+                                : 0,
+                        repliedText: message.repliedMessage,
+                        repliedMessageType: message.repliedMessageType,
+                        // DELETE A MESSAGE ON RIGHT SWIPE
+                        onLeftSwipe: () async {
+                          debugPrint(message.toString());
+                          // checks if this message was swiped for reply and deletes it
+                          if (ref.read(messageReplyProvider)?.message ==
+                              message.text) {
+                            ref
+                                .read(messageReplyProvider.notifier)
+                                .update((state) => null);
+                          }
+
+                          // ref.read(chatController).deleteMessage(message: message);
+                          // checks if this message is the one shown in the list of messages in the chat view
+                          final isLastChat = ref
+                              .watch(chatContactProvider)
+                              .value
+                              ?.where(
+                                  (chat) => chat.messageId == message.messageId)
+                              .firstOrNull;
+
+                          // if it is the last message, deletes the message from the user chats, and updates the currently shown chat message with the last message sent
+                          if (isLastChat != null) {
+                            debugPrint(isLastChat.toString());
+                            // deletes the message
+                            await ref
+                                .read(chatController)
+                                .deleteMessage(message: message);
+
+                            // gets the current last message sent by any of the users to update the chat view with the last message
+                            final lastMessage = ref
+                                .watch(chatMessagesProvider(widget.receiver.id))
+                                .value
+                                ?.reversed
+                                .elementAtOrNull(0);
+                            // if there is a new last message, updates  the chat view with the last message
+                            if (lastMessage != null) {
+                              debugPrint(lastMessage.toString());
+
+                              await ref.read(chatController).saveChatContacts(
+                                  timeSent: lastMessage.timeSent,
+                                  receiver: lastMessage.receiverId ==
+                                          ref.read(userProvider).id
+                                      ? ref.read(userProvider)
+                                      : ref.read(userChatProvider),
+                                  sender: lastMessage.senderId ==
+                                          ref.read(userProvider).id
+                                      ? ref.read(userProvider)
+                                      : ref.read(userChatProvider),
+                                  message: lastMessage);
+                              return;
+                            } else {
+                              // if there is no current message, proceeds to delete the chat contact
+                              // ref
+                              //     .read(chatController)
+                              //     .deleteMessage(message: message);
+                              ref.read(chatController).deleteChatContact(
+                                  receiverId: widget.receiver.id,
+                                  senderId: ref.read(userProvider).id);
+                              return;
+                            }
+                          } else {
+                            // deletes just the message since it is not the in the chat contact
+                            ref
+                                .read(chatController)
+                                .deleteMessage(message: message);
+                          }
+                          ref.refresh(chatMessagesProvider(widget.receiver.id));
+                          // ref.read(chatController).deleteMessage(message: message);
+                        },
+                        onRightSwipe: () => onMessageSwipe(
+                            message.text,
+                            message.receiverId == widget.receiver.id
+                                ? true
+                                : false,
+                            message.type),
+                        username: message.repliedTo,
+                      ),
+                    );
                   },
-                  child: ChatText(
-                    messageType: message.type,
-                    text: message.text,
-                    time: PHelperFunctions.getFormattedTime(message.timeSent),
-                    // checks if the current user is the same as the message recepient
-                    // TODO : message.senderId == ref.watch(userProvider).id ? true :false
-                    isUser:
-                        message.receiverId == widget.receiver.id ? true : false,
-                    width: message.type == MessageType.text.name
-                        ? message.text.length < 10
-                            ? screenWidth / 3
-                            : message.text.length < 30
-                                ? screenWidth / 1.7
-                                : screenWidth / 1.5
-                        : message.type == MessageType.text.name
-                            ? screenWidth / 4
-                            : 0,
-                    repliedText: message.repliedMessage,
-                    repliedMessageType: message.repliedMessageType,
-                    // DELETE A MESSAGE ON RIGHT SWIPE
-                    onLeftSwipe: () async {
-                      debugPrint(message.toString());
-                      // checks if this message was swiped for reply and deletes it
-                      if (ref.read(messageReplyProvider)?.message ==
-                          message.text) {
-                        ref
-                            .read(messageReplyProvider.notifier)
-                            .update((state) => null);
-                      }
-
-                      // ref.read(chatController).deleteMessage(message: message);
-                      // checks if this message is the one shown in the list of messages in the chat view
-                      final isLastChat = ref
-                          .watch(chatContactProvider)
-                          .value
-                          ?.where((chat) => chat.messageId == message.messageId)
-                          .firstOrNull;
-
-                      // if it is the last message, deletes the message from the user chats, and updates the currently shown chat message with the last message sent
-                      if (isLastChat != null) {
-                        debugPrint(isLastChat.toString());
-                        // deletes the message
-                        await ref
-                            .read(chatController)
-                            .deleteMessage(message: message);
-
-                        // gets the current last message sent by any of the users to update the chat view with the last message
-                        final lastMessage = ref
-                            .watch(chatMessagesProvider(widget.receiver.id))
-                            .value
-                            ?.reversed
-                            .elementAtOrNull(0);
-                        // if there is a new last message, updates  the chat view with the last message
-                        if (lastMessage != null) {
-                          debugPrint(lastMessage.toString());
-
-                          await ref.read(chatController).saveChatContacts(
-                              timeSent: lastMessage.timeSent,
-                              receiver: lastMessage.receiverId ==
-                                      ref.read(userProvider).id
-                                  ? ref.read(userProvider)
-                                  : ref.read(userChatProvider),
-                              sender: lastMessage.senderId ==
-                                      ref.read(userProvider).id
-                                  ? ref.read(userProvider)
-                                  : ref.read(userChatProvider),
-                              message: lastMessage);
-                          return;
-                        } else {
-                          // if there is no current message, proceeds to delete the chat contact
-                          // ref
-                          //     .read(chatController)
-                          //     .deleteMessage(message: message);
-                          ref.read(chatController).deleteChatContact(
-                              receiverId: widget.receiver.id,
-                              senderId: ref.read(userProvider).id);
-                          return;
-                        }
-                      } else {
-                        // deletes just the message since it is not the in the chat contact
-                        ref
-                            .read(chatController)
-                            .deleteMessage(message: message);
-                      }
-                      ref.refresh(chatMessagesProvider(widget.receiver.id));
-                      // ref.read(chatController).deleteMessage(message: message);
-                    },
-                    onRightSwipe: () => onMessageSwipe(
-                        message.text,
-                        message.receiverId == widget.receiver.id ? true : false,
-                        message.type),
-                    username: message.repliedTo,
-                  ),
                 );
               },
-            );
-          },
-          error: (error, __) => Center(
-                child: Text(
-                  'No Data!',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .apply(color: Colors.white),
-                ),
-              ),
-          loading: () => const Column(
-                children: [
-                  Center(
-                    child: CircularProgressIndicator(
-                      color: PColors.primary,
+              error: (error, __) => Center(
+                    child: Text(
+                      'No Data!',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .apply(color: Colors.white),
                     ),
                   ),
-                ],
-              ))
-    ]);
+              loading: () => const Column(
+                    children: [
+                      Center(
+                        child: CircularProgressIndicator(
+                          color: PColors.primary,
+                        ),
+                      ),
+                    ],
+                  ))
+        ]),
+        ScrollToBottomButton(
+          onPressed: _scrollToBottom,
+          controller: _messageController,
+        )
+      ],
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
-    messageController.dispose();
+    _messageController.dispose();
   }
 }
 
