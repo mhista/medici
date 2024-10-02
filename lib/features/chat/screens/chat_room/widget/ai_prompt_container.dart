@@ -39,7 +39,7 @@ class AiPromptContainer extends ConsumerWidget {
           Column(
             children: [
               Text(
-                'seems Dr ${receiver.lastName} is currently offline, but don’t worry! You can chat with our AI assistant for any immediate questions or concerns. The AI is here to help you while you wait for the doctor to come online. ',
+                'seems Dr ${receiver.lastName} is currently offline, but don’t worry! You can chat with medini, our AI assistant for any immediate questions or concerns. The AI is here to help you while you wait for the doctor to come online. ',
                 style: Theme.of(context)
                     .textTheme
                     .labelMedium!

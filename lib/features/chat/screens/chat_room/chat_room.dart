@@ -266,7 +266,7 @@ class ChatRoom extends ConsumerWidget {
                 : receiver.fullName,
           ),
         // TODO: watch when the specialist is offline
-        if (ref.watch(showBotPrompt)) const AiPromptContainer(),
+        // if (ref.watch(showBotPrompt)) const AiPromptContainer(),
         ChatInputField(
           controller: controller,
           receiver: receiver,
@@ -316,7 +316,7 @@ class ChatRoom extends ConsumerWidget {
   Future<void> _checkSpecialistOnlineStatus(
       UserModel receiver, WidgetRef ref) async {
     await Future.microtask(() {
-      if (!ref.watch(userChatProvider).isDoctor) {
+      if (ref.watch(userChatProvider).isDoctor) {
         if (!ref.watch(userChatProvider).isOnline) {}
         ref.read(showBotPrompt.notifier).state = true;
       }
